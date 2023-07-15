@@ -1,12 +1,259 @@
-use std::str::FromStr;
-
+/* Sources:
+ * https://www.lysator.liu.se/c/ANSI-C-grammar-y.html
+ * https://github.com/ranveeraggarwal/simple-c-like-compiler/blob/master/parser/grammar
+ */
+use ast::*;
 grammar;
 
-pub Term: i32 = {
-    <n:Num> => n,
-    "(" <t:Term> ")" => t,
+//--------MODULE------------
+pub module {
+    function_definition => {
+        module { functions: vec![<>] }
+    }
+	<m: module> <f: function_definition> => {
+        m.functions.push(f)
+        m
+    }
 };
 
-Num: i32 = <s:r"[0-9]+"> => i32::from_str(s).unwrap();
+//--------FUNCTIONS------------
+function_definition: Box<Function> {
+	<k: type_specifier> <i: identifier> "(" <p: Comma<parameter>?> ")" <s: compound_statement> => Box::new(
+        Function {
+            ret: k
+            name: i,
+            parameters: p
+            statement: s,
+        }
+    )
+};
 
+parameter: Parameter {
+    <k: type_specifier> <i: identifier> => {
+        Parameter {
+            kind: k,
+            name: i
+        }
+    }
+};
 
+//--------EXPRESSIONS------------
+expression: Box<Expr> = {
+    <l: unary_expression> <o: AssignOp> <r: expression> => {
+        Box::new(Expr::Binary(
+            BinaryExpr {
+                binary_op: o,
+                left: l,
+                right; r
+            }
+        ))
+    },
+    or_expression
+};
+AssignOp: BinaryOp = {
+    "+=" => BinaryOp::PEQ,
+    "-=" => BinaryOp::PEQ,
+    "*=" => BinaryOp::PEQ,
+    "/=" => BinaryOp::PEQ,
+    "+=" => BinaryOp::PEQ,
+    "="  => BinaryOp::EQ,
+}
+
+or_expression = Tier<OrOp, and_expression>;
+OrOp: BinaryOp = {"||" => BinaryOp::Or};
+
+and_expression = Tier<AndOp, eq_expression>;
+AndOp: BinaryOp = {"&&" => BinaryOp::And};
+
+eq_expression = Tier<EqOp, rel_expression>;
+EqOp: BinaryOp = {
+    "==" => BinaryOp::Eq,
+    "!=" => BinaryOp::Neq
+};
+
+rel_expression = Tier<RelOp, add_expression>;
+RelOp: BinaryOp = {
+    ">"  => BinaryOp::Gt,
+    "<"  => BinaryOp::Lt,
+    ">=" => BinaryOp::Geq,
+    "<=" => BinaryOp::Leq
+};
+
+add_expresssion = Tier<AddOp, mul_expression>;
+AddOp: BinaryOp {
+    "+" => BinaryOp::Add,
+    "-" => BinaryOp::Sub
+};
+
+mul_expression = Tier<MulOp, unary_expression>;
+MulOp: BinaryOp {
+    "*" => BinaryOp::Mul,
+    "/" => BinaryOp::Div
+};
+
+unary_expression: Box<Expr> {
+    postfix_expression,
+    <u: UnaryOp> <p: postfix_expression> => {
+        Box::new(Expr::Unary(
+            UnaryExpression {
+                unary_op: u,
+                expr:     p
+            }
+        ))
+    }
+};
+UnaryOp: UnaryOp {
+    "*" => UnaryOp::Star,
+    "!" => UnaryOp::Not,
+    "-" => UnaryOp::Neg
+};
+
+postfix_expression: Box<Expr> {
+	identifier => Box::new(Expr::Identifier(<>)),
+    integer => Box::new(Expr::Integer(<>)),
+    float => Box::new(Expr::Float(<>)),
+	<postfix_expression> "[" <expression> "]"
+	<i: identifier> "(" <c: Comma<Expression>?> ")" => {
+        Box::new(Expr::Function(
+            FunctionCall { name: i, args: c }
+        ))
+    },
+    "(" <expression> ")"
+};
+
+//--------STATEMENTS------------
+statement_list: Vec<Box<Statement>> {
+	statement => vec![<>],
+	<v: statement_list> <s: statement> => {
+        v.push(s);
+        v
+    }
+};
+
+statement: Box<Statement> {
+	compound_statement,
+    declare_statement,
+	expression_statement,
+	selection_statement,
+	iteration_statement,
+	jump_statement
+};
+
+compound_statement: Box<Statement> {
+	"{" <s: statement_list?> "}" => {
+        Box::new(Statement::Compound(
+            CompoundStatement { stmts: s}
+        ))
+    }
+};
+
+declare_statement: Box<Statement> {
+    <k: type_specifier> <i: ident> ("=" <e: expression>)? ";" => {
+        Box::new(Statement::Declare(
+            DeclareStatement { kind: k, name: i, val: e }
+        ))
+    }
+};
+
+expression_statement: Box<Statement> {
+	<expression?> ";" => Box::new(Statement::Expr(<>))
+};
+
+selection_statement {
+	"if" "(" <e: expression> ")" <s1: statement> ("else" <s2: statement>)? => Box::new(
+        Statememt::If( IfStatement {
+            condition: e1,
+            true_stmt: s1,
+            false_stmt: s2
+        })
+    )
+};
+
+iteration_statement: Box<Statement> {
+	"while" "(" <e: expression> ")" <s: statement> => Box::new(
+        Statement::While( WhileStatement {
+            condition: e,
+            stmt: s
+        })
+    ),
+	"for" "(" <e1: expression?> ";" <e2: expression?> ";" <e3: expression?> ")" <s: statement> => Box::new(
+        Statement::For( ForStatement { 
+            init: e1,
+            each: e2,
+            end:  e3,
+            stms: s
+        })
+    )
+};
+
+jump_statement: Box<Statement> {
+	"continue" ";" => Box::new(Statement::Jump(
+        JumpStatement(JumpOp::Continue, None)
+    )),
+    "break" ";" => Box::new(Statement::Jump(
+        JumpStatement(JumpOp::Break, None)
+    )),
+    "return" <expression?> ";" => Box::new(Statement::Jump(
+        JumpStatement(JumpOp::Return, <>)
+    ))
+};
+
+//--------TYPES------------
+type_specifier: Kind {
+    <t: type_primitive> <p: pointer?> => {
+        Kind { indirection: p, prim: y }
+    }
+};
+
+type_primitive: Primitive {
+    "void"  => Primitve::Void,
+    "int"   => Primitive::Int,
+    "float" => Primitive::Float
+};
+
+pointer: u32 {
+    "*" => 1
+    <pointer> "*" => <> + 1
+};
+
+identifier: Box<Expr> {
+    r"[a-zA-Z][a-zA-Z0-9]*" => Box::new(
+        Expr::Identifier(<>)
+    )
+};
+
+integer: Box<Expr> {
+    r"\-?[0-9]*" => Box::new(Expr::Integer(
+        i32::from_str(<>).unwrap()
+    ))
+};
+
+float: Box<Expr> {
+    r"\-?[0-9]*.[0-9]+" => Box::new(Expr::float(
+        f32:from_str(<>).unwrap()
+    ))
+};
+
+//--------MACROS------------
+Comma<T>: Vec<T> = { // (1)
+    <mut v:(<T> ",")*> <e:T?> => match e { // (2)
+        None => v,
+        Some(e) => {
+            v.push(e);
+            v
+        }
+    }
+};
+
+Tier<Op, NextTier>: Box<Expr> = {
+    <l: Tier<Op, NextTier>> <o: Op> <r: NextTier> => {
+        Box::new(Expr::Binary(
+            BinaryExpr {
+                binary_op: o,
+                left: l,
+                right; r
+            }
+        ))
+    },
+    NextTier
+};
