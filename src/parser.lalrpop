@@ -1,12 +1,11 @@
-/* Sources:
- * https://www.lysator.liu.se/c/ANSI-C-grammar-y.html
- * https://github.com/ranveeraggarwal/simple-c-like-compiler/blob/master/parser/grammar
- */
+// Sources:
+// https://www.lysator.liu.se/c/ANSI-C-grammar-y.html
+// https://github.com/ranveeraggarwal/simple-c-like-compiler/blob/master/parser/grammar
 use ast::*;
 grammar;
 
 //--------MODULE------------
-pub module {
+pub module: Module = {
     function_definition => {
         module { functions: vec![<>] }
     }
@@ -17,7 +16,7 @@ pub module {
 };
 
 //--------FUNCTIONS------------
-function_definition: Box<Function> {
+function_definition: Box<Function> = {
 	<k: type_specifier> <i: identifier> "(" <p: Comma<parameter>?> ")" <s: compound_statement> => Box::new(
         Function {
             ret: k
@@ -28,7 +27,7 @@ function_definition: Box<Function> {
     )
 };
 
-parameter: Parameter {
+parameter: Parameter = {
     <k: type_specifier> <i: identifier> => {
         Parameter {
             kind: k,
@@ -79,19 +78,19 @@ RelOp: BinaryOp = {
     "<=" => BinaryOp::Leq
 };
 
-add_expresssion = Tier<AddOp, mul_expression>;
-AddOp: BinaryOp {
+add_expression = Tier<AddOp, mul_expression>;
+AddOp: BinaryOp = {
     "+" => BinaryOp::Add,
     "-" => BinaryOp::Sub
 };
 
 mul_expression = Tier<MulOp, unary_expression>;
-MulOp: BinaryOp {
+MulOp: BinaryOp = {
     "*" => BinaryOp::Mul,
     "/" => BinaryOp::Div
 };
 
-unary_expression: Box<Expr> {
+unary_expression: Box<Expr> = {
     postfix_expression,
     <u: UnaryOp> <p: postfix_expression> => {
         Box::new(Expr::Unary(
@@ -102,17 +101,25 @@ unary_expression: Box<Expr> {
         ))
     }
 };
-UnaryOp: UnaryOp {
+UnaryOp: UnaryOp = {
     "*" => UnaryOp::Star,
     "!" => UnaryOp::Not,
     "-" => UnaryOp::Neg
 };
 
-postfix_expression: Box<Expr> {
+// TODO: This doesn't support multi-dimensional arrays.
+postfix_expression: Box<Expr> = {
 	identifier => Box::new(Expr::Identifier(<>)),
     integer => Box::new(Expr::Integer(<>)),
     float => Box::new(Expr::Float(<>)),
-	<postfix_expression> "[" <expression> "]"
+	<i: identifier> "[" <e: expression> "]" => {
+        Box::new(Expr::Access(
+            AccessExpr {
+                name: i,
+                expr: e
+            }
+        ))
+    }
 	<i: identifier> "(" <c: Comma<Expression>?> ")" => {
         Box::new(Expr::Function(
             FunctionCall { name: i, args: c }
@@ -122,7 +129,7 @@ postfix_expression: Box<Expr> {
 };
 
 //--------STATEMENTS------------
-statement_list: Vec<Box<Statement>> {
+statement_list: Vec<Box<Statement>> = {
 	statement => vec![<>],
 	<v: statement_list> <s: statement> => {
         v.push(s);
@@ -130,7 +137,7 @@ statement_list: Vec<Box<Statement>> {
     }
 };
 
-statement: Box<Statement> {
+statement: Box<Statement> = {
 	compound_statement,
     declare_statement,
 	expression_statement,
@@ -139,7 +146,7 @@ statement: Box<Statement> {
 	jump_statement
 };
 
-compound_statement: Box<Statement> {
+compound_statement: Box<Statement> = {
 	"{" <s: statement_list?> "}" => {
         Box::new(Statement::Compound(
             CompoundStatement { stmts: s}
@@ -147,29 +154,41 @@ compound_statement: Box<Statement> {
     }
 };
 
-declare_statement: Box<Statement> {
-    <k: type_specifier> <i: ident> ("=" <e: expression>)? ";" => {
+declare_statement: Box<Statement> = {
+    <k: type_specifier> <i: identifier> ";" => {
         Box::new(Statement::Declare(
-            DeclareStatement { kind: k, name: i, val: e }
+            DeclareStatement { kind: k, name: i, val: None }
+        ))
+    }
+    <k: type_specifier> <i: identifier> "=" <e: expression> ";" => {
+        Box::new(Statement::Declare(
+            DeclareStatement { kind: k, name: i, val: Some(e) }
         ))
     }
 };
 
-expression_statement: Box<Statement> {
+expression_statement: Box<Statement> = {
 	<expression?> ";" => Box::new(Statement::Expr(<>))
 };
 
-selection_statement {
-	"if" "(" <e: expression> ")" <s1: statement> ("else" <s2: statement>)? => Box::new(
+selection_statement: Box<Statement> = {
+	"if" "(" <e: expression> ")" <s1: statement> => Box::new(
         Statememt::If( IfStatement {
             condition: e1,
             true_stmt: s1,
-            false_stmt: s2
+            false_stmt: None
+        })
+    )
+    "if" "(" <e: expression> ")" <s1: statement> "else" <s2: statement> => Box::new(
+        Statememt::If( IfStatement {
+            condition: e1,
+            true_stmt: s1,
+            false_stmt: Some(s2)
         })
     )
 };
 
-iteration_statement: Box<Statement> {
+iteration_statement: Box<Statement> = {
 	"while" "(" <e: expression> ")" <s: statement> => Box::new(
         Statement::While( WhileStatement {
             condition: e,
@@ -186,7 +205,7 @@ iteration_statement: Box<Statement> {
     )
 };
 
-jump_statement: Box<Statement> {
+jump_statement: Box<Statement> = {
 	"continue" ";" => Box::new(Statement::Jump(
         JumpStatement(JumpOp::Continue, None)
     )),
@@ -199,37 +218,37 @@ jump_statement: Box<Statement> {
 };
 
 //--------TYPES------------
-type_specifier: Kind {
+type_specifier: Kind = {
     <t: type_primitive> <p: pointer?> => {
         Kind { indirection: p, prim: y }
     }
 };
 
-type_primitive: Primitive {
+type_primitive: Primitive = {
     "void"  => Primitve::Void,
     "int"   => Primitive::Int,
     "float" => Primitive::Float
 };
 
-pointer: u32 {
+pointer: u32 = {
     "*" => 1
     <pointer> "*" => <> + 1
 };
 
-identifier: Box<Expr> {
+identifier: Box<Expr> = {
     r"[a-zA-Z][a-zA-Z0-9]*" => Box::new(
         Expr::Identifier(<>)
     )
 };
 
-integer: Box<Expr> {
+integer: Box<Expr> = {
     r"\-?[0-9]*" => Box::new(Expr::Integer(
         i32::from_str(<>).unwrap()
     ))
 };
 
-float: Box<Expr> {
-    r"\-?[0-9]*.[0-9]+" => Box::new(Expr::float(
+float: Box<Expr> = {
+    r"\-?[0-9]+\.[0-9]*" => Box::new(Expr::float(
         f32:from_str(<>).unwrap()
     ))
 };
