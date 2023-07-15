@@ -1,27 +1,28 @@
 // Sources:
 // https://www.lysator.liu.se/c/ANSI-C-grammar-y.html
 // https://github.com/ranveeraggarwal/simple-c-like-compiler/blob/master/parser/grammar
-use ast::*;
+use std::str::FromStr;
+use crate::ast::*;
 grammar;
 
 //--------MODULE------------
 pub module: Module = {
-    function_definition => {
-        module { functions: vec![<>] }
-    }
-	<m: module> <f: function_definition> => {
-        m.functions.push(f)
+    function_declaration => {
+        Module { functions: vec![<>] }
+    },
+	<mut m: module> <f: function_declaration> => {
+        m.functions.push(f);
         m
     }
 };
 
 //--------FUNCTIONS------------
-function_definition: Box<Function> = {
+function_declaration: Box<FunctionDeclaration> = {
 	<k: type_specifier> <i: identifier> "(" <p: Comma<parameter>?> ")" <s: compound_statement> => Box::new(
-        Function {
-            ret: k
+        FunctionDeclaration {
+            ret: k,
             name: i,
-            parameters: p
+            params: p,
             statement: s,
         }
     )
@@ -43,19 +44,18 @@ expression: Box<Expr> = {
             BinaryExpr {
                 binary_op: o,
                 left: l,
-                right; r
+                right: r
             }
         ))
     },
     or_expression
 };
 AssignOp: BinaryOp = {
-    "+=" => BinaryOp::PEQ,
-    "-=" => BinaryOp::PEQ,
-    "*=" => BinaryOp::PEQ,
-    "/=" => BinaryOp::PEQ,
-    "+=" => BinaryOp::PEQ,
-    "="  => BinaryOp::EQ,
+    "+=" => BinaryOp::Peq,
+    "-=" => BinaryOp::Seq,
+    "*=" => BinaryOp::Teq,
+    "/=" => BinaryOp::Deq,
+    "="  => BinaryOp::Eq,
 }
 
 or_expression = Tier<OrOp, and_expression>;
@@ -94,7 +94,7 @@ unary_expression: Box<Expr> = {
     postfix_expression,
     <u: UnaryOp> <p: postfix_expression> => {
         Box::new(Expr::Unary(
-            UnaryExpression {
+            UnaryExpr {
                 unary_op: u,
                 expr:     p
             }
@@ -116,11 +116,11 @@ postfix_expression: Box<Expr> = {
         Box::new(Expr::Access(
             AccessExpr {
                 name: i,
-                expr: e
+                offset: e
             }
         ))
-    }
-	<i: identifier> "(" <c: Comma<Expression>?> ")" => {
+    },
+	<i: identifier> "(" <c: Comma<expression>?> ")" => {
         Box::new(Expr::Function(
             FunctionCall { name: i, args: c }
         ))
@@ -131,7 +131,7 @@ postfix_expression: Box<Expr> = {
 //--------STATEMENTS------------
 statement_list: Vec<Box<Statement>> = {
 	statement => vec![<>],
-	<v: statement_list> <s: statement> => {
+	<mut v: statement_list> <s: statement> => {
         v.push(s);
         v
     }
@@ -159,7 +159,7 @@ declare_statement: Box<Statement> = {
         Box::new(Statement::Declare(
             DeclareStatement { kind: k, name: i, val: None }
         ))
-    }
+    },
     <k: type_specifier> <i: identifier> "=" <e: expression> ";" => {
         Box::new(Statement::Declare(
             DeclareStatement { kind: k, name: i, val: Some(e) }
@@ -168,20 +168,17 @@ declare_statement: Box<Statement> = {
 };
 
 expression_statement: Box<Statement> = {
-	<expression?> ";" => Box::new(Statement::Expr(<>))
+	<expression?> ";" => Box::new(Statement::Expr(
+        ExprStatement { expr: <> }
+    ))
 };
 
+// All if statements must have else bc shift-reduce annoying.
+// TODO: restructue grammar to properly handle dangling else.
 selection_statement: Box<Statement> = {
-	"if" "(" <e: expression> ")" <s1: statement> => Box::new(
-        Statememt::If( IfStatement {
-            condition: e1,
-            true_stmt: s1,
-            false_stmt: None
-        })
-    )
     "if" "(" <e: expression> ")" <s1: statement> "else" <s2: statement> => Box::new(
-        Statememt::If( IfStatement {
-            condition: e1,
+        Statement::If( IfStatement {
+            condition: e,
             true_stmt: s1,
             false_stmt: Some(s2)
         })
@@ -200,67 +197,67 @@ iteration_statement: Box<Statement> = {
             init: e1,
             each: e2,
             end:  e3,
-            stms: s
+            stmt: s
         })
     )
 };
 
 jump_statement: Box<Statement> = {
 	"continue" ";" => Box::new(Statement::Jump(
-        JumpStatement(JumpOp::Continue, None)
+        JumpStatement { 
+            jump_type: JumpOp::Continue,
+            expr: None
+        }
     )),
     "break" ";" => Box::new(Statement::Jump(
-        JumpStatement(JumpOp::Break, None)
+        JumpStatement { 
+            jump_type: JumpOp::Continue,
+            expr: None
+        }
     )),
     "return" <expression?> ";" => Box::new(Statement::Jump(
-        JumpStatement(JumpOp::Return, <>)
+        JumpStatement { 
+            jump_type: JumpOp::Continue,
+            expr: <>
+        }
     ))
 };
 
 //--------TYPES------------
 type_specifier: Kind = {
     <t: type_primitive> <p: pointer?> => {
-        Kind { indirection: p, prim: y }
+        Kind { indirection: p, prim: t }
     }
 };
 
 type_primitive: Primitive = {
-    "void"  => Primitve::Void,
-    "int"   => Primitive::Int,
+    "void"  => Primitive::Void,
+    "int"   => Primitive::Integer,
     "float" => Primitive::Float
 };
 
 pointer: u32 = {
-    "*" => 1
+    "*" => 1,
     <pointer> "*" => <> + 1
 };
 
-identifier: Box<Expr> = {
-    r"[a-zA-Z][a-zA-Z0-9]*" => Box::new(
-        Expr::Identifier(<>)
-    )
+identifier: String = {
+    r"[a-zA-Z][a-zA-Z0-9]*" => <>.to_string()
 };
 
-integer: Box<Expr> = {
-    r"\-?[0-9]*" => Box::new(Expr::Integer(
-        i32::from_str(<>).unwrap()
-    ))
+integer: i32 = {
+    r"\-?[0-9]*" => i32::from_str(<>).unwrap()
 };
 
-float: Box<Expr> = {
-    r"\-?[0-9]+\.[0-9]*" => Box::new(Expr::float(
-        f32:from_str(<>).unwrap()
-    ))
+float: f32 = {
+    r"\-?[0-9]+\.[0-9]*" => f32::from_str(<>).unwrap()
 };
 
 //--------MACROS------------
 Comma<T>: Vec<T> = { // (1)
-    <mut v:(<T> ",")*> <e:T?> => match e { // (2)
-        None => v,
-        Some(e) => {
-            v.push(e);
-            v
-        }
+    <mut v:(<T> ",")*> <e:T> => { // (2)
+        v.push(e);
+        v
     }
 };
 
@@ -270,7 +267,7 @@ Tier<Op, NextTier>: Box<Expr> = {
             BinaryExpr {
                 binary_op: o,
                 left: l,
-                right; r
+                right: r
             }
         ))
     },

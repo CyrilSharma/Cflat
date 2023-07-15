@@ -1,19 +1,19 @@
 //--------Modules------------
 pub struct Module {
-    functions: Vec<Box<FunctionDeclaration>>
+    pub functions: Vec<Box<FunctionDeclaration>>
 }
 
 
 //--------Functions------------
 pub struct FunctionDeclaration {
-    ret:        Kind,
-    name:       String,
-    params:     Option<Vec<Parameter>>,
-    statement:  Box<Statement>,
+    pub ret:        Kind,
+    pub name:       String,
+    pub params:     Option<Vec<Parameter>>,
+    pub statement:  Box<Statement>,
 }
 pub struct Parameter {
-    kind: Kind,
-    name: String
+    pub kind: Kind,
+    pub name: String
 }
 
 //--------Statements------------
@@ -28,41 +28,40 @@ pub enum Statement {
 }
 
 pub struct DeclareStatement {
-    kind: Kind,
-    name: String,
-    val:  Option<Box<Expr>>
+    pub kind: Kind,
+    pub name: String,
+    pub val:  Option<Box<Expr>>
 }
 
 pub struct ExprStatement {
-    expr: Option<Box<Expr>>
+    pub expr: Option<Box<Expr>>
 }
 
 pub struct IfStatement {
-    condition:  Box<Expr>,
-    true_stmt:  Box<Expr>,
-    false_stmt: Option<Box<Expr>>
+    pub condition:  Box<Expr>,
+    pub true_stmt:  Box<Statement>,
+    pub false_stmt: Option<Box<Statement>>
 }
 
 pub struct ForStatement {
-    init:   Option<Box<Expr>>,
-    each:   Option<Box<Expr>>,
-    end:    Option<Box<Expr>>,
-    stmt:   Box<Statement>
+    pub init:   Option<Box<Expr>>,
+    pub each:   Option<Box<Expr>>,
+    pub end:    Option<Box<Expr>>,
+    pub stmt:   Box<Statement>
 }
 
 pub struct WhileStatement {
-    condition: Box<Expr>,
-    stmt:      Box<Statement>
+    pub condition: Box<Expr>,
+    pub stmt:      Box<Statement>
 }
 
 pub struct CompoundStatement {
-    decls: Option<Vec<Box<Declaration>>>,
-    stmts: Option<Vec<Box<Statement>>>
+    pub stmts: Option<Vec<Box<Statement>>>
 }
 
 pub struct JumpStatement {
-    jump_type: JumpOp,
-    expr:     Box<Expr>
+    pub jump_type: JumpOp,
+    pub expr:      Option<Box<Expr>>
 }
 
 //--------Expressions------------
@@ -77,24 +76,24 @@ pub enum Expr {
 }
 
 pub struct FunctionCall {
-    name: String,
-    args: Option<Vec<Expr>>
+    pub name: String,
+    pub args: Option<Vec<Box<Expr>>>
 }
 
 pub struct AccessExpr {
-    name: String,
-    offset: Box<Expr>
+    pub name: String,
+    pub offset: Box<Expr>
 }
 
 pub struct UnaryExpr {
-    unary_op: UnaryOp,
-    expr:     Box<Expr>
+    pub unary_op: UnaryOp,
+    pub expr:     Box<Expr>
 }
 
 pub struct BinaryExpr {
-    binary_op: BinaryOp,
-    left:      Box<Expr>,
-    right:     Box<Expr>,
+    pub binary_op: BinaryOp,
+    pub left:      Box<Expr>,
+    pub right:     Box<Expr>,
 }
 
 //--------Operations------------
@@ -108,7 +107,13 @@ pub enum BinaryOp {
     Lt,
     Gt,
     Eq,
+    Peq,
+    Teq,
+    Deq,
+    Seq,
     Neq,
+    Or,
+    And,
     Assign
 }
 
@@ -126,8 +131,8 @@ pub enum JumpOp {
 
 //--------Types------------
 pub struct Kind {
-    indirection: Option<u32>,
-    prim: Primitive
+    pub indirection: Option<u32>,
+    pub prim: Primitive
 }
 pub enum Primitive {
     Void,
