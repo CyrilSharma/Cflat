@@ -173,10 +173,17 @@ expression_statement: Box<Statement> = {
     ))
 };
 
-// All if statements must have else bc shift-reduce annoying.
-// TODO: restructue grammar to properly handle dangling else.
+// TODO: allow non-bracketed else?
 selection_statement: Box<Statement> = {
-    "if" "(" <e: expression> ")" <s1: statement> "else" <s2: statement> => Box::new(
+    "if" "(" <e: expression> ")" <s1: statement> => Box::new(
+        Statement::If( IfStatement {
+            condition: e,
+            true_stmt: s1,
+            false_stmt: None
+        })
+    ),
+    "if" "(" <e: expression> ")" <s1: compound_statement>
+    "else" <s2: compound_statement>  => Box::new(
         Statement::If( IfStatement {
             condition: e,
             true_stmt: s1,
