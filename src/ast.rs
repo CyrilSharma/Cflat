@@ -66,13 +66,13 @@ pub struct JumpStatement {
 
 //--------Expressions------------
 pub enum Expr {
-    Integer(i32),
-    Float(f32),
-    Identifier(String),
     Function(FunctionCall),
     Access(AccessExpr),
     Unary(UnaryExpr),
     Binary(BinaryExpr),
+    Integer(i32),
+    Float(f32),
+    Identifier(String),
 }
 
 pub struct FunctionCall {
