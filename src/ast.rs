@@ -97,6 +97,7 @@ pub struct BinaryExpr {
 }
 
 //--------Operations------------
+#[derive(Debug)]
 pub enum BinaryOp {
     Mul,
     Div,
@@ -117,12 +118,14 @@ pub enum BinaryOp {
     Assign
 }
 
+#[derive(Debug)]
 pub enum UnaryOp {
     Star,
     Not,
     Neg
 }
 
+#[derive(Debug)]
 pub enum JumpOp {
     Continue,
     Return,
@@ -134,6 +137,8 @@ pub struct Kind {
     pub indirection: Option<u32>,
     pub prim: Primitive
 }
+
+#[derive(Debug)]
 pub enum Primitive {
     Void,
     Integer,
