@@ -1,3 +1,4 @@
+use std::fs;
 use crate::parser::moduleParser;
 use crate::printer::Printer;
 
@@ -11,6 +12,8 @@ fn test0() {
 
 #[test]
 fn visualize() {
-    let m = moduleParser::new().parse("void thing() {}").unwrap();
+    let path = "tests/data/parser/input0.c";
+    let input = fs::read_to_string(path).expect("File not found!");
+    let m = moduleParser::new().parse(&input).expect("Parse Error!");
     Printer::new().print_module(&m);
 }

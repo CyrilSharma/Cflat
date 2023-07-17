@@ -218,13 +218,13 @@ jump_statement: Box<Statement> = {
     )),
     "break" ";" => Box::new(Statement::Jump(
         JumpStatement { 
-            jump_type: JumpOp::Continue,
+            jump_type: JumpOp::Break,
             expr: None
         }
     )),
     "return" <expression?> ";" => Box::new(Statement::Jump(
         JumpStatement { 
-            jump_type: JumpOp::Continue,
+            jump_type: JumpOp::Return,
             expr: <>
         }
     ))
@@ -233,7 +233,11 @@ jump_statement: Box<Statement> = {
 //--------TYPES------------
 type_specifier: Kind = {
     <t: type_primitive> <p: pointer?> => {
-        Kind { indirection: p, prim: t }
+        match p {
+            None    => Kind { indirection: 0, prim: t },
+            Some(c) => Kind { indirection: c, prim: t }
+        }
+        
     }
 };
 
@@ -280,3 +284,11 @@ Tier<Op, NextTier>: Box<Expr> = {
     },
     NextTier
 };
+
+match {
+    r"\s*" => { }, // The default whitespace skipping is disabled if an `ignore pattern` is specified
+    r"//[^\n\r]*[\n\r]*" => { }, // Skip `// comments`
+    r"/\*[^*]*\*+(?:[^/*][^*]*\*+)*/" => { },  // Skip `/* comments */`
+} else {
+    _
+}

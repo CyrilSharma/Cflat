@@ -14,14 +14,13 @@ impl Printer {
     }
     fn print_function_declaration(&mut self, f: &FunctionDeclaration) {
         let idx = self.count;
-        self.add_label(&format!("Declare Function: {}", f.name));
+        let mut kind_str = format!("{:?}", f.ret.prim);
+        for _ in 0..f.ret.indirection { kind_str.push('*'); }
+        self.add_label(&format!("Declare {kind_str} {}()", f.name));
         self.add_edge(idx, self.count);
         self.print_statement(&f.statement);
     }
     fn print_statement(&mut self, s: &Statement) {
-        let idx = self.count;
-        self.add_label("Statement");
-        self.add_edge(idx, self.count);
         match s {
             Statement::Declare(d) => self.print_declare_statement(d),
             Statement::Expr(e) => self.print_expr_statement(e),
@@ -34,7 +33,9 @@ impl Printer {
     }
     fn print_declare_statement(&mut self, d: &DeclareStatement) {
         let idx = self.count;
-        self.add_label(&format!("Declare: {}", d.name));
+        let mut kind_str = format!("{:?}", d.kind.prim);
+        for _ in 0..d.kind.indirection { kind_str.push('*'); }
+        self.add_label(&format!("Declare: {kind_str} {}", d.name));
         if let Some(e) = &d.val {
             self.add_edge(idx, self.count);
             self.print_expr(e);
@@ -42,7 +43,7 @@ impl Printer {
     }
     fn print_expr_statement(&mut self, e: &ExprStatement) {
         let idx = self.count;
-        self.add_label("ExprStatement");
+        self.add_label("Expression Statement");
         if let Some(e) = &e.expr {
             self.add_edge(idx, self.count);
             self.print_expr(e);
@@ -93,7 +94,7 @@ impl Printer {
     }
     fn print_compound_statement(&mut self, c: &CompoundStatement) {
         let idx = self.count;
-        self.add_label("Compound");
+        self.add_label("Compound Statement");
         if let Some(v) = &c.stmts {
             for s in v {
                 self.add_edge(idx, self.count);
@@ -110,9 +111,6 @@ impl Printer {
         }
     }
     fn print_expr(&mut self, e: &Expr) {
-        let idx = self.count;
-        self.add_label("Expression");
-        self.add_edge(idx, self.count);
         match e {
             Expr::Function(f) => self.print_function(f),
             Expr::Access(a) => self.print_access(a),
@@ -127,8 +125,10 @@ impl Printer {
         let idx = self.count;
         self.add_label(&format!("Call Function: {}", f.name));
         if let Some(v) = &f.args {
-            self.add_edge(idx, self.count);
-            for e in v { self.print_expr(e); }
+            for e in v {
+                self.add_edge(idx, self.count);
+                self.print_expr(e); 
+            }
         }
     }
     fn print_access(&mut self, a: &AccessExpr) {

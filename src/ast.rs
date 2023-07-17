@@ -134,7 +134,7 @@ pub enum JumpOp {
 
 //--------Types------------
 pub struct Kind {
-    pub indirection: Option<u32>,
+    pub indirection: u32,
     pub prim: Primitive
 }
 
