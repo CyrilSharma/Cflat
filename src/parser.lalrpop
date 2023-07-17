@@ -104,7 +104,8 @@ unary_expression: Box<Expr> = {
 UnaryOp: UnaryOp = {
     "*" => UnaryOp::Star,
     "!" => UnaryOp::Not,
-    "-" => UnaryOp::Neg
+    "-" => UnaryOp::Neg,
+    "&" => UnaryOp::Address
 };
 
 // TODO: This doesn't support multi-dimensional arrays.

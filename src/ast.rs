@@ -122,7 +122,8 @@ pub enum BinaryOp {
 pub enum UnaryOp {
     Star,
     Not,
-    Neg
+    Neg,
+    Address
 }
 
 #[derive(Debug)]

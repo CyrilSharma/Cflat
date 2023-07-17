@@ -11,9 +11,15 @@ fn test0() {
 }
 
 #[test]
+#[allow(dead_code)]
 fn visualize() {
-    let path = "tests/data/parser/input0.c";
-    let input = fs::read_to_string(path).expect("File not found!");
-    let m = moduleParser::new().parse(&input).expect("Parse Error!");
+    let path0 = "tests/data/parser/input0.c";
+    let input0 = fs::read_to_string(path0).expect("File not found!");
+    let m = moduleParser::new().parse(&input0).expect("Parse Error!");
+    Printer::new().print_module(&m);
+
+    let path1 = "tests/data/parser/input1.c";
+    let input1 = fs::read_to_string(path1).expect("File not found!");
+    let m = moduleParser::new().parse(&input1).expect("Parse Error!");
     Printer::new().print_module(&m);
 }
