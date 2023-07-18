@@ -32,7 +32,6 @@ impl Traverseable for Statement {
             Statement::Compound(c) => c.accept(v),
             Statement::Jump(j)     => j.accept(v)
         }
-        v.cleanup();
     }
 }
 
@@ -104,15 +103,14 @@ impl Traverseable for Expr {
     fn accept<T: Visitor>(&mut self, v: &mut T) {
         v.handle_expr(self);
         match self {
-            Expr::Function(f)   => f.accept(v),
-            Expr::Access(a)     => a.accept(v),
-            Expr::Unary(u)      => u.accept(v),
-            Expr::Binary(b)     => b.accept(v),
+            Expr::Function(f)    => f.accept(v),
+            Expr::Access(a)      => a.accept(v),
+            Expr::Unary(u)       => u.accept(v),
+            Expr::Binary(b)      => b.accept(v),
             Expr::Integer(_i)    => (),
             Expr::Float(_f)      => (),
             Expr::Identifier(_i) => (),
         }
-        v.cleanup();
     }
 }
 

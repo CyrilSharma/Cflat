@@ -1,5 +1,5 @@
 use crate::ast::*;
-#[allow(dead_code)]
+#[allow(unused_variables)]
 pub trait Visitor {
     fn handle_module(&mut self, m: &mut Module) {}
     fn handle_function_declaration(&mut self, f: &mut FunctionDeclaration) {}

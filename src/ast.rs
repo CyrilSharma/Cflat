@@ -1,4 +1,3 @@
-use crate::visitor::Visitor;
 //--------Modules------------
 pub struct Module {
     pub functions: Vec<Box<FunctionDeclaration>>
