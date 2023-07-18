@@ -19,5 +19,5 @@ pub trait Visitor {
     fn handle_integer(&mut self, i: i32) {}
     fn handle_float(&mut self, f: f32) {}
     fn handle_identifier(&mut self, s: &str) {}
-    fn cleanup(&mut self) {}
+    fn setup(&mut self) {}
 }

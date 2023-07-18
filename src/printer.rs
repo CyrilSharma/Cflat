@@ -19,16 +19,15 @@ impl Printer {
         println!("}}");
     }
     fn make_node(&mut self, s: &str) {
+        let c = self.stk.pop().unwrap();
         println!("{}", &format!(
             "    node{} [label=\"{}\"];",
-            self.count, s
+            c, s
         ));
-        if let Some(l) = self.stk.last() {
+        if let Some(p) = self.stk.last() {
             println!("    node{} -> node{};",
-                l, self.count);
+                p, c);
         }
-        self.stk.push(self.count);
-        self.count += 1;
     }
 }
 #[allow(unused_variables)]
@@ -85,16 +84,19 @@ impl Visitor for Printer {
         self.make_node(&format!("Binary: {:?}", b.binary_op));
     }
     fn handle_integer(&mut self, i: i32) {
+        self.setup();
         self.make_node(&format!("Integer: {}", i));
-        self.cleanup();
     }
     fn handle_float(&mut self, f: f32) {
+        self.setup();
         self.make_node(&format!("Float: {}", f));
-        self.cleanup();
     }
     fn handle_identifier(&mut self, s: &str) {
+        self.setup();
         self.make_node(&format!("Identifier: {}", s));
-        self.cleanup();
     }
-    fn cleanup(&mut self) { self.stk.pop(); }
+    fn setup(&mut self) { 
+        self.stk.push(self.count);
+        self.count += 1;
+    }
 }
