@@ -37,7 +37,6 @@ int main() {
     float a = 2.5;
     float b = 1.3;
     float floatResult = floatMultiply(a, b);
-    
     // Perform further operations as needed
     
     return 0;

@@ -1,4 +1,5 @@
 use crate::ast::*;
+// Re-implement with Visitor pattern.
 pub struct Printer { count: u32 }
 impl Printer {
     pub fn new() -> Self { Self{count: 0} }
