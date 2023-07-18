@@ -15,11 +15,11 @@ fn test0() {
 fn visualize() {
     let path0 = "tests/data/parser/input0.c";
     let input0 = fs::read_to_string(path0).expect("File not found!");
-    let m = moduleParser::new().parse(&input0).expect("Parse Error!");
-    Printer::new().print_module(&m);
+    let mut m = moduleParser::new().parse(&input0).expect("Parse Error!");
+    Printer::new().print(&mut m);
 
     let path1 = "tests/data/parser/input1.c";
     let input1 = fs::read_to_string(path1).expect("File not found!");
-    let m = moduleParser::new().parse(&input1).expect("Parse Error!");
-    Printer::new().print_module(&m);
+    let mut m = moduleParser::new().parse(&input1).expect("Parse Error!");
+    Printer::new().print(&mut m);
 }
