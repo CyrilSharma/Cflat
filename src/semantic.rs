@@ -52,6 +52,7 @@ impl<T: Symbol> SymbolTable<T> {
     }
 }
 
+
 struct Semantic {
     id_count: u32,
     fun_count: u32,
