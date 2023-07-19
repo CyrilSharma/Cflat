@@ -24,13 +24,13 @@ impl Traverseable for FunctionDeclaration {
 impl Traverseable for Statement {
     fn accept<T: Visitor>(&mut self, v: &mut T) {
         match self {
-            Statement::Declare(d)  => d.accept(v),
-            Statement::Expr(e)     => e.accept(v),
-            Statement::If(i)       => i.accept(v),
-            Statement::For(f)      => f.accept(v),
-            Statement::While(w)    => w.accept(v),
-            Statement::Compound(c) => c.accept(v),
-            Statement::Jump(j)     => j.accept(v)
+            Statement::Declare(ref mut d)  => d.accept(v),
+            Statement::Expr(ref mut e)     => e.accept(v),
+            Statement::If(ref mut i)       => i.accept(v),
+            Statement::For(ref mut f)      => f.accept(v),
+            Statement::While(ref mut w)    => w.accept(v),
+            Statement::Compound(ref mut c) => c.accept(v),
+            Statement::Jump(ref mut j)     => j.accept(v)
         }
         v.handle_statement(self);
     }
@@ -86,9 +86,7 @@ impl Traverseable for CompoundStatement {
     fn accept<T: Visitor>(&mut self, v: &mut T) {
         v.setup();
         v.begin_compound_statement(self);
-        if let Some(vec) = &mut self.stmts {
-            for s in vec { s.accept(v); }
-        }
+        for s in &mut self.stmts { s.accept(v); }
         v.handle_compound_statement(self);
     }
 }
@@ -104,13 +102,13 @@ impl Traverseable for JumpStatement {
 impl Traverseable for Expr {
     fn accept<T: Visitor>(&mut self, v: &mut T) {
         match self.etype {
-            ExprType::Function(mut f)    => f.accept(v),
-            ExprType::Access(mut a)      => a.accept(v),
-            ExprType::Unary(mut u)       => u.accept(v),
-            ExprType::Binary(mut b)      => b.accept(v),
-            ExprType::Identifier(mut i)  => i.accept(v),
-            ExprType::Integer(_)         => (),
-            ExprType::Float(_)           => (),
+            ExprType::Function(ref mut f)    => f.accept(v),
+            ExprType::Access(ref mut a)      => a.accept(v),
+            ExprType::Unary(ref mut u)       => u.accept(v),
+            ExprType::Binary(ref mut b)      => b.accept(v),
+            ExprType::Identifier(ref mut i)  => i.accept(v),
+            ExprType::Integer(_)             => (),
+            ExprType::Float(_)               => (),
         }
         v.handle_expr(self);
     }
@@ -119,9 +117,7 @@ impl Traverseable for Expr {
 impl Traverseable for FunctionCall {
     fn accept<T: Visitor>(&mut self, v: &mut T) {
         v.setup();
-        if let Some(vec) = &mut self.args {
-            for e in vec { e.accept(v); }
-        }
+        for e in &mut self.args { e.accept(v); }
         v.handle_function_call(self);        
     }
 }

@@ -82,6 +82,9 @@ impl Visitor for Printer {
     fn handle_binary(&mut self, b: &mut BinaryExpr) {
         self.make_node(&format!("Binary: {:?}", b.binary_op));
     }
+    fn handle_identifier(&mut self, i: &mut Identifier) {
+        self.make_node(&format!("Identifier: {}", i.name));
+    }
     fn handle_integer(&mut self, i: i32) {
         self.setup();
         self.make_node(&format!("Integer: {}", i));
@@ -89,10 +92,6 @@ impl Visitor for Printer {
     fn handle_float(&mut self, f: f32) {
         self.setup();
         self.make_node(&format!("Float: {}", f));
-    }
-    fn handle_identifier(&mut self, i: &Identifier) {
-        self.setup();
-        self.make_node(&format!("Identifier: {}", i.name));
     }
     fn setup(&mut self) { 
         self.stk.push(self.count);

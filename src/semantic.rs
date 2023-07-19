@@ -1,63 +1,11 @@
-use crate::{ast::*, visitor::Visitor, traverse::Traverseable};
-use std::collections::HashMap;
-
-trait Symbol {}
-
-#[derive(Clone)]
-struct VSymbol { id: u32, kind: Kind }
-
-#[derive(Clone)]
-struct FSymbol { id: u32, kind: Kind, args: Vec<Kind> }
-impl Symbol for VSymbol {}
-impl Symbol for FSymbol {}
-
-struct SymbolTable<T: Symbol> { stk: Vec<HashMap<String, T>> }
-impl<T: Symbol> SymbolTable<T> {
-    pub fn insert(&mut self, key: &str, sym: T) {
-        let table = match self.stk.last_mut() {
-            None => {
-                self.stk.push(HashMap::new());
-                &mut self.stk[0]
-            },
-            Some(s) => s
-        };
-        table.insert(key.to_string(), sym);
-    }
-    pub fn contains_key(&mut self, key: &str) -> bool {
-        for table in &mut self.stk.iter().rev() {
-            if table.contains_key(key) { return true; }
-        }
-        return false;
-    }
-    pub fn contains_key_in_scope(&mut self, key: &str) -> bool {
-        if let Some(table) = self.stk.last() {
-            return table.contains_key(key);
-        }
-        return false;
-    }
-    pub fn get(&mut self, key: &str) -> Option<&T> {
-        for table in &mut self.stk.iter().rev() {
-            match table.get(key) { 
-                None    => (),
-                Some(s) => return Some(s)
-            }
-        }
-        return None;
-    }
-    pub fn scope_in(&mut self) {
-        self.stk.push(HashMap::new());
-    }
-    pub fn scope_out(&mut self) {
-        self.stk.pop();
-    }
-}
-
-
+use crate::ast::*;
+use crate::visitor::Visitor;
+use crate::traverse::Traverseable;
+use crate::symboltable::{SymbolTable, VSymbol, FSymbol};
 struct Semantic {
     id_count: u32,
     fun_count: u32,
     func: FSymbol,
-    params: Vec<Parameter>,
     vsym: SymbolTable<VSymbol>,
     fsym: SymbolTable<FSymbol>
 }
@@ -107,7 +55,7 @@ impl Visitor for Semantic {
             .unwrap()
             .clone();
     }
-    fn handle_function_declaration(&mut self, f: &mut FunctionDeclaration) {
+    fn handle_function_declaration(&mut self, _f: &mut FunctionDeclaration) {
         self.vsym.scope_out();
     }
     fn handle_declare_statement(&mut self, d: &mut DeclareStatement) {
@@ -115,7 +63,7 @@ impl Visitor for Semantic {
             panic!("Defining already defined variable!");
         }
         self.add_vsym(&d.name, d.kind);
-        if let Some(e) = d.val {
+        if let Some(e) = &d.val {
             assert!(d.kind == e.kind.unwrap(), "{}",
                 &format!(
                     "variable should have type {:?}, but is actually {:?}.",
@@ -124,21 +72,21 @@ impl Visitor for Semantic {
             )
         }
     }
-    fn begin_for_statement(&mut self, f: &mut ForStatement) {
+    fn begin_for_statement(&mut self, _f: &mut ForStatement) {
         self.vsym.scope_in();
     }
-    fn handle_for_statement(&mut self, f: &mut ForStatement) {
+    fn handle_for_statement(&mut self, _f: &mut ForStatement) {
         self.vsym.scope_out();
     }
-    fn begin_compound_statement(&mut self, c: &mut CompoundStatement) {
+    fn begin_compound_statement(&mut self, _c: &mut CompoundStatement) {
         self.vsym.scope_in();
     }
-    fn handle_compound_statement(&mut self, c: &mut CompoundStatement) {
+    fn handle_compound_statement(&mut self, _c: &mut CompoundStatement) {
         self.vsym.scope_out();
     }
     fn handle_jump_statement(&mut self, j: &mut JumpStatement) {
         if j.jump_type != JumpOp::Return { return; }
-        match j.expr {
+        match &j.expr {
             None => assert!(
                 self.func.kind == Kind::void(),
                 "Return mismatch"
@@ -151,14 +99,13 @@ impl Visitor for Semantic {
     }
     fn handle_expr(&mut self, e: &mut Expr) {
         e.kind = match e.etype {
-            ExprType::Access(a)     => a.kind,
-            ExprType::Binary(b)     => b.kind,
-            ExprType::Function(f)   => f.kind,
-            ExprType::Binary(b)     => b.kind,
-            ExprType::Unary(u)      => u.kind,
-            ExprType::Identifier(i) => i.kind,
-            ExprType::Integer(_)    => Some(Kind::int()),
-            ExprType::Float(_)      => Some(Kind::float()) 
+            ExprType::Access(ref a)     => a.kind,
+            ExprType::Binary(ref b)     => b.kind,
+            ExprType::Function(ref f)   => f.kind,
+            ExprType::Unary(ref u)      => u.kind,
+            ExprType::Identifier(ref i) => i.kind,
+            ExprType::Integer(_)        => Some(Kind::int()),
+            ExprType::Float(_)          => Some(Kind::float()) 
         }
     }
     fn handle_function_call(&mut self, f: &mut FunctionCall) {
@@ -178,7 +125,7 @@ impl Visitor for Semantic {
             }
         }
     }
-    fn handle_access(&mut self, a: &mut AccessExpr) {
+    fn handle_access(&mut self, _a: &mut AccessExpr) {
         panic!("THERE ARE NO ACCESSES...");
     }
     fn handle_unary(&mut self, u: &mut UnaryExpr) {
@@ -265,7 +212,7 @@ impl Visitor for Semantic {
             }
         }
     }
-    fn handle_identifier(&mut self, i: &Identifier) {
+    fn handle_identifier(&mut self, i: &mut Identifier) {
         match self.vsym.get(&i.name) {
             None => panic!(
                 "Identifier {} not found!",
@@ -278,3 +225,5 @@ impl Visitor for Semantic {
         }
     }
 }
+
+

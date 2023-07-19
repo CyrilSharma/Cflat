@@ -58,7 +58,7 @@ pub struct WhileStatement {
 }
 
 pub struct CompoundStatement {
-    pub stmts: Option<Vec<Box<Statement>>>
+    pub stmts: Vec<Box<Statement>>
 }
 
 pub struct JumpStatement {
@@ -72,7 +72,7 @@ pub struct Expr {
     pub kind: Option<Kind>
 }
 impl Expr {
-    fn new(e: ExprType) -> Self {
+    pub fn new(e: ExprType) -> Self {
         Expr {
             etype: e,
             kind: None

@@ -21,7 +21,7 @@ function_declaration: Box<FunctionDeclaration> = {
 	<k: type_specifier> <i: identifier> "(" <p: Comma<parameter>?> ")" <s: compound_statement> => Box::new(
         FunctionDeclaration {
             ret: k,
-            name: i,
+            name: i.name,
             params: p.unwrap_or_else(|| Vec::new()),
             statement: s,
         }
@@ -32,7 +32,7 @@ parameter: Parameter = {
     <k: type_specifier> <i: identifier> => {
         Parameter {
             kind: k,
-            name: i
+            name: i.name
         }
     }
 };
@@ -44,7 +44,8 @@ expression: Box<Expr> = {
             BinaryExpr {
                 binary_op: o,
                 left: l,
-                right: r
+                right: r,
+                kind: None
             }
         )))
     },
@@ -96,7 +97,8 @@ unary_expression: Box<Expr> = {
         Box::new(Expr::new(ExprType::Unary(
             UnaryExpr {
                 unary_op: u,
-                expr:     p
+                expr:     p,
+                kind:     None
             }
         )))
     }
@@ -115,16 +117,16 @@ postfix_expression: Box<Expr> = {
     float => Box::new(Expr::new(ExprType::Float(<>))),
 	<i: identifier> "[" <e: expression> "]" => {
         Box::new(Expr::new(ExprType::Access(
-            AccessExpr { name: i, offset: e }
+            AccessExpr { name: i.name, offset: e, kind: None }
         )))
     },
 	<i: identifier> "(" <c: Comma<expression>?> ")" => {
         match c {
             None => Box::new(Expr::new(ExprType::Function(
-                FunctionCall { name: i, args: Vec::new(), None, id: 0 }
+                FunctionCall { name: i.name, args: Vec::new(), kind: None, id: 0 }
             ))),
             Some(v) => Box::new(Expr::new(ExprType::Function(
-                FunctionCall { name: i, args: v, None, id: 0 }
+                FunctionCall { name: i.name, args: v, kind: None, id: 0 }
             ))),
         }
     },
@@ -151,21 +153,26 @@ statement: Box<Statement> = {
 
 compound_statement: Box<Statement> = {
 	"{" <s: statement_list?> "}" => {
-        Box::new(Statement::Compound(
-            CompoundStatement { stmts: s}
-        ))
+        match s {
+            None => Box::new(Statement::Compound(
+                CompoundStatement { stmts: Vec::new()}
+            )),
+            Some(l) => Box::new(Statement::Compound(
+                CompoundStatement { stmts: l}
+            ))
+        }
     }
 };
 
 declare_statement: Box<Statement> = {
     <k: type_specifier> <i: identifier> ";" => {
         Box::new(Statement::Declare(
-            DeclareStatement { kind: k, name: i, val: None }
+            DeclareStatement { kind: k, name: i.name, val: None }
         ))
     },
     <k: type_specifier> <i: identifier> "=" <e: expression> ";" => {
         Box::new(Statement::Declare(
-            DeclareStatement { kind: k, name: i, val: Some(e) }
+            DeclareStatement { kind: k, name: i.name, val: Some(e) }
         ))
     }
 };
@@ -283,14 +290,14 @@ Comma<T>: Vec<T> = { // (1)
 
 Tier<Op, NextTier>: Box<Expr> = {
     <l: Tier<Op, NextTier>> <o: Op> <r: NextTier> => {
-        Box::new(Expr::Binary(
+        Box::new(Expr::new(ExprType::Binary(
             BinaryExpr {
                 binary_op: o,
                 left: l,
                 right: r,
                 kind: None
             }
-        ))
+        )))
     },
     NextTier
 };
