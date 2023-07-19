@@ -22,7 +22,7 @@ function_declaration: Box<FunctionDeclaration> = {
         FunctionDeclaration {
             ret: k,
             name: i,
-            params: p,
+            params: p.unwrap_or_else(|| Vec::new()),
             statement: s,
         }
     )
@@ -40,13 +40,13 @@ parameter: Parameter = {
 //--------EXPRESSIONS------------
 expression: Box<Expr> = {
     <l: unary_expression> <o: AssignOp> <r: expression> => {
-        Box::new(Expr::Binary(
+        Box::new(Expr::new(ExprType::Binary(
             BinaryExpr {
                 binary_op: o,
                 left: l,
                 right: r
             }
-        ))
+        )))
     },
     or_expression
 };
@@ -93,12 +93,12 @@ MulOp: BinaryOp = {
 unary_expression: Box<Expr> = {
     postfix_expression,
     <u: UnaryOp> <p: postfix_expression> => {
-        Box::new(Expr::Unary(
+        Box::new(Expr::new(ExprType::Unary(
             UnaryExpr {
                 unary_op: u,
                 expr:     p
             }
-        ))
+        )))
     }
 };
 UnaryOp: UnaryOp = {
@@ -110,21 +110,23 @@ UnaryOp: UnaryOp = {
 
 // TODO: This doesn't support multi-dimensional arrays.
 postfix_expression: Box<Expr> = {
-	identifier => Box::new(Expr::Identifier(<>)),
-    integer => Box::new(Expr::Integer(<>)),
-    float => Box::new(Expr::Float(<>)),
+	identifier => Box::new(Expr::new(ExprType::Identifier(<>))),
+    integer => Box::new(Expr::new(ExprType::Integer(<>))),
+    float => Box::new(Expr::new(ExprType::Float(<>))),
 	<i: identifier> "[" <e: expression> "]" => {
-        Box::new(Expr::Access(
-            AccessExpr {
-                name: i,
-                offset: e
-            }
-        ))
+        Box::new(Expr::new(ExprType::Access(
+            AccessExpr { name: i, offset: e }
+        )))
     },
 	<i: identifier> "(" <c: Comma<expression>?> ")" => {
-        Box::new(Expr::Function(
-            FunctionCall { name: i, args: c }
-        ))
+        match c {
+            None => Box::new(Expr::new(ExprType::Function(
+                FunctionCall { name: i, args: Vec::new(), None, id: 0 }
+            ))),
+            Some(v) => Box::new(Expr::new(ExprType::Function(
+                FunctionCall { name: i, args: v, None, id: 0 }
+            ))),
+        }
     },
     "(" <expression> ")"
 };
@@ -235,8 +237,8 @@ jump_statement: Box<Statement> = {
 type_specifier: Kind = {
     <t: type_primitive> <p: pointer?> => {
         match p {
-            None    => Kind { indirection: 0, prim: t },
-            Some(c) => Kind { indirection: c, prim: t }
+            None    => Kind { indir: 0, prim: t },
+            Some(c) => Kind { indir: c, prim: t }
         }
         
     }
@@ -253,8 +255,14 @@ pointer: u32 = {
     <pointer> "*" => <> + 1
 };
 
-identifier: String = {
-    r"[a-zA-Z][a-zA-Z0-9]*" => <>.to_string()
+identifier: Identifier = {
+    r"[a-zA-Z][a-zA-Z0-9]*" => {
+        Identifier {
+            name: <>.to_string(),
+            kind: None,
+            id: 0
+        }
+    }
 };
 
 integer: i32 = {
@@ -279,7 +287,8 @@ Tier<Op, NextTier>: Box<Expr> = {
             BinaryExpr {
                 binary_op: o,
                 left: l,
-                right: r
+                right: r,
+                kind: None
             }
         ))
     },

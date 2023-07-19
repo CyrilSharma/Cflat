@@ -8,9 +8,11 @@ pub struct Module {
 pub struct FunctionDeclaration {
     pub ret:        Kind,
     pub name:       String,
-    pub params:     Option<Vec<Parameter>>,
+    pub params:     Vec<Parameter>,
     pub statement:  Box<Statement>,
 }
+
+#[derive(Clone)]
 pub struct Parameter {
     pub kind: Kind,
     pub name: String
@@ -65,35 +67,59 @@ pub struct JumpStatement {
 }
 
 //--------Expressions------------
-pub enum Expr {
+pub struct Expr {
+    pub etype: ExprType,
+    pub kind: Option<Kind>
+}
+impl Expr {
+    fn new(e: ExprType) -> Self {
+        Expr {
+            etype: e,
+            kind: None
+        }
+    }
+}
+
+pub enum ExprType {
     Function(FunctionCall),
     Access(AccessExpr),
     Unary(UnaryExpr),
     Binary(BinaryExpr),
     Integer(i32),
     Float(f32),
-    Identifier(String),
+    Identifier(Identifier),
 }
 
 pub struct FunctionCall {
     pub name: String,
-    pub args: Option<Vec<Box<Expr>>>
+    pub args: Vec<Box<Expr>>,
+    pub kind: Option<Kind>,
+    pub id:   u32
 }
 
 pub struct AccessExpr {
-    pub name: String,
-    pub offset: Box<Expr>
+    pub name:   String,
+    pub offset: Box<Expr>,
+    pub kind:   Option<Kind>,
 }
 
 pub struct UnaryExpr {
     pub unary_op: UnaryOp,
-    pub expr:     Box<Expr>
+    pub expr:     Box<Expr>,
+    pub kind:     Option<Kind>
 }
 
 pub struct BinaryExpr {
     pub binary_op: BinaryOp,
     pub left:      Box<Expr>,
     pub right:     Box<Expr>,
+    pub kind:      Option<Kind>
+}
+
+pub struct Identifier {
+    pub name: String,
+    pub kind: Option<Kind>,
+    pub id:   u32
 }
 
 //--------Operations------------
@@ -126,7 +152,7 @@ pub enum UnaryOp {
     Address
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq)]
 pub enum JumpOp {
     Continue,
     Return,
@@ -134,12 +160,33 @@ pub enum JumpOp {
 }
 
 //--------Types------------
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct Kind {
-    pub indirection: u32,
+    pub indir: u32,
     pub prim: Primitive
 }
+impl Kind {
+    pub fn void() -> Self {
+        Self {
+            indir: 0,
+            prim: Primitive::Void
+        }
+    }
+    pub fn int() -> Self {
+        Self {
+            indir: 0,
+            prim: Primitive::Integer
+        }
+    }
+    pub fn float() -> Self {
+        Self {
+            indir: 0,
+            prim: Primitive::Float
+        }
+    }
+}
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Primitive {
     Void,
     Integer,

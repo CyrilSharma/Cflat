@@ -15,6 +15,7 @@ impl Traverseable for Module {
 impl Traverseable for FunctionDeclaration {
     fn accept<T: Visitor>(&mut self, v: &mut T) {
         v.setup();
+        v.begin_function_declaration(self);
         self.statement.accept(v);
         v.handle_function_declaration(self);
     }
@@ -84,6 +85,7 @@ impl Traverseable for WhileStatement {
 impl Traverseable for CompoundStatement {
     fn accept<T: Visitor>(&mut self, v: &mut T) {
         v.setup();
+        v.begin_compound_statement(self);
         if let Some(vec) = &mut self.stmts {
             for s in vec { s.accept(v); }
         }
@@ -101,14 +103,14 @@ impl Traverseable for JumpStatement {
 
 impl Traverseable for Expr {
     fn accept<T: Visitor>(&mut self, v: &mut T) {
-        match self {
-            Expr::Function(f)    => f.accept(v),
-            Expr::Access(a)      => a.accept(v),
-            Expr::Unary(u)       => u.accept(v),
-            Expr::Binary(b)      => b.accept(v),
-            Expr::Integer(_i)    => (),
-            Expr::Float(_f)      => (),
-            Expr::Identifier(_i) => (),
+        match self.etype {
+            ExprType::Function(mut f)    => f.accept(v),
+            ExprType::Access(mut a)      => a.accept(v),
+            ExprType::Unary(mut u)       => u.accept(v),
+            ExprType::Binary(mut b)      => b.accept(v),
+            ExprType::Identifier(mut i)  => i.accept(v),
+            ExprType::Integer(_)         => (),
+            ExprType::Float(_)           => (),
         }
         v.handle_expr(self);
     }
@@ -146,5 +148,12 @@ impl Traverseable for BinaryExpr {
         self.left.accept(v);
         self.right.accept(v);
         v.handle_binary(self);
+    }
+}
+
+impl Traverseable for Identifier {
+    fn accept<T: Visitor>(&mut self, v: &mut T) {
+        v.setup();
+        v.handle_identifier(self);
     }
 }

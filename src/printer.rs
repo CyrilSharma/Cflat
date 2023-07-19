@@ -37,12 +37,12 @@ impl Visitor for Printer {
     }
     fn handle_function_declaration(&mut self, f: &mut FunctionDeclaration) {
         let mut kind_str = format!("{:?}", f.ret.prim);
-        for _ in 0..f.ret.indirection { kind_str.push('*'); }
+        for _ in 0..f.ret.indir { kind_str.push('*'); }
         self.make_node(&format!("Declare {kind_str} {}()", f.name));
     }
     fn handle_declare_statement(&mut self, d: &mut DeclareStatement) {
         let mut kind_str = format!("{:?}", d.kind.prim);
-        for _ in 0..d.kind.indirection { kind_str.push('*'); }
+        for _ in 0..d.kind.indir { kind_str.push('*'); }
         self.make_node(&format!("Declare: {kind_str} {}", d.name));
     }
     fn handle_expr_statement(&mut self, e: &mut ExprStatement) {
@@ -64,10 +64,9 @@ impl Visitor for Printer {
         self.make_node("Jump Statement");
     }
     fn handle_expr(&mut self, e: &mut Expr) {
-        match e {
-            Expr::Integer(i)    => self.handle_integer(*i),
-            Expr::Float(f)      => self.handle_float(*f),
-            Expr::Identifier(i) => self.handle_identifier(i),
+        match e.etype {
+            ExprType::Integer(i) => self.handle_integer(i),
+            ExprType::Float(f)   => self.handle_float(f),
             _ => ()
         }
     }
@@ -91,9 +90,9 @@ impl Visitor for Printer {
         self.setup();
         self.make_node(&format!("Float: {}", f));
     }
-    fn handle_identifier(&mut self, s: &str) {
+    fn handle_identifier(&mut self, i: &Identifier) {
         self.setup();
-        self.make_node(&format!("Identifier: {}", s));
+        self.make_node(&format!("Identifier: {}", i.name));
     }
     fn setup(&mut self) { 
         self.stk.push(self.count);
