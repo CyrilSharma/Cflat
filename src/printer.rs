@@ -71,19 +71,49 @@ impl Visitor for Printer {
         }
     }
     fn handle_function_call(&mut self, f: &mut FunctionCall) {
-        self.make_node(&format!("Call Function: {}", f.name));
+        self.make_node(&format!("Call Function: {} -> {}",
+            f.name, 
+            match f.kind {
+                None => "Unknown".to_string(),
+                Some(k) => format!("{}", k)
+            }
+        ));
     }
     fn handle_access(&mut self, a: &mut AccessExpr) {
-        self.make_node(&format!("Access: {}", a.name));
+        self.make_node(&format!("Access: {} -> {}",
+            a.name,
+            match a.kind {
+                None => "Unknown".to_string(),
+                Some(k) => format!("{}", k)
+            }
+        ));
     }
     fn handle_unary(&mut self, u: &mut UnaryExpr) {
-        self.make_node(&format!("Unary: {:?}", u.unary_op));
+        self.make_node(&format!("Unary: {:?} -> {}",
+            u.unary_op, 
+            match u.kind {
+                None => "Unknown".to_string(),
+                Some(k) => format!("{}", k)
+            }
+        ));
     }
     fn handle_binary(&mut self, b: &mut BinaryExpr) {
-        self.make_node(&format!("Binary: {:?}", b.binary_op));
+        self.make_node(&format!("Binary: {:?} -> {}",
+            b.binary_op,
+            match b.kind {
+                None => "Unknown".to_string(),
+                Some(k) => format!("{}", k)
+            }
+        ));
     }
     fn handle_identifier(&mut self, i: &mut Identifier) {
-        self.make_node(&format!("Identifier: {}", i.name));
+        self.make_node(&format!("Identifier ({}): {} -> {}",
+            i.id, i.name, 
+            match i.kind {
+                None => "Unknown".to_string(),
+                Some(k) => format!("{}", k)
+            }
+        ));
     }
     fn handle_integer(&mut self, i: i32) {
         self.setup();

@@ -56,7 +56,7 @@ AssignOp: BinaryOp = {
     "-=" => BinaryOp::Seq,
     "*=" => BinaryOp::Teq,
     "/=" => BinaryOp::Deq,
-    "="  => BinaryOp::Eq,
+    "="  => BinaryOp::Assign,
 }
 
 or_expression = Tier<OrOp, and_expression>;

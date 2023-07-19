@@ -3,57 +3,33 @@ use crate::visitor::Visitor;
 use crate::traverse::Traverseable;
 use crate::symboltable::{SymbolTable, VSymbol, FSymbol};
 struct Semantic {
-    id_count: u32,
-    fun_count: u32,
-    func: FSymbol,
+    fname: String,
     vsym: SymbolTable<VSymbol>,
     fsym: SymbolTable<FSymbol>
 }
 impl Semantic {
-    pub fn analyze(&mut self, m: &mut Module) {
-        m.accept(self);
+    pub fn new() -> Self {
+        Self {
+            fname: String::new(),
+            vsym: SymbolTable::new(),
+            fsym: SymbolTable::new()
+        }
     }
-    pub fn add_vsym(&mut self, s: &str, k: Kind) {
-        self.vsym.insert(
-            s, 
-            VSymbol { 
-                id: self.id_count,
-                kind: k
-            }
-        );
-        self.id_count += 1;
+    pub fn analyze(&mut self, m: &mut Module) {
+        // Forward Declarations!
+        for f in &m.functions {
+            self.fsym.insert(f);
+        }
+        m.accept(self);
     }
 }
 impl Visitor for Semantic {
-    fn handle_module(&mut self, m: &mut Module) {
-        // Forward Declarations!
-        for f in &m.functions {
-            let args = f.params
-                .iter()
-                .map(|p| p.kind)
-                .collect();
-            self.fsym.insert(
-                &f.name,
-                FSymbol { 
-                    id: self.fun_count, 
-                    kind: f.ret, 
-                    args
-                }
-            );
-            self.fun_count += 1;
-        }
-    }
     fn begin_function_declaration(&mut self, f: &mut FunctionDeclaration) {
         self.vsym.scope_in();
         for p in &f.params {
-            self.add_vsym(
-                &p.name, 
-                p.kind
-            );
+            self.vsym.insert(&p.name, p.kind);
         }
-        self.func = self.fsym.get(&f.name)
-            .unwrap()
-            .clone();
+        self.fname = f.name.clone();
     }
     fn handle_function_declaration(&mut self, _f: &mut FunctionDeclaration) {
         self.vsym.scope_out();
@@ -62,7 +38,7 @@ impl Visitor for Semantic {
         if self.vsym.contains_key_in_scope(&d.name) {
             panic!("Defining already defined variable!");
         }
-        self.add_vsym(&d.name, d.kind);
+        self.vsym.insert(&d.name, d.kind);
         if let Some(e) = &d.val {
             assert!(d.kind == e.kind.unwrap(), "{}",
                 &format!(
@@ -86,13 +62,15 @@ impl Visitor for Semantic {
     }
     fn handle_jump_statement(&mut self, j: &mut JumpStatement) {
         if j.jump_type != JumpOp::Return { return; }
+        // println!("{}", self.fname);
+        let func = self.fsym.get(&self.fname).unwrap();
         match &j.expr {
             None => assert!(
-                self.func.kind == Kind::void(),
+                func.kind == Kind::void(),
                 "Return mismatch"
             ),
             Some(e) => assert!(
-                self.func.kind == e.kind.unwrap(),
+                func.kind == e.kind.unwrap(),
                 "Return mismatch"
             )
         }
@@ -106,9 +84,11 @@ impl Visitor for Semantic {
             ExprType::Identifier(ref i) => i.kind,
             ExprType::Integer(_)        => Some(Kind::int()),
             ExprType::Float(_)          => Some(Kind::float()) 
-        }
+        };
+        // println!("{:?}", e.kind);
     }
     fn handle_function_call(&mut self, f: &mut FunctionCall) {
+        // println!("Call: {}", f.name);
         let fsym = match self.fsym.get(&f.name) {
             None => panic!("Reference To Non-Existing Function {}",
                         f.name),
@@ -124,6 +104,7 @@ impl Visitor for Semantic {
                 panic!("Argument Type Mismatch!")
             }
         }
+        f.kind = Some(fsym.kind);
     }
     fn handle_access(&mut self, _a: &mut AccessExpr) {
         panic!("THERE ARE NO ACCESSES...");
@@ -178,18 +159,29 @@ impl Visitor for Semantic {
             BinaryOp::Peq | BinaryOp::Seq |
             BinaryOp::Teq | BinaryOp::Deq |
             BinaryOp::Assign => {
-                if lkind.prim == Primitive::Integer &&
-                    rkind.prim == Primitive::Float {
-                    panic!("Cannot assign Float to Int!");
+                if lkind == Kind::float() &&
+                    rkind == Kind::int() {
+                    b.kind = Some(lkind);
+                    return;
                 }
+                panic!("Invalid Assignment!");
             }
             BinaryOp::Add | BinaryOp::Div |
             BinaryOp::Mul | BinaryOp::Sub => {
-                if lkind.indir == 0 &&
-                    rkind.indir == 0 {
+                if lkind == Kind::float() ||
+                    rkind == Kind::float() {
                     b.kind = Some(Kind::float());
+                } else if lkind.indir != 0 ||
+                    rkind.indir != 0 {
+                    if lkind == Kind::int() {
+                        b.kind = Some(rkind);
+                    } else if rkind == Kind::int() {
+                        b.kind = Some(lkind);
+                    } else {
+                        panic!("Cannot apply Binary Op to two pointers!");
+                    }
                 } else {
-                    panic!("Cannot add Integer and Float pointers!");
+                    b.kind = Some(Kind::int());
                 }
             },
             BinaryOp::Eq | BinaryOp::Geq |
@@ -227,3 +219,31 @@ impl Visitor for Semantic {
 }
 
 
+#[cfg(test)]
+use std::fs;
+use crate::parser::moduleParser;
+use crate::printer::Printer;
+
+#[test]
+#[allow(dead_code)]
+fn visualize() {
+    // TODO: Reorganize test cases (only need a data directory)
+    // Iterate over all test cases.
+    let path0 = "tests/data/parser/input0.c";
+    let input0 = fs::read_to_string(path0).expect("File not found!");
+    let mut m = moduleParser::new().parse(&input0).expect("Parse Error!");
+    Semantic::new().analyze(&mut m);
+    Printer::new().print(&mut m);
+
+    let path1 = "tests/data/parser/input1.c";
+    let input1 = fs::read_to_string(path1).expect("File not found!");
+    let mut m = moduleParser::new().parse(&input1).expect("Parse Error!");
+    Semantic::new().analyze(&mut m);
+    Printer::new().print(&mut m);
+
+    let path1 = "tests/data/parser/input2.c";
+    let input1 = fs::read_to_string(path1).expect("File not found!");
+    let mut m = moduleParser::new().parse(&input1).expect("Parse Error!");
+    Semantic::new().analyze(&mut m);
+    Printer::new().print(&mut m);
+}

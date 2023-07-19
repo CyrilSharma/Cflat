@@ -1,3 +1,5 @@
+use std::fmt;
+
 //--------Modules------------
 pub struct Module {
     pub functions: Vec<Box<FunctionDeclaration>>
@@ -185,10 +187,26 @@ impl Kind {
         }
     }
 }
+impl fmt::Display for Kind {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}{}", self.prim, "*".repeat(self.indir as usize))
+    }
+}
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Primitive {
     Void,
     Integer,
     Float
+}
+impl fmt::Display for Primitive {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}", 
+            match self {
+                Primitive::Void => "void",
+                Primitive::Integer => "int",
+                Primitive::Float => "float"
+            }
+        )
+    }
 }

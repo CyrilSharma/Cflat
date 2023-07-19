@@ -1,15 +1,14 @@
 use std::collections::HashMap;
 use crate::ast::*;
 pub trait Symbol {}
-
-#[derive(Clone)]
+#[derive(Debug)]
 pub struct VSymbol { 
     pub id: u32, 
     pub kind: Kind 
 }
 impl Symbol for VSymbol {}
 
-#[derive(Clone)]
+#[derive(Debug)]
 pub struct FSymbol {
     pub id: u32, 
     pub kind: Kind, 
@@ -18,19 +17,37 @@ pub struct FSymbol {
 impl Symbol for FSymbol {}
 
 pub struct SymbolTable<T: Symbol> {
-    stk: Vec<HashMap<String, T>>
+    stk: Vec<HashMap<String, T>>,
+    count: u32
+}
+
+impl SymbolTable<VSymbol> {
+    pub fn insert(&mut self, name: &str, kind: Kind) {
+        let table = self.stk.last_mut().unwrap();
+        table.insert(
+            name.to_string(),
+            VSymbol { id: self.count, kind }
+        );
+        self.count += 1;
+    } 
+}
+
+impl SymbolTable<FSymbol> {
+    pub fn insert(&mut self, func: &FunctionDeclaration) {
+        let table = self.stk.last_mut().unwrap();
+        let kind = func.ret;
+        let args = func.params.iter().map(|p| p.kind).collect();
+        table.insert(
+            func.name.to_string(), 
+            FSymbol { id: self.count, kind, args}
+        );
+        self.count += 1;
+    } 
 }
 
 impl<T: Symbol> SymbolTable<T> {
-    pub fn insert(&mut self, key: &str, sym: T) {
-        let table = match self.stk.last_mut() {
-            None => {
-                self.stk.push(HashMap::new());
-                &mut self.stk[0]
-            },
-            Some(s) => s
-        };
-        table.insert(key.to_string(), sym);
+    pub fn new() -> Self {
+        Self { stk: vec![HashMap::new()], count: 0 }
     }
     pub fn contains_key_in_scope(&mut self, key: &str) -> bool {
         if let Some(table) = self.stk.last() {
