@@ -11,7 +11,8 @@ pub struct FunctionDeclaration {
     pub ret:        Kind,
     pub name:       String,
     pub params:     Vec<Parameter>,
-    pub statement:  Box<Statement>,
+    pub statement:  Box<CompoundStatement>,
+    pub id:         u32
 }
 
 #[derive(Clone)]
@@ -32,6 +33,7 @@ pub enum Statement {
 }
 
 pub struct DeclareStatement {
+    pub id: u32,
     pub kind: Kind,
     pub name: String,
     pub val:  Option<Box<Expr>>
@@ -60,7 +62,7 @@ pub struct WhileStatement {
 }
 
 pub struct CompoundStatement {
-    pub stmts: Vec<Box<Statement>>
+    pub stmts: Vec<Statement>
 }
 
 pub struct JumpStatement {
@@ -94,7 +96,7 @@ pub enum ExprType {
 
 pub struct FunctionCall {
     pub name: String,
-    pub args: Vec<Box<Expr>>,
+    pub args: Vec<Expr>,
     pub kind: Option<Kind>,
     pub id:   u32
 }

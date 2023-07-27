@@ -5,6 +5,8 @@ pub mod visitor;
 pub mod traverse;
 pub mod semantic;
 pub mod symboltable;
+pub mod translator;
+pub mod ir;
 
 #[cfg(test)]
 pub mod test_parser;

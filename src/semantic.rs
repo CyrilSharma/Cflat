@@ -7,6 +7,9 @@ struct Semantic {
     vsym: SymbolTable<VSymbol>,
     fsym: SymbolTable<FSymbol>
 }
+// TODO: for proper error detection,
+// Add errors to a list instead of Panicing.
+// " Error Handling? Just don't make errors... "
 impl Semantic {
     pub fn new() -> Self {
         Self {
