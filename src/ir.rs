@@ -7,9 +7,11 @@ pub enum Expr {
     Mem(Box<Expr>),
     Call(Label, Vec<Expr>),
     Name(Label),
+    ESeq(Box<Statement>, Box<Expr>)
 }
 
 pub enum Statement {
+    Expr(Box<Expr>),
     Move(Box<Expr>, Box<Expr>),
     Seq(Vec<Statement>),
     Jump(Expr),
@@ -27,6 +29,7 @@ pub enum Primitive {
     Float(f32)
 }
 
+#[derive(PartialEq, Eq)]
 pub enum Operator {
     Add,
     Sub,
@@ -40,5 +43,15 @@ pub enum Operator {
     Neq,
     Leq,
     Geq,
+    Lt,
     Gt,
+    Peq,
+    Meq,
+    Seq,
+    Teq,
+    Deq,
+    Assign,
+    Star,
+    Neg,
+    Address
 }

@@ -1,6 +1,6 @@
 use crate::ast;
 use crate::ast::FunctionDeclaration;
-use crate::ir;
+use crate::ir::{self, Operator};
 use crate::ast::ExprType::*;
 use crate::visitor::Visitor;
 use crate::traverse::Traverseable;
@@ -69,7 +69,7 @@ impl Translator {
         return match e.expr {
             None     => None,
             Some(ex) => Some(ir::Statement::Expr(
-                self.expression(ex)
+                Box::new(self.expression(&ex))
             ))
         }
     }
@@ -241,21 +241,93 @@ impl Translator {
     fn expression(&mut self, e: &ast::Expr) -> ir::Expr {
         use ast::ExprType::*;
         match e.etype {
-            Function(_) => todo!(),
-            Access(a) => todo!(),
-            Unary(u) => return ir::Expr::UnOp(
-                todo!(), /* some annoying op -> op code */
-                Box::new(self.expression(&u.expr)),
-            ),
-            Binary(b) => return ir::Expr::BinOp(
-                use ast::BinaryOp::*;
-                match b.binary_op {
-
+            Function(f) => {
+                let v = Vec::<ir::Expr>::new();
+                for exp in &f.args {
+                    v.push(self.expression(exp));
                 }
-                Box::new(self.expression(&b.left))
-                todo!(), /* some annoying op -> op code */
-                Box::new(self.expression(&b.right)),
-            ),
+                return ir::Expr::Call(ir::Label { id: f.id }, v)
+            },
+            Access(a) => {
+                let mul = ir::Expr::BinOp(
+                    Box::new(ir::Expr::Const(ir::Primitive::Int( 8 ))),
+                    Operator::Mul,
+                    Box::new(self.expression(&a.offset))
+                );
+                let add = ir::Expr::BinOp(
+                    Box::new(ir::Expr::Temp(a.id)),
+                    Operator::Add,
+                    Box::new(mul)
+                );
+                return ir::Expr::Mem(Box::new(add))
+            },
+            Unary(u) => {
+                use ast::UnaryOp::*;
+                let op = match u.unary_op {
+                    Star    => ir::Operator::Star,
+                    Not     => ir::Operator::Not,
+                    Neg     => ir::Operator::Neg,
+                    Address => ir::Operator::Address,
+                };
+                return ir::Expr::UnOp(op,
+                    Box::new(self.expression(&u.expr))
+                );
+            },
+            Binary(b) => {
+                use ast::BinaryOp::*;
+                let op = match b.binary_op {
+                    Mul    => ir::Operator::Mul,
+                    Div    => ir::Operator::Div,
+                    Add    => ir::Operator::Add,
+                    Sub    => ir::Operator::Sub,
+                    Leq    => ir::Operator::Leq,
+                    Geq    => ir::Operator::Geq,
+                    Lt     => ir::Operator::Lt,
+                    Gt     => ir::Operator::Gt,
+                    Eq     => ir::Operator::Eq,
+                    Peq    => ir::Operator::Assign,
+                    Teq    => ir::Operator::Assign,
+                    Deq    => ir::Operator::Assign,
+                    Seq    => ir::Operator::Assign,
+                    Neq    => ir::Operator::Assign,
+                    Or     => ir::Operator::Or,
+                    And    => ir::Operator::And,
+                    Assign => ir::Operator::Assign,
+                };
+                if op != ir::Operator::Assign {
+                    return ir::Expr::BinOp(
+                        Box::new(self.expression(&b.left)),
+                        op,
+                        Box::new(self.expression(&b.right)),
+                    );
+                }
+                op = match b.binary_op {
+                    Peq => ir::Operator::Add,
+                    Teq => ir::Operator::Mul,
+                    Seq => ir::Operator::Sub,
+                    Deq => ir::Operator::Div,
+                    _ => ir::Operator::Xor,
+                };
+                let stmt = match b.binary_op {
+                    Peq | Teq | Seq | Deq => ir::Statement::Move(
+                        Box::new(ir::Expr::Temp(id)),
+                        Box::new(ir::Expr::BinOp(
+                            Box::new(ir::Expr::Temp(id)),
+                            op,
+                            Box::new(self.expression(&b.right))
+                        ))
+                    ),
+                    Assign => ir::Statement::Move(
+                        Box::new(ir::Expr::Temp(id)),
+                        Box::new(self.expression(&b.right))
+                    ),
+                    _ => panic!("Oh no!")
+                };
+                return ir::Expr::ESeq(
+                    Box::new(stmt),
+                    Box::new(self.expression(&b.left))
+                );
+            },
             Integer(i) => return ir::Expr::Const(
                 ir::Primitive::Int(i)
             ),
@@ -263,28 +335,6 @@ impl Translator {
                 ir::Primitive::Float(f)
             ),
             Identifier(i) => return ir::Expr::Temp(i.id),
-        }
-    }
-    fn map_bin(b: ast::BinaryOp) -> ir::Operator {
-        use ast::BinaryOp::*;
-        return match b {
-            Mul => ir::Operator::Mul,
-            Div => ir::Operator::Div,
-            Add => ir::Operator::Add,
-            Sub => ir::Operator::Sub,
-            Leq => ir::Operator::Leq,
-            Geq => ir::Operator::Geq,
-            Lt => ir::Operator::Lt,
-            Gt => ir::Operator::Gt,
-            Eq => ir::Operator::Eq,
-            Peq => ir::Operator::Peq,
-            Teq => ir::Operator::Teq,
-            Deq => ir::Operator::Deq,
-            Seq => ir::Operator::Seq,
-            Neq => ir::Operator::Neq,
-            Or => ir::Operator::Or,
-            And => ir::Operator::And,
-            Assign => ir::Operator::Assign,
         }
     }
     fn create_label(&mut self) -> ir::Label {
