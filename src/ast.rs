@@ -50,8 +50,8 @@ pub struct IfStatement {
 }
 
 pub struct ForStatement {
-    pub init:   Option<Box<Expr>>,
-    pub each:   Option<Box<Expr>>,
+    pub init:   Box<ExprStatement>,
+    pub each:   Box<ExprStatement>,
     pub end:    Option<Box<Expr>>,
     pub stmt:   Box<Statement>
 }

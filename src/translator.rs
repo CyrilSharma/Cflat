@@ -6,11 +6,19 @@ use crate::visitor::Visitor;
 use crate::traverse::Traverseable;
 
 struct Translator {
-    nlabels: u32
+    nlabels: u32,
+    loop_starts: Vec<ir::Label>,
+    loop_ends:   Vec<ir::Label>
 }
 
 impl Translator {
-    pub fn new() -> Self { Self { nlabels: 0 } }
+    pub fn new() -> Self { 
+        Self { 
+            nlabels: 0,
+            loop_starts: Vec::new(),
+            loop_ends:   Vec::new()
+        } 
+    }
     pub fn translate(&mut self, m: &mut ast::Module) -> Vec::<ir::Statement> {
         let mut res = Vec::<ir::Statement>::new();
         for f in &m.functions {
@@ -19,13 +27,12 @@ impl Translator {
         return res;
     }
     fn function_definition(&mut self, f: &FunctionDeclaration) -> ir::Statement {
-        let mut stmts = self.compound_statement(&f.statement);
-        stmts.insert(0,
+        return ir::Statement::Seq(vec![
             ir::Statement::Label(
                 self.create_label()
-            )
-        );
-        return ir::Statement::Seq(stmts);
+            ),
+            self.compound_statement(&f.statement)
+        ]);
     }
     fn statement(&mut self, s: &ast::Statement) -> Option<ir::Statement> {
         use ast::Statement::*;
@@ -36,24 +43,27 @@ impl Translator {
             For      (ref f) => Some(self.for_statement(f)),
             While    (ref w) => Some(self.while_statement(w)),
             Compound (ref c) => Some(self.compound_statement(c)),
-            Jump     (ref j) => Some(self.jump_statment(j))
+            Jump     (ref j) => Some(self.jump_statement(j))
         }
     }
     fn declare_statement(&mut self, d: &ast::DeclareStatement) -> Option<ir::Statement> {
-        match d.expr {
+        match d.val {
             None    => return None,
             Some(e) => return Some(ir::Statement::Move(
-                Box::new(ir::Expr::Temp(d.id, d.kind)),
-                Box::new(self.expr(e))
+                Box::new(ir::Expr::Temp(d.id)),
+                Box::new(self.expression(&e))
             ))
         }
     }
-    fn compound_statement(&mut self, c: &ast::CompoundStatement) -> Vec<ir::Statement> {
+    fn compound_statement(&mut self, c: &ast::CompoundStatement) -> ir::Statement {
         let mut stmts = Vec::<ir::Statement>::new();
         for stmt in &c.stmts {
-            stmts.push(self.statement(stmt));
+            match self.statement(stmt) {
+                None    => (),
+                Some(s) => stmts.push(s)
+            }
         }
-        return stmts;
+        return ir::Statement::Seq(stmts);
     }
     fn expr_statement(&mut self, e: &ast::ExprStatement) -> Option<ir::Statement> {
         return match e.expr {
@@ -85,18 +95,21 @@ impl Translator {
     }
     fn for_statement(&mut self, f: &ast::ForStatement) -> ir::Statement {
         let mut ret = Vec::<ir::Statement>::new();
-        match f.init {
+        match self.expr_statement(&f.init) {
             None    => (),
-            Some(s) => ret.push(self.expression(s))
+            Some(s) => ret.push(s)
         }
         let lt = self.create_label();
         let lb = self.create_label();
         let le = self.create_label();
+        self.loop_starts.push(lt);
+        self.loop_ends.push(lb);
+
         ret.push(ir::Statement::Label(lt));
         match f.end {
             None    => (),
             Some(s) => ret.push(self.control(
-                self.expression(s), lb, le
+                &s, lb, le
             ))
         }
         ret.push(ir::Statement::Label(lb));
@@ -104,20 +117,26 @@ impl Translator {
             None => (),
             Some(s) => ret.push(s)
         }
-        match f.each {
+        match self.expr_statement(&f.each) {
             None    => (),
-            Some(s) => ret.push(self.expression(s))
+            Some(s) => ret.push(s)
         }
         ret.push(ir::Statement::Jump(
             ir::Expr::Name(lt)
         ));
         ret.push(ir::Statement::Label(le));
+
+        self.loop_starts.pop();
+        self.loop_ends.pop();
         return ir::Statement::Seq(ret);
     }
     fn while_statement(&mut self, w: &ast::WhileStatement) -> ir::Statement {
         let lt = self.create_label();
         let lb = self.create_label();
         let le = self.create_label();
+        self.loop_starts.push(lt);
+        self.loop_ends.push(lb);
+
         let mut ret = vec![
             ir::Statement::Label(lt),
             self.control(&w.condition, lb, le),
@@ -131,19 +150,34 @@ impl Translator {
             ir::Expr::Name(lt)
         ));
         ret.push(ir::Statement::Label(le));
+
+        self.loop_starts.pop();
+        self.loop_ends.pop();
         return ir::Statement::Seq(ret);
     }
     fn jump_statement(&mut self, j: &ast::JumpStatement) -> ir::Statement {
         use ast::JumpOp::*;
         match j.jump_type {
-            Continue => todo!(),
+            Continue => {
+                match self.loop_starts.iter().last() {
+                    None    => panic!("You done goof"),
+                    Some(l) => return ir::Statement::Jump(ir::Expr::Name(*l))
+                }
+            },
             Return => {
                 match j.expr {
                     None    => ir::Statement::Return(None),
-                    Some(s) => ir::Statement::Return(self.expression(s))
+                    Some(s) => ir::Statement::Return(Some(
+                        Box::new(self.expression(&s))
+                    ))
                 }
             },
-            Break => todo!(),
+            Break => {
+                match self.loop_ends.iter().last() {
+                    None    => panic!("You done goof"),
+                    Some(l) => return ir::Statement::Jump(ir::Expr::Name(*l))
+                }
+            }
         }
     }
     fn control(&mut self, expr: &ast::Expr, t: ir::Label, f: ir::Label) -> ir::Statement {
@@ -195,7 +229,7 @@ impl Translator {
                 )
             },
             Float(_) => panic!("Floats found in conditional!"),
-            tp => assert!(tp.kind.unwrap() == ast::Kind::int(),
+            _ => assert!(expr.kind.unwrap() == ast::Kind::int(),
                 "Conditional is not an integer!"
             )
         }
