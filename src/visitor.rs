@@ -1,7 +1,7 @@
 use crate::ast::*;
 #[allow(unused_variables)]
 pub trait Visitor {
-    fn handle_module(&mut self, m: &mut Module) {}
+    fn handle_Module(&mut self, m: &mut Module) {}
     fn begin_function_declaration(&mut self, f: &mut FunctionDeclaration) {} // Need special handling.
     fn handle_function_declaration(&mut self, f: &mut FunctionDeclaration) {}
     fn handle_statement(&mut self, s: &mut Statement) {}

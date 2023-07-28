@@ -267,7 +267,7 @@ identifier: Identifier = {
         Identifier {
             name: <>.to_string(),
             kind: None,
-            id: 0
+            id: 0 /* initialize with static int? */
         }
     }
 };
