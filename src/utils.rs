@@ -1,3 +1,4 @@
+#[allow(unused_macros)]
 macro_rules! polymorphic_enum {
     ($name:ident => $variants:tt, Attributes => [$($attr:ident: $type:path),*]) => {
         polymorphic_enum!(@call_enum, $name, $variants);

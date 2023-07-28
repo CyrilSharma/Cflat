@@ -1,4 +1,4 @@
-use crate::ast::{self, Statement, Identifier};
+use crate::ast;
 use crate::ast::FunctionDeclaration;
 use crate::ir::{self, Operator};
 
@@ -186,62 +186,58 @@ impl Translator {
     }
     fn control(&mut self, expr: &ast::Expr, t: ir::Label, f: ir::Label) -> ir::Statement {
         use ast::Expr::*;
-        match expr {
-            Unary(u) => {
-                use ast::UnaryOp::*;
-                match u.unary_op {
-                    Not => return self.control(
-                        &u.expr, t, f
-                    ),
-                    _   => return ir::Statement::CJump(
-                        Box::new(self.expression(expr)),
-                        t, f
-                    )
-                }
-            },
-            Binary(b) => {
-                use ast::BinaryOp::*;
-                match b.binary_op {
-                    And => {
-                        let l1 = self.create_label();
-                        return ir::Statement::Seq(vec![
-                            self.control(&b.left, l1, f),
-                            ir::Statement::Label(l1),
-                            self.control(&b.right, t, f),
-                        ]);
-                    },
-                    Or => {
-                        let l1 = self.create_label();
-                        return ir::Statement::Seq(vec![
-                            self.control(&b.left, t, l1),
-                            ir::Statement::Label(l1),
-                            self.control(&b.right, t, f),
-                        ]);
-                    },
-                    _   => ()
-                }
-            },
-            Integer(i) => return ir::Statement::Jump(ir::Expr::Name(
+        let res = match expr {
+            Unary(u) => self.control_unary(&u, t, f),
+            Binary(b) => self.control_binary(&b, t, f),
+            Integer(i) => Some(ir::Statement::Jump(ir::Expr::Name(
                 if *i != 0 { t } else { f }
+            ))),
+            Ident(i) => Some(ir::Statement::CJump(
+                Box::new(ir::Expr::Temp(i.id)),
+                t, f
             )),
-            Ident(i) => {
-                assert!(i.kind.unwrap() == ast::Kind::int(),
-                    "Identifier is not an integer!"
-                );
-                return ir::Statement::CJump(
-                    Box::new(ir::Expr::Temp(i.id)),
-                    t, f
-                )
-            },
-            Float(_) => panic!("Floats found in conditional!"),
-            _ => assert!(expr.kind().unwrap() == ast::Kind::int(),
-                "Conditional is not an integer!"
-            )
+            _ => None
+        };
+        return match res {
+            None    => ir::Statement::CJump(
+                Box::new(self.expression(expr)),
+                t, f
+            ),
+            Some(s) => s
         }
-        return ir::Statement::CJump(
-            Box::new(self.expression(expr)),
-            t, f
-        )
+    }
+    fn control_unary(&mut self, u: &ast::UnaryExpr, t: ir::Label, f: ir::Label)
+        -> Option<ir::Statement> {
+        use ast::UnaryOp::*;
+        return match u.unary_op {
+            Not => Some(self.control(
+                &u.expr, f, t
+            )),
+            _ => None
+        }
+    }
+    fn control_binary(&mut self, b: &ast::BinaryExpr, t: ir::Label, f: ir::Label)
+        -> Option<ir::Statement> {
+        use ast::BinaryOp::*;
+        return match b.binary_op {
+            And => {
+                let l1 = self.create_label();
+                Some(ir::Statement::Seq(vec![
+                    self.control(&b.left, l1, f),
+                    ir::Statement::Label(l1),
+                    self.control(&b.right, t, f),
+                ]))
+            },
+            Or => {
+                let l1 = self.create_label();
+                Some(ir::Statement::Seq(vec![
+                    self.control(&b.left, t, l1),
+                    ir::Statement::Label(l1),
+                    self.control(&b.right, t, f),
+                ]))
+            },
+            _   => None
+        }
     }
     fn expression(&mut self, e: &ast::Expr) -> ir::Expr {
         use ast::Expr::*;
