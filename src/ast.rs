@@ -1,4 +1,5 @@
 use std::fmt;
+use crate::utils::polymorphic_enum;
 
 //--------Modules------------
 pub struct Module {
@@ -71,27 +72,20 @@ pub struct JumpStatement {
 }
 
 //--------Expressions------------
-pub struct Expr {
-    pub etype: ExprType,
-    pub kind: Option<Kind>
-}
-impl Expr {
-    pub fn new(e: ExprType) -> Self {
-        Expr {
-            etype: e,
-            kind: None
-        }
-    }
-}
-
-pub enum ExprType {
-    Function(FunctionCall),
-    Access(AccessExpr),
-    Unary(UnaryExpr),
-    Binary(BinaryExpr),
-    Integer(i32),
-    Float(f32),
-    Identifier(Identifier),
+polymorphic_enum! {
+    Expr => [
+        Function(FunctionCall),
+        Access(AccessExpr),
+        Unary(UnaryExpr),
+        Binary(BinaryExpr),
+        Integer(i32),
+        Float(f32),
+        Ident(Identifier)
+    ],
+    Attributes => [
+        kind: Option<Kind>,
+        id:   u32
+    ]
 }
 
 pub struct FunctionCall {

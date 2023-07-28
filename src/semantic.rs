@@ -73,22 +73,10 @@ impl Visitor for Semantic {
                 "Return mismatch"
             ),
             Some(e) => assert!(
-                func.kind == e.kind.unwrap(),
+                func.kind == e.kind().unwrap(),
                 "Return mismatch"
             )
         }
-    }
-    fn handle_expr(&mut self, e: &mut Expr) {
-        e.kind = match e.etype {
-            ExprType::Access(ref a)     => a.kind,
-            ExprType::Binary(ref b)     => b.kind,
-            ExprType::Function(ref f)   => f.kind,
-            ExprType::Unary(ref u)      => u.kind,
-            ExprType::Identifier(ref i) => i.kind,
-            ExprType::Integer(_)        => Some(Kind::int()),
-            ExprType::Float(_)          => Some(Kind::float()) 
-        };
-        // println!("{:?}", e.kind);
     }
     fn handle_function_call(&mut self, f: &mut FunctionCall) {
         // println!("Call: {}", f.name);
@@ -101,7 +89,7 @@ impl Visitor for Semantic {
             "Argument List does not match Function Argument List!"
         );
         for idx in 0..f.args.len() {
-            let argk = f.args[idx].kind.unwrap();
+            let argk = f.args[idx].kind().unwrap();
             let fk = fsym.args[idx];
             if fk != argk {
                 panic!("Argument Type Mismatch!")
@@ -113,10 +101,10 @@ impl Visitor for Semantic {
         panic!("THERE ARE NO ACCESSES...");
     }
     fn handle_unary(&mut self, u: &mut UnaryExpr) {
-        let mut kind = u.expr.kind.unwrap();
+        let mut kind = u.expr.kind().unwrap();
         match u.unary_op {
             UnaryOp::Address => {
-                if matches!(u.expr.etype, ExprType::Identifier(_)) {
+                if matches!(*u.expr, Expr::Ident(_)) {
                     kind.indir += 1;
                     u.kind = Some(kind);
                 } else {
@@ -124,7 +112,7 @@ impl Visitor for Semantic {
                 }
             },
             UnaryOp::Star => {
-                if matches!(u.expr.etype, ExprType::Identifier(_)) {
+                if matches!(*u.expr, Expr::Ident(_)) {
                     if kind.indir == 0 {
                         panic!("Cannot dereferencea Primitive!");
                     } else {
@@ -152,8 +140,8 @@ impl Visitor for Semantic {
         }
     }
     fn handle_binary(&mut self, b: &mut BinaryExpr) {
-        let lkind = b.left.kind.unwrap();
-        let rkind = b.right.kind.unwrap();
+        let lkind = b.left.kind().unwrap();
+        let rkind = b.right.kind().unwrap();
         if lkind == rkind { 
             b.kind = Some(lkind); 
             return;

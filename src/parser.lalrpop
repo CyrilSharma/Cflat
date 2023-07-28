@@ -40,14 +40,14 @@ parameter: Parameter = {
 //--------EXPRESSIONS------------
 expression: Box<Expr> = {
     <l: unary_expression> <o: AssignOp> <r: expression> => {
-        Box::new(Expr::new(ExprType::Binary(
+        Box::new(Expr::Binary(
             BinaryExpr {
                 binary_op: o,
                 left: l,
                 right: r,
                 kind: None
             }
-        )))
+        ))
     },
     or_expression
 };
@@ -94,13 +94,13 @@ MulOp: BinaryOp = {
 unary_expression: Box<Expr> = {
     postfix_expression,
     <u: UnaryOp> <p: postfix_expression> => {
-        Box::new(Expr::new(ExprType::Unary(
+        Box::new(Expr::Unary(
             UnaryExpr {
                 unary_op: u,
                 expr:     p,
                 kind:     None
             }
-        )))
+        ))
     }
 };
 UnaryOp: UnaryOp = {
@@ -112,22 +112,22 @@ UnaryOp: UnaryOp = {
 
 // TODO: This doesn't support multi-dimensional arrays.
 postfix_expression: Box<Expr> = {
-	identifier => Box::new(Expr::new(ExprType::Identifier(<>))),
-    integer => Box::new(Expr::new(ExprType::Integer(<>))),
-    float => Box::new(Expr::new(ExprType::Float(<>))),
+	identifier => Box::new(Expr::Identifier(<>)),
+    integer => Box::new(Expr::Integer(<>)),
+    float => Box::new(Expr::Float(<>)),
 	<i: identifier> "[" <e: expression> "]" => {
-        Box::new(Expr::new(ExprType::Access(
+        Box::new(Expr::Access(
             AccessExpr { name: i.name, offset: e, kind: None }
-        )))
+        ))
     },
 	<i: identifier> "(" <c: Comma<expression>?> ")" => {
         match c {
-            None => Box::new(Expr::new(ExprType::Function(
+            None => Box::new(Expr::Function(
                 FunctionCall { name: i.name, args: Vec::new(), kind: None, id: 0 }
-            ))),
-            Some(v) => Box::new(Expr::new(ExprType::Function(
+            )),
+            Some(v) => Box::new(Expr::Function(
                 FunctionCall { name: i.name, args: v, kind: None, id: 0 }
-            ))),
+            )),
         }
     },
     "(" <expression> ")"
@@ -290,14 +290,14 @@ Comma<T>: Vec<T> = { // (1)
 
 Tier<Op, NextTier>: Box<Expr> = {
     <l: Tier<Op, NextTier>> <o: Op> <r: NextTier> => {
-        Box::new(Expr::new(ExprType::Binary(
+        Box::new(Expr::Binary(
             BinaryExpr {
                 binary_op: o,
                 left: l,
                 right: r,
                 kind: None
             }
-        )))
+        ))
     },
     NextTier
 };

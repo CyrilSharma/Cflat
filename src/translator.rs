@@ -1,7 +1,6 @@
 use crate::ast;
 use crate::ast::FunctionDeclaration;
 use crate::ir::{self, Operator};
-use crate::ast::ExprType::*;
 use crate::visitor::Visitor;
 use crate::traverse::Traverseable;
 
@@ -181,7 +180,8 @@ impl Translator {
         }
     }
     fn control(&mut self, expr: &ast::Expr, t: ir::Label, f: ir::Label) -> ir::Statement {
-        match expr.etype {
+        use ast::Expr::*;
+        match expr {
             Unary(u) => {
                 use ast::UnaryOp::*;
                 match u.unary_op {
@@ -217,9 +217,9 @@ impl Translator {
                 }
             },
             Integer(i) => return ir::Statement::Jump(ir::Expr::Name(
-                if i != 0 { t } else { f }
+                if *i != 0 { t } else { f }
             )),
-            Identifier(i) => {
+            Ident(i) => {
                 assert!(i.kind.unwrap() == ast::Kind::int(),
                     "Identifier is not an integer!"
                 );
@@ -229,7 +229,7 @@ impl Translator {
                 )
             },
             Float(_) => panic!("Floats found in conditional!"),
-            _ => assert!(expr.kind.unwrap() == ast::Kind::int(),
+            _ => assert!(expr.kind().unwrap() == ast::Kind::int(),
                 "Conditional is not an integer!"
             )
         }
@@ -239,19 +239,19 @@ impl Translator {
         )
     }
     fn expression(&mut self, e: &ast::Expr) -> ir::Expr {
-        use ast::ExprType::*;
-        match e.etype {
+        use ast::Expr::*;
+        match e {
             Function(f) => self.function(&f),
             Access(a) => self.access(&a),
             Unary(u) => self.unary(&u),
             Binary(b) => self.binary(&b),
             Integer(i) => return ir::Expr::Const(
-                ir::Primitive::Int(i)
+                ir::Primitive::Int(*i)
             ),
             Float(f) => return ir::Expr::Const(
-                ir::Primitive::Float(f)
+                ir::Primitive::Float(*f)
             ),
-            Identifier(i) => return ir::Expr::Temp(i.id),
+            Ident(i) => return ir::Expr::Temp(i.id),
         }
     }
     fn function(&mut self, f: &ast::FunctionCall) -> ir::Expr {
