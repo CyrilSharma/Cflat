@@ -3,16 +3,14 @@ use crate::ast::FunctionDeclaration;
 use crate::ir::{self, Operator};
 
 struct Translator {
-    ids:         u32,
     nlabels:     u32,
     loop_starts: Vec<ir::Label>,
     loop_ends:   Vec<ir::Label>
 }
 
 impl Translator {
-    pub fn new(count: u32) -> Self { 
+    pub fn new() -> Self { 
         Self { 
-            ids:         count,   
             nlabels:     0,
             loop_starts: Vec::new(),
             loop_ends:   Vec::new()
@@ -270,8 +268,8 @@ impl Translator {
     /* TODO. Concactenate into one giant addition */
     fn access(&mut self, a: &ast::AccessExpr) -> ir::Expr {
         let mut prod: u32 = 1;
-        let t = ir::Expr::Temp(self.create_temp());
-        let mut stmts = Vec::<ir::Statement>::new();
+        let t = ir::Expr::Temp(a.id);
+        let mut root: Option<ir::Expr> = None;
         for i in (0..a.offsets.len()).rev() {
             let mul = ir::Expr::BinOp(
                 Box::new(ir::Expr::Const(
@@ -283,21 +281,22 @@ impl Translator {
                 Operator::Mul,
                 Box::new(self.expression(&a.offsets[i]))
             );
-            let add = ir::Expr::BinOp(
-                Box::new(t),
-                Operator::Add,
-                Box::new(mul)
-            );
-            stmts.push(ir::Statement::Move(
-                Box::new(t),
-                Box::new(add)
-            ));
+            root = match root {
+                None    => Some(mul),
+                Some(e) => Some(ir::Expr::BinOp(
+                    Box::new(e),
+                    Operator::Add,
+                    Box::new(mul)
+                ))
+            };
             prod *= a.sizes[i];
         }
-        return ir::Expr::ESeq(
-            Box::new(ir::Statement::Seq(stmts)),
-            Box::new(ir::Expr::Mem(Box::new(t)))
+        let exp = ir::Expr::BinOp(
+            Box::new(t),
+            Operator::Add,
+            Box::new(root.unwrap())
         );
+        return ir::Expr::Mem(Box::new(exp));
     }
     fn unary(&mut self, u: &ast::UnaryExpr) -> ir::Expr {
         use ast::UnaryOp::*;
@@ -369,9 +368,5 @@ impl Translator {
     fn create_label(&mut self) -> ir::Label {
         self.nlabels += 1;
         return ir::Label { id: self.nlabels - 1 }
-    }
-    fn create_temp(&mut self) -> u32 {
-        self.ids += 1;
-        return self.ids - 1;
     }
 }
