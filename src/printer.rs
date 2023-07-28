@@ -14,11 +14,9 @@ impl Printer {
     }
     fn function_declaration(&mut self, f: &FunctionDeclaration) {
         let idx = self.count;
-        let mut kind_str = format!("{:?}", f.ret.prim);
-        for _ in 0..f.ret.indirection { kind_str.push('*'); }
-        self.add_label(&format!("Declare {kind_str} {}()", f.name));
+        self.add_label(&format!("Declare {} {}()", f.ret, f.name));
         self.add_edge(idx, self.count);
-        self.statement(&f.statement);
+        self.statement(&f.stmt);
     }
     fn statement(&mut self, s: &Statement) {
         match s {
@@ -33,9 +31,7 @@ impl Printer {
     }
     fn declare_statement(&mut self, d: &DeclareStatement) {
         let idx = self.count;
-        let mut kind_str = format!("{:?}", d.kind.prim);
-        for _ in 0..d.kind.indirection { kind_str.push('*'); }
-        self.add_label(&format!("Declare: {kind_str} {}", d.name));
+        self.add_label(&format!("Declare: {} {}", d.kind, d.name));
         if let Some(e) = &d.val {
             self.add_edge(idx, self.count);
             self.expr(e);
@@ -71,11 +67,11 @@ impl Printer {
             self.add_edge(idx, self.count);
             self.expr(e);
         }
-        if let Some(e) = &f.each {
+        if let Some(e) = &f.cond {
             self.add_edge(idx, self.count);
             self.expr(e);
         }
-        if let Some(e) = &f.end {
+        if let Some(e) = &f.each {
             self.add_edge(idx, self.count);
             self.expr(e);
         }
@@ -95,11 +91,9 @@ impl Printer {
     fn compound_statement(&mut self, c: &CompoundStatement) {
         let idx = self.count;
         self.add_label("Compound Statement");
-        if let Some(v) = &c.stmts {
-            for s in v {
-                self.add_edge(idx, self.count);
-                self.statement(s);
-            }
+        for s in &c.stmts {
+            self.add_edge(idx, self.count);
+            self.statement(s);
         }
     }
     fn jump_statement(&mut self, j: &JumpStatement) {
@@ -118,24 +112,24 @@ impl Printer {
             Expr::Binary(b) => self.binary(b),
             Expr::Integer(i) => self.integer(*i),
             Expr::Float(f) => self.float(*f),
-            Expr::Identifier(i) => self.identifier(i)
+            Expr::Ident(i) => self.identifier(i)
         }
     }
     fn function(&mut self, f: &FunctionCall) {
         let idx = self.count;
         self.add_label(&format!("Call Function: {}", f.name));
-        if let Some(v) = &f.args {
-            for e in v {
-                self.add_edge(idx, self.count);
-                self.expr(e); 
-            }
+        for e in &f.args {
+            self.add_edge(idx, self.count);
+            self.expr(e); 
         }
     }
     fn access(&mut self, a: &AccessExpr) {
         let idx = self.count;
         self.add_label(&format!("Access: {}", a.name));
-        self.add_edge(idx, self.count);
-        self.expr(&a.offset);
+        for e in &a.offsets {
+            self.add_edge(idx, self.count);
+            self.expr(e);
+        }
     }
     fn unary(&mut self, u: &UnaryExpr) {
         let idx = self.count;
@@ -157,8 +151,13 @@ impl Printer {
     fn float(&mut self, f: f32) {
         self.add_label(&format!("Float: {}", f));
     }
-    fn identifier(&mut self, s: &str) {
-        self.add_label(&format!("Identifier: {}", s));
+    fn identifier(&mut self, i: &Identifier) {
+        self.add_label(&format!("Identifier: {} {}({})",
+            match i.kind {
+                None => "Unknown".to_string(),
+                Some(k) => format!("{}", k)
+            }, i.name, i.id
+        ));
     }
     fn add_edge(&mut self, i: u32, j: u32) {
         println!("    node{} -> node{};", i, j)

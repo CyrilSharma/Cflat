@@ -26,12 +26,14 @@ impl Translator {
         return res;
     }
     fn function_definition(&mut self, f: &FunctionDeclaration) -> ir::Statement {
-        return ir::Statement::Seq(vec![
-            ir::Statement::Label(
-                self.create_label()
-            ),
-            self.compound_statement(&f.stmt)
-        ]);
+        let mut ret = vec![ir::Statement::Label(
+            self.create_label()
+        )];
+        match self.statement(&f.stmt) {
+            None => panic!("Function should have return!"),
+            Some(s) => ret.push(s)
+        }
+        return ir::Statement::Seq(ret);
     }
     /*----------------STATEMENTS--------------------*/
     fn statement(&mut self, s: &ast::Statement) -> Option<ir::Statement> {
@@ -47,11 +49,11 @@ impl Translator {
         }
     }
     fn declare_statement(&mut self, d: &ast::DeclareStatement) -> Option<ir::Statement> {
-        match d.val {
+        match &d.val {
             None    => return None,
             Some(e) => return Some(ir::Statement::Move(
                 Box::new(ir::Expr::Temp(d.id)),
-                Box::new(self.expression(&e))
+                Box::new(self.expression(e))
             ))
         }
     }
@@ -66,10 +68,10 @@ impl Translator {
         return ir::Statement::Seq(stmts);
     }
     fn expr_statement(&mut self, e: &ast::ExprStatement) -> Option<ir::Statement> {
-        return match e.expr {
+        return match &e.expr {
             None     => None,
             Some(ex) => Some(ir::Statement::Expr(
-                Box::new(self.expression(&ex))
+                Box::new(self.expression(ex))
             ))
         }
     }
@@ -85,7 +87,7 @@ impl Translator {
             Some(s) => ret.push(s)
         }
         ret.push(ir::Statement::Label(lf));
-        if let Some(s) = i.false_stmt {
+        if let Some(s) = &i.false_stmt {
             match self.statement(&s) {
                 None    => (),
                 Some(s) => ret.push(s)
@@ -95,9 +97,11 @@ impl Translator {
     }
     fn for_statement(&mut self, f: &ast::ForStatement) -> ir::Statement {
         let mut ret = Vec::<ir::Statement>::new();
-        match self.expr_statement(&f.init) {
+        match &f.init {
             None    => (),
-            Some(s) => ret.push(s)
+            Some(e) => ret.push(ir::Statement::Expr(
+                Box::new(self.expression(e))
+            ))
         }
         let lt = self.create_label();
         let lb = self.create_label();
@@ -106,11 +110,9 @@ impl Translator {
         self.loop_ends.push(lb);
 
         ret.push(ir::Statement::Label(lt));
-        match &f.cond.expr {
-            None    => (),
-            Some(e) => ret.push(self.control(
-                e, lb, le
-            ))
+        match &f.cond {
+            None => (),
+            Some(e) => ret.push(self.control(e, lb, le))
         }
         ret.push(ir::Statement::Label(lb));
         match self.statement(&f.stmt) {
@@ -161,7 +163,7 @@ impl Translator {
         use ast::JumpOp::*;
         match j.jump_type {
             Continue => self._continue(),
-            Return => self._return(&mut j.expr),
+            Return => self._return(&j.expr),
             Break => self._break()
         }
     }
@@ -171,7 +173,7 @@ impl Translator {
             Some(l) => return ir::Statement::Jump(ir::Expr::Name(*l))
         }
     }
-    fn _return(&mut self, e: &mut Option<Box<ast::Expr>>) -> ir::Statement {
+    fn _return(&mut self, e: &Option<Box<ast::Expr>>) -> ir::Statement {
         match e {
             None    => ir::Statement::Return(None),
             Some(s) => ir::Statement::Return(Some(
@@ -265,6 +267,7 @@ impl Translator {
         }
         return ir::Expr::Call(ir::Label { id: f.id }, v);
     }
+    /* TODO. Concactenate into one giant addition */
     fn access(&mut self, a: &ast::AccessExpr) -> ir::Expr {
         let mut prod: u32 = 1;
         let t = ir::Expr::Temp(self.create_temp());

@@ -21,9 +21,9 @@ impl Semantic {
         for f in &m.functions {
             self.fsym.insert(f);
         }
-        for mut f in &m.functions {
+        for f in &mut m.functions {
             self.fsym.insert(f);
-            self.function_declaration(&mut f);
+            self.function_declaration(f);
         }
     }
     fn function_declaration(&mut self, f: &mut FunctionDeclaration) {
@@ -32,7 +32,7 @@ impl Semantic {
             self.vsym.insert(&p.name, p.kind);
         }
         self.fname = f.name.clone();
-        self.compound_statement(&mut f.stmt);
+        self.statement(&mut f.stmt);
         self.vsym.scope_out();
     }
     fn statement(&mut self, s: &mut Statement) {
@@ -64,21 +64,25 @@ impl Semantic {
     fn if_statement(&mut self, i: &mut IfStatement) {
         self.expression(&mut i.condition);
         self.statement(&mut i.true_stmt);
-        if let Some(mut s) = &i.false_stmt {
-            self.statement(&mut s);
+        if let Some(s) = &mut i.false_stmt {
+            self.statement(s);
         }
     }
     fn expr_statement(&mut self, e: &mut ExprStatement) {
-        if let Some(mut e) = &e.expr {
-            self.expression(&mut e);
+        if let Some(e) = &mut e.expr {
+            self.expression(e);
         }
     }
     fn for_statement(&mut self, f: &mut ForStatement) {
         self.vsym.scope_in();
-        self.expr_statement(&mut f.init);
-        self.expr_statement(&mut f.cond);
-        if let Some(mut e) = &f.each {
-            self.expression(&mut e);
+        if let Some(e) = &mut f.init {
+            self.expression(e);
+        }
+        if let Some(e) = &mut f.cond {
+            self.expression(e);
+        }
+        if let Some(e) = &mut f.each {
+            self.expression(e);
         }
         self.statement(&mut f.stmt);
         self.vsym.scope_out();
@@ -98,23 +102,18 @@ impl Semantic {
     }
     fn jump_statement(&mut self, j: &mut JumpStatement) {
         if j.jump_type != JumpOp::Return { return; }
-        let func = self.fsym.get(&self.fname).unwrap();
-        match &j.expr {
-            None => assert!(
-                func.kind == Kind::void(),
-                "Return mismatch"
-            ),
+        let kind = match &mut j.expr {
+            None => Some(Kind::void()),
             Some(e) => {
                 self.expression(e);
-                assert!(
-                    func.kind == e.kind().unwrap(),
-                    "Return mismatch"
-                );
+                e.kind()
             }
-        }
+        };
+        let func = self.fsym.get(&self.fname).unwrap();
+        assert!(func.kind == kind.unwrap());
     }
     fn function_call(&mut self, f: &mut FunctionCall) {
-        for e in &f.args { self.expression(e); }
+        for e in &mut f.args { self.expression(e); }
         let fsym = match self.fsym.get(&f.name) {
             None => panic!("Reference To Non-Existing Function {}",
                         f.name),

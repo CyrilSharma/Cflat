@@ -1,6 +1,5 @@
 use std::fmt;
 use Primitive::*;
-use crate::utils::polymorphic_enum;
 
 //--------Modules------------
 pub struct Module {
@@ -12,7 +11,7 @@ pub struct FunctionDeclaration {
     pub ret:        Kind,
     pub name:       String,
     pub params:     Vec<Parameter>,
-    pub stmt:       Box<CompoundStatement>,
+    pub stmt:       Box<Statement>,
     pub id:         u32
 }
 
@@ -51,8 +50,8 @@ pub struct IfStatement {
 }
 
 pub struct ForStatement {
-    pub init:   Box<ExprStatement>,
-    pub cond:   Box<ExprStatement>,
+    pub init:   Option<Box<Expr>>,
+    pub cond:   Option<Box<Expr>>,
     pub each:   Option<Box<Expr>>,
     pub stmt:   Box<Statement>
 }
@@ -82,7 +81,7 @@ pub enum Expr {
     Ident(Identifier)
 }
 impl Expr {
-    pub fn kind(&mut self) -> Option<Kind> {
+    pub fn kind(&self) -> Option<Kind> {
         use Expr::*;
         match self {
             Function(i) => i.kind,
@@ -94,7 +93,7 @@ impl Expr {
             Ident(i)    => i.kind
         }
     }
-    pub fn id(&mut self) -> u32 {
+    pub fn id(&self) -> u32 {
         use Expr::*;
         match self {
             Access(i)   => i.id,
@@ -113,7 +112,7 @@ pub struct FunctionCall {
 
 pub struct AccessExpr {
     pub name:    String,
-    pub offsets: Vec<Box<Expr>>,
+    pub offsets: Vec<Expr>,
     pub sizes:   Vec<u32>,
     pub kind:    Option<Kind>,
     pub id:      u32
@@ -200,9 +199,7 @@ impl fmt::Display for Kind {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Primitive {
-    Void,
-    Int,
-    Float
+    Void, Int, Float
 }
 impl fmt::Display for Primitive {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {

@@ -21,9 +21,10 @@ function_declaration: Box<FunctionDeclaration> = {
 	<k: type_specifier> <i: identifier> "(" <p: Comma<parameter>?> ")" <s: compound_statement> => Box::new(
         FunctionDeclaration {
             ret: k,
-            name: i.name,
+            name: i,
             params: p.unwrap_or_else(|| Vec::new()),
-            statement: s,
+            stmt: s,
+            id: 0
         }
     )
 };
@@ -32,12 +33,19 @@ parameter: Parameter = {
     <k: type_specifier> <i: identifier> => {
         Parameter {
             kind: k,
-            name: i.name
+            name: i
         }
     }
 };
 
 //--------EXPRESSIONS------------
+expression_list: Vec<Expr> = {
+	expression => vec![*<>],
+	<mut v: expression_list> "," <e: expression> => {
+        v.push(*e);
+        v
+    }
+};
 expression: Box<Expr> = {
     <l: unary_expression> <o: AssignOp> <r: expression> => {
         Box::new(Expr::Binary(
@@ -110,23 +118,28 @@ UnaryOp: UnaryOp = {
     "&" => UnaryOp::Address
 };
 
-// TODO: This doesn't support multi-dimensional arrays.
 postfix_expression: Box<Expr> = {
-	identifier => Box::new(Expr::Identifier(<>)),
+	identifier => Box::new(Expr::Ident(Identifier {
+        name: <>, kind: None, id: 0
+    })),
     integer => Box::new(Expr::Integer(<>)),
     float => Box::new(Expr::Float(<>)),
-	<i: identifier> "[" <e: expression> "]" => {
-        Box::new(Expr::Access(
-            AccessExpr { name: i.name, offset: e, kind: None }
-        ))
-    },
-	<i: identifier> "(" <c: Comma<expression>?> ")" => {
-        match c {
+    <i: identifier> "[" <e: expression_list> "]" => 
+        Box::new(Expr::Access(AccessExpr {
+            name:    i,
+            offsets: e,
+            sizes:   Vec::new(),
+            kind:    None,
+            id:      0
+        }))
+    ,
+	<i: identifier> "(" <args: expression_list?> ")" => {
+        match args {
             None => Box::new(Expr::Function(
-                FunctionCall { name: i.name, args: Vec::new(), kind: None, id: 0 }
+                FunctionCall { name: i, args: Vec::new(), kind: None, id: 0 }
             )),
             Some(v) => Box::new(Expr::Function(
-                FunctionCall { name: i.name, args: v, kind: None, id: 0 }
+                FunctionCall { name: i, args: v, kind: None, id: 0 }
             )),
         }
     },
@@ -134,10 +147,10 @@ postfix_expression: Box<Expr> = {
 };
 
 //--------STATEMENTS------------
-statement_list: Vec<Box<Statement>> = {
-	statement => vec![<>],
+statement_list: Vec<Statement> = {
+	statement => vec![*<>],
 	<mut v: statement_list> <s: statement> => {
-        v.push(s);
+        v.push(*s);
         v
     }
 };
@@ -167,12 +180,12 @@ compound_statement: Box<Statement> = {
 declare_statement: Box<Statement> = {
     <k: type_specifier> <i: identifier> ";" => {
         Box::new(Statement::Declare(
-            DeclareStatement { kind: k, name: i.name, val: None }
+            DeclareStatement { id: 0, kind: k, name: i, val: None }
         ))
     },
     <k: type_specifier> <i: identifier> "=" <e: expression> ";" => {
         Box::new(Statement::Declare(
-            DeclareStatement { kind: k, name: i.name, val: Some(e) }
+            DeclareStatement { id: 0, kind: k, name: i, val: Some(e) }
         ))
     }
 };
@@ -209,11 +222,12 @@ iteration_statement: Box<Statement> = {
             stmt: s
         })
     ),
-	"for" "(" <e1: expression?> ";" <e2: expression?> ";" <e3: expression?> ")" <s: statement> => Box::new(
+	"for" "(" <e1: expression?> ";" <e2: expression?> ";" <e3: expression?> ")"
+        <s: statement> => Box::new(
         Statement::For( ForStatement { 
             init: e1,
-            each: e2,
-            end:  e3,
+            cond: e2,
+            each: e3,
             stmt: s
         })
     )
@@ -253,7 +267,7 @@ type_specifier: Kind = {
 
 type_primitive: Primitive = {
     "void"  => Primitive::Void,
-    "int"   => Primitive::Integer,
+    "int"   => Primitive::Int,
     "float" => Primitive::Float
 };
 
@@ -262,14 +276,8 @@ pointer: u32 = {
     <pointer> "*" => <> + 1
 };
 
-identifier: Identifier = {
-    r"[a-zA-Z][a-zA-Z0-9]*" => {
-        Identifier {
-            name: <>.to_string(),
-            kind: None,
-            id: 0 /* initialize with static int? */
-        }
-    }
+identifier: String = {
+    r"[a-zA-Z][a-zA-Z0-9]*" => <>.to_string()
 };
 
 integer: i32 = {

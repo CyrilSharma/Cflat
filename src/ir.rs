@@ -1,4 +1,3 @@
-use crate::ast;
 pub enum Expr {
     Const(Primitive),
     Temp(u32), /* ID */
@@ -20,6 +19,7 @@ pub enum Statement {
     Return(Option<Box<Expr>>)
 }
 
+#[derive(Debug, Clone, Copy)]
 pub struct Label {
     pub id: u32
 }
