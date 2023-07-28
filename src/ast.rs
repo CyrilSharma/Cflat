@@ -1,4 +1,5 @@
 use std::fmt;
+use Primitive::*;
 use crate::utils::polymorphic_enum;
 
 //--------Modules------------
@@ -165,22 +166,13 @@ pub struct Kind {
 }
 impl Kind {
     pub fn void() -> Self {
-        Self {
-            indir: 0,
-            prim: Primitive::Void
-        }
+        Self { indir: 0, prim: Void }
     }
     pub fn int() -> Self {
-        Self {
-            indir: 0,
-            prim: Primitive::Integer
-        }
+        Self { indir: 0, prim: Int }
     }
     pub fn float() -> Self {
-        Self {
-            indir: 0,
-            prim: Primitive::Float
-        }
+        Self { indir: 0, prim: Float }
     }
 }
 impl fmt::Display for Kind {
@@ -192,17 +184,15 @@ impl fmt::Display for Kind {
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Primitive {
     Void,
-    Integer,
+    Int,
     Float
 }
 impl fmt::Display for Primitive {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{}", 
-            match self {
-                Primitive::Void => "void",
-                Primitive::Integer => "int",
-                Primitive::Float => "float"
-            }
-        )
+        write!(f, "{}", match self {
+            Void => "void",
+            Int => "int",
+            Float => "float"
+        })
     }
 }
