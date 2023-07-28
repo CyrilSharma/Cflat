@@ -1,17 +1,19 @@
-use crate::ast;
+use crate::ast::{self, Statement, Identifier};
 use crate::ast::FunctionDeclaration;
 use crate::ir::{self, Operator};
 
 struct Translator {
+    ids:     u32,
     nlabels: u32,
     loop_starts: Vec<ir::Label>,
     loop_ends:   Vec<ir::Label>
 }
 
 impl Translator {
-    pub fn new() -> Self { 
+    pub fn new(count: u32) -> Self { 
         Self { 
-            nlabels: 0,
+            ids:         count,   
+            nlabels:     0,
             loop_starts: Vec::new(),
             loop_ends:   Vec::new()
         } 
@@ -28,7 +30,7 @@ impl Translator {
             ir::Statement::Label(
                 self.create_label()
             ),
-            self.compound_statement(&f.statement)
+            self.compound_statement(&f.stmt)
         ]);
     }
     fn statement(&mut self, s: &ast::Statement) -> Option<ir::Statement> {
@@ -103,10 +105,10 @@ impl Translator {
         self.loop_ends.push(lb);
 
         ret.push(ir::Statement::Label(lt));
-        match f.end {
+        match &f.cond.expr {
             None    => (),
-            Some(s) => ret.push(self.control(
-                &s, lb, le
+            Some(e) => ret.push(self.control(
+                e, lb, le
             ))
         }
         ret.push(ir::Statement::Label(lb));
@@ -114,9 +116,11 @@ impl Translator {
             None => (),
             Some(s) => ret.push(s)
         }
-        match self.expr_statement(&f.each) {
+        match &f.each {
             None    => (),
-            Some(s) => ret.push(s)
+            Some(e) => ret.push(ir::Statement::Expr(
+                Box::new(self.expression(e))
+            ))
         }
         ret.push(ir::Statement::Jump(
             ir::Expr::Name(lt)
@@ -155,26 +159,29 @@ impl Translator {
     fn jump_statement(&mut self, j: &ast::JumpStatement) -> ir::Statement {
         use ast::JumpOp::*;
         match j.jump_type {
-            Continue => {
-                match self.loop_starts.iter().last() {
-                    None    => panic!("You done goof"),
-                    Some(l) => return ir::Statement::Jump(ir::Expr::Name(*l))
-                }
-            },
-            Return => {
-                match j.expr {
-                    None    => ir::Statement::Return(None),
-                    Some(s) => ir::Statement::Return(Some(
-                        Box::new(self.expression(&s))
-                    ))
-                }
-            },
-            Break => {
-                match self.loop_ends.iter().last() {
-                    None    => panic!("You done goof"),
-                    Some(l) => return ir::Statement::Jump(ir::Expr::Name(*l))
-                }
-            }
+            Continue => self._continue(),
+            Return => self._return(&mut j.expr),
+            Break => self._break()
+        }
+    }
+    fn _continue(&mut self) -> ir::Statement {
+        match self.loop_starts.iter().last() {
+            None    => panic!("You done goof"),
+            Some(l) => return ir::Statement::Jump(ir::Expr::Name(*l))
+        }
+    }
+    fn _return(&mut self, e: &mut Option<Box<ast::Expr>>) -> ir::Statement {
+        match e {
+            None    => ir::Statement::Return(None),
+            Some(s) => ir::Statement::Return(Some(
+                Box::new(self.expression(&s))
+            ))
+        }
+    }
+    fn _break(&mut self) -> ir::Statement {
+        match self.loop_ends.iter().last() {
+            None    => panic!("You done goof"),
+            Some(l) => return ir::Statement::Jump(ir::Expr::Name(*l))
         }
     }
     fn control(&mut self, expr: &ast::Expr, t: ir::Label, f: ir::Label) -> ir::Statement {
@@ -260,17 +267,35 @@ impl Translator {
         return ir::Expr::Call(ir::Label { id: f.id }, v);
     }
     fn access(&mut self, a: &ast::AccessExpr) -> ir::Expr {
-        let mul = ir::Expr::BinOp(
-            Box::new(ir::Expr::Const(ir::Primitive::Int( 8 ))),
-            Operator::Mul,
-            Box::new(self.expression(&a.offset))
+        let mut prod: u32 = 1;
+        let t = ir::Expr::Temp(self.create_temp());
+        let mut stmts = Vec::<ir::Statement>::new();
+        for i in (0..a.offsets.len()).rev() {
+            let mul = ir::Expr::BinOp(
+                Box::new(ir::Expr::Const(
+                    ir::Primitive::Int(
+                        /* until I implement pointers correctly */ 
+                        8 * prod as i32
+                    )
+                )),
+                Operator::Mul,
+                Box::new(self.expression(&a.offsets[i]))
+            );
+            let add = ir::Expr::BinOp(
+                Box::new(t),
+                Operator::Add,
+                Box::new(mul)
+            );
+            stmts.push(ir::Statement::Move(
+                Box::new(t),
+                Box::new(add)
+            ));
+            prod *= a.sizes[i];
+        }
+        return ir::Expr::ESeq(
+            Box::new(ir::Statement::Seq(stmts)),
+            Box::new(ir::Expr::Mem(Box::new(t)))
         );
-        let add = ir::Expr::BinOp(
-            Box::new(ir::Expr::Temp(a.id)),
-            Operator::Add,
-            Box::new(mul)
-        );
-        return ir::Expr::Mem(Box::new(add))
     }
     fn unary(&mut self, u: &ast::UnaryExpr) -> ir::Expr {
         use ast::UnaryOp::*;
@@ -286,7 +311,7 @@ impl Translator {
     }
     fn binary(&mut self, b: &ast::BinaryExpr) -> ir::Expr {
         use ast::BinaryOp::*;
-        let op = match b.binary_op {
+        let mut op = match b.binary_op {
             Mul    => ir::Operator::Mul,
             Div    => ir::Operator::Div,
             Add    => ir::Operator::Add,
@@ -321,15 +346,15 @@ impl Translator {
         };
         let stmt = match b.binary_op {
             Peq | Teq | Seq | Deq => ir::Statement::Move(
-                Box::new(ir::Expr::Temp(id)),
+                Box::new(ir::Expr::Temp(b.left.id())),
                 Box::new(ir::Expr::BinOp(
-                    Box::new(ir::Expr::Temp(id)),
+                    Box::new(ir::Expr::Temp(b.left.id())),
                     op,
                     Box::new(self.expression(&b.right))
                 ))
             ),
             Assign => ir::Statement::Move(
-                Box::new(ir::Expr::Temp(id)),
+                Box::new(ir::Expr::Temp(b.left.id())),
                 Box::new(self.expression(&b.right))
             ),
             _ => panic!("Oh no!")
@@ -342,5 +367,9 @@ impl Translator {
     fn create_label(&mut self) -> ir::Label {
         self.nlabels += 1;
         return ir::Label { id: self.nlabels - 1 }
+    }
+    fn create_temp(&mut self) -> u32 {
+        self.ids += 1;
+        return self.ids - 1;
     }
 }

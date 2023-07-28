@@ -7,7 +7,6 @@ pub struct Module {
     pub functions: Vec<Box<FunctionDeclaration>>
 }
 
-
 //--------Functions------------
 pub struct FunctionDeclaration {
     pub ret:        Kind,
@@ -73,20 +72,36 @@ pub struct JumpStatement {
 }
 
 //--------Expressions------------
-polymorphic_enum! {
-    Expr => [
-        Function(FunctionCall),
-        Access(AccessExpr),
-        Unary(UnaryExpr),
-        Binary(BinaryExpr),
-        Integer(i32),
-        Float(f32),
-        Ident(Identifier)
-    ],
-    Attributes => [
-        kind: Option<Kind>,
-        id:   u32
-    ]
+pub enum Expr {
+    Function(FunctionCall),
+    Access(AccessExpr),
+    Unary(UnaryExpr),
+    Binary(BinaryExpr),
+    Integer(i32),
+    Float(f32),
+    Ident(Identifier)
+}
+impl Expr {
+    pub fn kind(&mut self) -> Option<Kind> {
+        use Expr::*;
+        match self {
+            Function(i) => i.kind,
+            Access(i)   => i.kind,
+            Unary(i)    => i.kind,
+            Binary(i)   => i.kind,
+            Integer(_)  => Some(Kind::int()),
+            Float(_)    => Some(Kind::float()),
+            Ident(i)    => i.kind
+        }
+    }
+    pub fn id(&mut self) -> u32 {
+        use Expr::*;
+        match self {
+            Access(i)   => i.id,
+            Ident(i)    => i.id,
+            _           => panic!("Only Access & Ident have ID!")
+        }
+    }
 }
 
 pub struct FunctionCall {
@@ -97,9 +112,11 @@ pub struct FunctionCall {
 }
 
 pub struct AccessExpr {
-    pub name:   String,
-    pub offset: Box<Expr>,
-    pub kind:   Option<Kind>,
+    pub name:    String,
+    pub offsets: Vec<Box<Expr>>,
+    pub sizes:   Vec<u32>,
+    pub kind:    Option<Kind>,
+    pub id:      u32
 }
 
 pub struct UnaryExpr {
