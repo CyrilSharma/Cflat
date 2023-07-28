@@ -3,8 +3,8 @@ use crate::ast::FunctionDeclaration;
 use crate::ir::{self, Operator};
 
 struct Translator {
-    ids:     u32,
-    nlabels: u32,
+    ids:         u32,
+    nlabels:     u32,
     loop_starts: Vec<ir::Label>,
     loop_ends:   Vec<ir::Label>
 }
@@ -33,6 +33,7 @@ impl Translator {
             self.compound_statement(&f.stmt)
         ]);
     }
+    /*----------------STATEMENTS--------------------*/
     fn statement(&mut self, s: &ast::Statement) -> Option<ir::Statement> {
         use ast::Statement::*;
         return match s {
@@ -184,6 +185,7 @@ impl Translator {
             Some(l) => return ir::Statement::Jump(ir::Expr::Name(*l))
         }
     }
+    /*----------------CONTROL--------------------*/
     fn control(&mut self, expr: &ast::Expr, t: ir::Label, f: ir::Label) -> ir::Statement {
         use ast::Expr::*;
         let res = match expr {
@@ -239,6 +241,7 @@ impl Translator {
             _   => None
         }
     }
+    /*----------------EXPRESSIONS--------------------*/
     fn expression(&mut self, e: &ast::Expr) -> ir::Expr {
         use ast::Expr::*;
         match e {
