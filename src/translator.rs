@@ -1,8 +1,6 @@
 use crate::ast;
 use crate::ast::FunctionDeclaration;
 use crate::ir::{self, Operator};
-use crate::visitor::Visitor;
-use crate::traverse::Traverseable;
 
 struct Translator {
     nlabels: u32,
