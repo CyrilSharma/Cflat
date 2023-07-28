@@ -1,6 +1,4 @@
 use crate::ast::*;
-use crate::visitor::Visitor;
-use crate::traverse::Traverseable;
 use crate::symboltable::{SymbolTable, VSymbol, FSymbol};
 struct Semantic {
     fname: String,
@@ -23,63 +21,100 @@ impl Semantic {
         for f in &m.functions {
             self.fsym.insert(f);
         }
-        m.accept(self);
+        for mut f in &m.functions {
+            self.fsym.insert(f);
+            self.function_declaration(&mut f);
+        }
     }
-}
-impl Visitor for Semantic {
-    fn begin_function_declaration(&mut self, f: &mut FunctionDeclaration) {
+    fn function_declaration(&mut self, f: &mut FunctionDeclaration) {
         self.vsym.scope_in();
         for p in &f.params {
             self.vsym.insert(&p.name, p.kind);
         }
         self.fname = f.name.clone();
-    }
-    fn handle_function_declaration(&mut self, _f: &mut FunctionDeclaration) {
+        self.compound_statement(&mut f.stmt);
         self.vsym.scope_out();
     }
-    fn handle_declare_statement(&mut self, d: &mut DeclareStatement) {
+    fn statement(&mut self, s: &mut Statement) {
+        use Statement::*;
+        match s {
+            Declare     (ref mut d) => self.declare_statement(d),
+            Expr        (ref mut e) => self.expr_statement(e),
+            If          (ref mut i) => self.if_statement(i),
+            For         (ref mut f) => self.for_statement(f),
+            While       (ref mut w) => self.while_statement(w),
+            Compound    (ref mut c) => self.compound_statement(c),
+            Jump        (ref mut j) => self.jump_statement(j),
+        }
+    }
+    fn declare_statement(&mut self, d: &mut DeclareStatement) {
         if self.vsym.contains_key_in_scope(&d.name) {
             panic!("Defining already defined variable!");
         }
         self.vsym.insert(&d.name, d.kind);
         if let Some(e) = &d.val {
-            assert!(d.kind == e.kind.unwrap(), "{}",
+            assert!(d.kind == e.kind().unwrap(), "{}",
                 &format!(
                     "variable should have type {:?}, but is actually {:?}.",
-                    d.kind, e.kind
+                    d.kind, e.kind()
                 )
             )
         }
     }
-    fn begin_for_statement(&mut self, _f: &mut ForStatement) {
-        self.vsym.scope_in();
+    fn if_statement(&mut self, i: &mut IfStatement) {
+        self.expression(&mut i.condition);
+        self.statement(&mut i.true_stmt);
+        if let Some(mut s) = &i.false_stmt {
+            self.statement(&mut s);
+        }
     }
-    fn handle_for_statement(&mut self, _f: &mut ForStatement) {
+    fn expr_statement(&mut self, e: &mut ExprStatement) {
+        if let Some(mut e) = &e.expr {
+            self.expression(&mut e);
+        }
+    }
+    fn for_statement(&mut self, f: &mut ForStatement) {
+        self.vsym.scope_in();
+        self.expr_statement(&mut f.init);
+        self.expr_statement(&mut f.cond);
+        if let Some(mut e) = &f.each {
+            self.expression(&mut e);
+        }
+        self.statement(&mut f.stmt);
         self.vsym.scope_out();
     }
-    fn begin_compound_statement(&mut self, _c: &mut CompoundStatement) {
+    fn while_statement(&mut self, w: &mut WhileStatement) {
         self.vsym.scope_in();
-    }
-    fn handle_compound_statement(&mut self, _c: &mut CompoundStatement) {
+        self.expression(&mut w.condition);
+        self.statement(&mut w.stmt);
         self.vsym.scope_out();
     }
-    fn handle_jump_statement(&mut self, j: &mut JumpStatement) {
+    fn compound_statement(&mut self, c: &mut CompoundStatement) {
+        self.vsym.scope_in();
+        for mut stmt in &mut c.stmts {
+            self.statement(&mut stmt);
+        }
+        self.vsym.scope_out();
+    }
+    fn jump_statement(&mut self, j: &mut JumpStatement) {
         if j.jump_type != JumpOp::Return { return; }
-        // println!("{}", self.fname);
         let func = self.fsym.get(&self.fname).unwrap();
         match &j.expr {
             None => assert!(
                 func.kind == Kind::void(),
                 "Return mismatch"
             ),
-            Some(e) => assert!(
-                func.kind == e.kind().unwrap(),
-                "Return mismatch"
-            )
+            Some(e) => {
+                self.expression(e);
+                assert!(
+                    func.kind == e.kind().unwrap(),
+                    "Return mismatch"
+                );
+            }
         }
     }
-    fn handle_function_call(&mut self, f: &mut FunctionCall) {
-        // println!("Call: {}", f.name);
+    fn function_call(&mut self, f: &mut FunctionCall) {
+        for e in &f.args { self.expression(e); }
         let fsym = match self.fsym.get(&f.name) {
             None => panic!("Reference To Non-Existing Function {}",
                         f.name),
@@ -97,10 +132,22 @@ impl Visitor for Semantic {
         }
         f.kind = Some(fsym.kind);
     }
-    fn handle_access(&mut self, _a: &mut AccessExpr) {
+    fn expression(&mut self, e: &mut Expr) {
+        use Expr::*;
+        match e {
+            Function (ref mut i) => self.function_call(i),
+            Access   (ref mut i) => self.access(i),
+            Unary    (ref mut i) => self.unary(i),
+            Binary   (ref mut i) => self.binary(i),
+            Ident    (ref mut i) => self.identifier(i),
+            _                    => ()
+        }
+    }
+    fn access(&mut self, _a: &mut AccessExpr) {
         panic!("THERE ARE NO ACCESSES...");
     }
-    fn handle_unary(&mut self, u: &mut UnaryExpr) {
+    fn unary(&mut self, u: &mut UnaryExpr) {
+        self.expression(&mut u.expr);
         let mut kind = u.expr.kind().unwrap();
         match u.unary_op {
             UnaryOp::Address => {
@@ -139,7 +186,9 @@ impl Visitor for Semantic {
             },
         }
     }
-    fn handle_binary(&mut self, b: &mut BinaryExpr) {
+    fn binary(&mut self, b: &mut BinaryExpr) {
+        self.expression(&mut b.left);
+        self.expression(&mut b.right);
         let lkind = b.left.kind().unwrap();
         let rkind = b.right.kind().unwrap();
         if lkind == rkind { 
@@ -195,7 +244,7 @@ impl Visitor for Semantic {
             }
         }
     }
-    fn handle_identifier(&mut self, i: &mut Identifier) {
+    fn identifier(&mut self, i: &mut Identifier) {
         match self.vsym.get(&i.name) {
             None => panic!(
                 "Identifier {} not found!",
@@ -211,30 +260,33 @@ impl Visitor for Semantic {
 
 
 #[cfg(test)]
-use std::fs;
-use crate::parser::moduleParser;
-use crate::printer::Printer;
+mod tests {
+    use super::*;
+    use std::fs;
+    use crate::parser::moduleParser;
+    use crate::printer::Printer;
 
-#[test]
-#[allow(dead_code)]
-fn visualize() {
-    // TODO: Reorganize test cases (only need a data directory)
-    // Iterate over all test cases.
-    let path0 = "tests/data/parser/input0.c";
-    let input0 = fs::read_to_string(path0).expect("File not found!");
-    let mut m = moduleParser::new().parse(&input0).expect("Parse Error!");
-    Semantic::new().analyze(&mut m);
-    Printer::new().print(&mut m);
+    #[test]
+    #[allow(dead_code)]
+    fn visualize() {
+        // TODO: Reorganize test cases (only need a data directory)
+        // Iterate over all test cases.
+        let path0 = "tests/data/parser/input0.c";
+        let input0 = fs::read_to_string(path0).expect("File not found!");
+        let mut m = moduleParser::new().parse(&input0).expect("Parse Error!");
+        Semantic::new().analyze(&mut m);
+        Printer::new().print(&mut m);
 
-    let path1 = "tests/data/parser/input1.c";
-    let input1 = fs::read_to_string(path1).expect("File not found!");
-    let mut m = moduleParser::new().parse(&input1).expect("Parse Error!");
-    Semantic::new().analyze(&mut m);
-    Printer::new().print(&mut m);
+        let path1 = "tests/data/parser/input1.c";
+        let input1 = fs::read_to_string(path1).expect("File not found!");
+        let mut m = moduleParser::new().parse(&input1).expect("Parse Error!");
+        Semantic::new().analyze(&mut m);
+        Printer::new().print(&mut m);
 
-    let path1 = "tests/data/parser/input2.c";
-    let input1 = fs::read_to_string(path1).expect("File not found!");
-    let mut m = moduleParser::new().parse(&input1).expect("Parse Error!");
-    Semantic::new().analyze(&mut m);
-    Printer::new().print(&mut m);
+        let path1 = "tests/data/parser/input2.c";
+        let input1 = fs::read_to_string(path1).expect("File not found!");
+        let mut m = moduleParser::new().parse(&input1).expect("Parse Error!");
+        Semantic::new().analyze(&mut m);
+        Printer::new().print(&mut m);
+    }
 }

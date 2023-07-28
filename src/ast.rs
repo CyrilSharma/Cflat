@@ -12,7 +12,7 @@ pub struct FunctionDeclaration {
     pub ret:        Kind,
     pub name:       String,
     pub params:     Vec<Parameter>,
-    pub statement:  Box<CompoundStatement>,
+    pub stmt:       Box<CompoundStatement>,
     pub id:         u32
 }
 
@@ -52,8 +52,8 @@ pub struct IfStatement {
 
 pub struct ForStatement {
     pub init:   Box<ExprStatement>,
-    pub each:   Box<ExprStatement>,
-    pub end:    Option<Box<Expr>>,
+    pub cond:   Box<ExprStatement>,
+    pub each:   Option<Box<Expr>>,
     pub stmt:   Box<Statement>
 }
 
