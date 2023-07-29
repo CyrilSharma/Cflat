@@ -1,11 +1,9 @@
 use std::collections::HashMap;
-
 use crate::ir::*;
 
 #[derive(Clone)]
 struct Node {
-    // exclusive range [s...e)
-    range: (usize, usize),
+    stmts: Vec<Statement>,
     edges: Vec<usize>
 }
 struct CFG { nodes: Vec<Node> }
@@ -27,23 +25,29 @@ impl CfgBuilder {
         while idx < stmts.len() {
             nid = self.nodes.len();
             self.nodes.push(Node { 
-                range: (idx, idx), 
+                stmts: Vec::new(),
                 edges: Vec::new()
             });
             while idx < stmts.len() {
                 idx += 1; // counter increases even on break.
                 match stmts[idx - 1] {
                     Expr(_) | Move(_, _) => {
-                        self.nodes[nid].range.1 += 1;
+                        self.nodes[nid].stmts.push(
+                            stmts[idx-1].clone()
+                        );
                     },
                     Jump(l) => {
-                        self.nodes[nid].range.1 += 1;
+                        self.nodes[nid].stmts.push(
+                            stmts[idx-1].clone()
+                        );
                         let id = self.find(l.id);
                         self.nodes[nid].edges.push(id);
                         break;
                     },
                     CJump(_, l1, l2) => {
-                        self.nodes[nid].range.1 += 1;
+                        self.nodes[nid].stmts.push(
+                            stmts[idx-1].clone()
+                        );
                         let id1 = self.find(l1.id);
                         self.nodes[nid].edges.push(id1);
                         let id2 = self.find(l2.id);
@@ -51,12 +55,16 @@ impl CfgBuilder {
                         break;
                     },
                     Return(_) => {
-                        self.nodes[nid].range.1 += 1;
+                        self.nodes[nid].stmts.push(
+                            stmts[idx-1].clone()
+                        );
                         break;
                     },
                     Label(l) => {
                         nid = self.find(l.id);
-                        self.nodes[nid].range = (idx - 1, idx);
+                        self.nodes[nid].stmts.push(
+                            stmts[idx-1].clone()
+                        );
                     }
                     _ => unreachable!()
                 }
@@ -66,7 +74,7 @@ impl CfgBuilder {
             nodes: self.nodes
                 .iter()
                 .cloned()
-                .filter(|n| n.range.0 != n.range.1)
+                .filter(|n| n.stmts.len() != 0)
                 .collect()
         }
     }
@@ -74,7 +82,7 @@ impl CfgBuilder {
         return match self.lookup.get(&i) {
             None => {
                 self.lookup.insert(i, self.nodes.len());
-                self.nodes.push(Node { range: (0, 0), edges: Vec::new() });
+                self.nodes.push(Node { stmts: Vec::new(), edges: Vec::new() });
                 self.nodes.len() - 1
             }
             Some(id) => *id
