@@ -18,13 +18,7 @@ impl Reducer {
                 s1.push(CJump(e1, *t, *f));
                 return s1;
             },
-            Jump(j) => {
-                let (mut s1, e1) = self.expression(j);
-                s1.push(Jump(e1));
-                return s1;
-            },
-            Label(_) => return vec![s.clone()],
-            Return(_) => return vec![s.clone()],
+            Jump(_) | Label(_) | Return(_)=> return vec![s.clone()],
             Move(d, s) => return self._move(d, s),
             Seq(s) => return self.seq(s),
         }
@@ -71,7 +65,7 @@ impl Reducer {
     fn expression(&mut self, e: &Expr) -> (Vec<Statement>, Box<Expr>) {
         use Expr::*;
         match e {
-            Const(_) | Temp(_) | Name(_) => {
+            Const(_) | Temp(_) => {
                 return (Vec::new(), Box::new(e.clone()))
             }
             Mem(e1) | Address(e1) => {
@@ -154,7 +148,7 @@ mod tests {
     use crate::semantic::Semantic;
     use crate::astprinter;
     use crate::irprinter;
-    use crate::translator::Translator;
+    use crate::irtranslator::Translator;
 
     #[test]
     fn visualize() {

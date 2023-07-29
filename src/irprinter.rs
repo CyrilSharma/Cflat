@@ -15,7 +15,7 @@ impl Printer {
             Expr(e) => self.expression(e),
             Move(d, s) => self._move(d, s),
             Seq(s) => self.seq(s),
-            Jump(j) => self.jump(j),
+            Jump(j) => self.add_label(&format!("Jump: {:?}", j)),
             CJump(c, t, f) => self.cjump(c, *t, *f),
             Label(l) => self.add_label(&format!("{:?}", l)),
             Return(r) => self._return(r)
@@ -36,12 +36,6 @@ impl Printer {
             self.add_edge(idx, self.count);
             self.statement(s);
         }
-    }
-    fn jump(&mut self, j: &Expr) {
-        let idx = self.count;
-        self.add_label("Jump");
-        self.add_edge(idx, self.count);
-        self.expression(j);
     }
     fn cjump(&mut self, j: &Expr, t: Label, f: Label) {
         let idx = self.count;
@@ -75,7 +69,6 @@ impl Printer {
             BinOp(l, op, r) => self.binary(l, *op, r),
             Mem(e) => self.mem(e),
             Call(l, s) => self.call(*l, s),
-            Name(l) => self.add_label(&format!("Name({:?})", l)),
             ESeq(s, e) => self.eseq(s, e),
             Address(e) => self.address(e)
         }

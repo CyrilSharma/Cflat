@@ -126,9 +126,7 @@ impl Translator {
                 Box::new(self.expression(e))
             ))
         }
-        ret.push(ir::Statement::Jump(
-            Box::new(ir::Expr::Name(lt))
-        ));
+        ret.push(ir::Statement::Jump(lt));
         ret.push(ir::Statement::Label(le));
 
         self.loop_starts.pop();
@@ -151,9 +149,7 @@ impl Translator {
             None => (),
             Some(s) => ret.push(s)
         }
-        ret.push(ir::Statement::Jump(
-            Box::new(ir::Expr::Name(lt))
-        ));
+        ret.push(ir::Statement::Jump(lt));
         ret.push(ir::Statement::Label(le));
 
         self.loop_starts.pop();
@@ -171,9 +167,7 @@ impl Translator {
     fn _continue(&mut self) -> ir::Statement {
         match self.loop_starts.iter().last() {
             None    => panic!("You done goof"),
-            Some(l) => return ir::Statement::Jump(
-                Box::new(ir::Expr::Name(*l))
-            )
+            Some(l) => return ir::Statement::Jump(*l)
         }
     }
     fn _return(&mut self, e: &Option<Box<ast::Expr>>) -> ir::Statement {
@@ -187,9 +181,7 @@ impl Translator {
     fn _break(&mut self) -> ir::Statement {
         match self.loop_ends.iter().last() {
             None    => panic!("You done goof"),
-            Some(l) => return ir::Statement::Jump(
-                Box::new(ir::Expr::Name(*l))
-            )
+            Some(l) => return ir::Statement::Jump(*l)
         }
     }
     /*----------------CONTROL--------------------*/
@@ -199,9 +191,7 @@ impl Translator {
             Unary(u) => self.control_unary(&u, t, f),
             Binary(b) => self.control_binary(&b, t, f),
             Integer(i) => Some(ir::Statement::Jump(
-                Box::new(ir::Expr::Name(
-                    if *i != 0 { t } else { f }
-                ))
+                if *i != 0 { t } else { f }
             )),
             Ident(i) => Some(ir::Statement::CJump(
                 Box::new(ir::Expr::Temp(i.id)),

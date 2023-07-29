@@ -6,7 +6,6 @@ pub enum Expr {
     BinOp(Box<Expr>, Operator, Box<Expr>),
     Mem(Box<Expr>),
     Call(Label, Vec<Expr>),
-    Name(Label),
     Address(Box<Expr>), /* Temp, Access */
     ESeq(Box<Statement>, Box<Expr>)
 }
@@ -16,7 +15,7 @@ pub enum Statement {
     Expr(Box<Expr>),
     Move(Box<Expr>, Box<Expr>),
     Seq(Vec<Statement>),
-    Jump(Box<Expr>),
+    Jump(Label),
     CJump(Box<Expr>, Label, Label),
     Label(Label),
     Return(Option<Box<Expr>>)
