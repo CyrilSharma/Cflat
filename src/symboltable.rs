@@ -18,7 +18,7 @@ impl Symbol for FSymbol {}
 
 pub struct SymbolTable<T: Symbol> {
     stk: Vec<HashMap<String, T>>,
-    count: u32
+    pub count: u32
 }
 
 impl SymbolTable<VSymbol> {

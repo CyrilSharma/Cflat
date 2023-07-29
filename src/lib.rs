@@ -2,6 +2,7 @@ pub mod ast;
 pub mod astprinter;
 pub mod ir;
 pub mod irprinter;
+pub mod irreducer;
 pub mod parser;
 pub mod semantic;
 pub mod symboltable;

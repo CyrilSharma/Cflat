@@ -127,7 +127,7 @@ impl Translator {
             ))
         }
         ret.push(ir::Statement::Jump(
-            ir::Expr::Name(lt)
+            Box::new(ir::Expr::Name(lt))
         ));
         ret.push(ir::Statement::Label(le));
 
@@ -152,7 +152,7 @@ impl Translator {
             Some(s) => ret.push(s)
         }
         ret.push(ir::Statement::Jump(
-            ir::Expr::Name(lt)
+            Box::new(ir::Expr::Name(lt))
         ));
         ret.push(ir::Statement::Label(le));
 
@@ -171,7 +171,9 @@ impl Translator {
     fn _continue(&mut self) -> ir::Statement {
         match self.loop_starts.iter().last() {
             None    => panic!("You done goof"),
-            Some(l) => return ir::Statement::Jump(ir::Expr::Name(*l))
+            Some(l) => return ir::Statement::Jump(
+                Box::new(ir::Expr::Name(*l))
+            )
         }
     }
     fn _return(&mut self, e: &Option<Box<ast::Expr>>) -> ir::Statement {
@@ -185,7 +187,9 @@ impl Translator {
     fn _break(&mut self) -> ir::Statement {
         match self.loop_ends.iter().last() {
             None    => panic!("You done goof"),
-            Some(l) => return ir::Statement::Jump(ir::Expr::Name(*l))
+            Some(l) => return ir::Statement::Jump(
+                Box::new(ir::Expr::Name(*l))
+            )
         }
     }
     /*----------------CONTROL--------------------*/
@@ -194,9 +198,11 @@ impl Translator {
         let res = match expr {
             Unary(u) => self.control_unary(&u, t, f),
             Binary(b) => self.control_binary(&b, t, f),
-            Integer(i) => Some(ir::Statement::Jump(ir::Expr::Name(
-                if *i != 0 { t } else { f }
-            ))),
+            Integer(i) => Some(ir::Statement::Jump(
+                Box::new(ir::Expr::Name(
+                    if *i != 0 { t } else { f }
+                ))
+            )),
             Ident(i) => Some(ir::Statement::CJump(
                 Box::new(ir::Expr::Temp(i.id)),
                 t, f
@@ -307,7 +313,9 @@ impl Translator {
             Star => return ir::Expr::Mem(Box::new(
                 self.expression(&u.expr)
             )),
-            Address => return ir::Expr::Address(u.expr.id())
+            Address => return ir::Expr::Address(Box::new(
+                self.expression(&u.expr)
+            ))
         };
         return ir::Expr::UnOp(op,
             Box::new(self.expression(&u.expr))

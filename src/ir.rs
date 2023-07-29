@@ -1,3 +1,4 @@
+#[derive(Clone)]
 pub enum Expr {
     Const(Primitive),
     Temp(u32), /* ID */
@@ -6,15 +7,16 @@ pub enum Expr {
     Mem(Box<Expr>),
     Call(Label, Vec<Expr>),
     Name(Label),
-    Address(u32), /* ID */
+    Address(Box<Expr>), /* Temp, Access */
     ESeq(Box<Statement>, Box<Expr>)
 }
 
+#[derive(Clone)]
 pub enum Statement {
     Expr(Box<Expr>),
     Move(Box<Expr>, Box<Expr>),
     Seq(Vec<Statement>),
-    Jump(Expr),
+    Jump(Box<Expr>),
     CJump(Box<Expr>, Label, Label),
     Label(Label),
     Return(Option<Box<Expr>>)
@@ -25,7 +27,7 @@ pub struct Label {
     pub id: u32
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum Primitive {
     Int(i32),
     Float(f32)

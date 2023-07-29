@@ -4,10 +4,7 @@ impl Printer {
     pub fn new() -> Self { Self{count: 0} }
     pub fn print(&mut self, stmts: &Vec<Statement>) {
         println!("digraph IR {{");
-        let idx = self.count;
-        self.add_label("Module");
         for s in stmts {
-            self.add_edge(idx, self.count);
             self.statement(s);
         }
         println!("}}");
@@ -80,7 +77,7 @@ impl Printer {
             Call(l, s) => self.call(*l, s),
             Name(l) => self.add_label(&format!("Name({:?})", l)),
             ESeq(s, e) => self.eseq(s, e),
-            Address(i) => self.add_label(&format!("Address({})", *i))
+            Address(e) => self.address(e)
         }
     }
     fn unary(&mut self, op: Operator, e: &Expr) {
@@ -118,6 +115,12 @@ impl Printer {
         self.add_label("ESEQ");
         self.add_edge(idx, self.count);
         self.statement(s);
+        self.add_edge(idx, self.count);
+        self.expression(e);
+    }
+    fn address(&mut self, e: &Expr) {
+        let idx = self.count;
+        self.add_label("Address");
         self.add_edge(idx, self.count);
         self.expression(e);
     }

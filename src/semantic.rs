@@ -19,8 +19,8 @@ impl Semantic {
     pub fn analyze(&mut self, m: &mut Module) {
         // Forward Declarations!
         for i in 0..m.functions.len() {
-            self.fsym.insert(&m.functions[i]);
-            m.functions[i].id = i as u32;
+            m.functions[i].id = 
+                self.fsym.insert(&m.functions[i]);
         }
         for f in &mut m.functions {
             self.function_declaration(f);
@@ -256,6 +256,9 @@ impl Semantic {
                 i.id = s.id;
             }
         }
+    }
+    pub fn nid(&self) -> u32 {
+        return self.vsym.count;
     }
 }
 
