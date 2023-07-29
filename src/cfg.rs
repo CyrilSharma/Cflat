@@ -1,13 +1,13 @@
 use std::collections::HashMap;
-use crate::ir::*;
+use crate::ir::{self, *};
 
 #[derive(Clone)]
-struct Node {
-    stmts: Vec<Statement>,
-    edges: Vec<usize>
+pub struct Node {
+    pub stmts: Vec<Statement>,
+    pub edges: Vec<usize>
 }
-struct CFG { nodes: Vec<Node> }
-struct CfgBuilder {
+pub struct CFG { pub nodes: Vec<Node> }
+pub struct CfgBuilder {
     nodes: Vec<Node>,
     lookup: HashMap<u32, usize>
 }
@@ -18,7 +18,7 @@ impl CfgBuilder {
             lookup: HashMap::new()
         } 
     }
-    fn build(&mut self, stmts: Vec<Statement>) -> CFG {
+    fn build(&mut self, stmts: &Vec<Statement>) -> CFG {
         use Statement::*;
         let mut nid;
         let mut idx: usize = 0;
@@ -31,7 +31,17 @@ impl CfgBuilder {
             while idx < stmts.len() {
                 idx += 1; // counter increases even on break.
                 match stmts[idx - 1] {
-                    Expr(_) | Move(_, _) => {
+                    Expr(ref e) => {
+                        if let ir::Expr::Call(f, _) = **e {
+                            let id1 = self.find(f.id);
+                            self.nodes[nid].edges.push(id1);
+                            self.nodes[id1].edges.push(nid);
+                        }
+                        self.nodes[nid].stmts.push(
+                            stmts[idx-1].clone()
+                        );
+                    },
+                    Move(_, _) => {
                         self.nodes[nid].stmts.push(
                             stmts[idx-1].clone()
                         );
@@ -61,6 +71,10 @@ impl CfgBuilder {
                         break;
                     },
                     Label(l) => {
+                        /* remove empty nodes. */
+                        if self.nodes[nid].stmts.len() == 0 {
+                            self.nodes.pop();
+                        }
                         nid = self.find(l.id);
                         self.nodes[nid].stmts.push(
                             stmts[idx-1].clone()
@@ -70,13 +84,7 @@ impl CfgBuilder {
                 }
             }
         }
-        return CFG {
-            nodes: self.nodes
-                .iter()
-                .cloned()
-                .filter(|n| n.stmts.len() != 0)
-                .collect()
-        }
+        return CFG { nodes: self.nodes.clone() }
     }
     fn find(&mut self, i: u32) -> usize {
         return match self.lookup.get(&i) {
@@ -88,5 +96,38 @@ impl CfgBuilder {
             Some(id) => *id
         };
     }
+}
 
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::fs;
+    use std::path::Path;
+    use crate::parser::moduleParser;
+    use crate::semantic::Semantic;
+    //use crate::astprinter;
+    //use crate::irprinter;
+    use crate::irtranslator::Translator;
+    use crate::irreducer::Reducer;
+    use crate::cfgprinter;
+
+    #[test]
+    fn visualize() {
+        let mut i = 0;
+        let dir = "tests/data";
+        while Path::new(&format!("{dir}/input{i}.c")).exists() {
+            let filepath = &format!("{dir}/input{i}.c");
+            let input = fs::read_to_string(filepath).expect("File not found!");
+            let mut m = moduleParser::new().parse(&input).expect("Parse Error!");
+            let mut semantic = Semantic::new();
+            semantic.analyze(&mut m);
+            let ir  = Translator::new().translate(&mut m);
+            let lir = Reducer::new(semantic.nid()).reduce(&ir);
+            let cfg = CfgBuilder::new().build(&lir);
+            println!("{}", &format!("FILE: {filepath}"));
+            cfgprinter::Printer::new().print(&cfg.nodes);
+            println!("\n\n\n\n\n");
+            i += 1;
+        }   
+    }
 }

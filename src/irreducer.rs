@@ -8,11 +8,7 @@ impl Reducer {
     fn statement(&mut self, s: &Statement) -> Vec<Statement> {
         use Statement::*;
         match s {
-            Expr(e) => {
-                let (mut s1, e1) = self.expression(e);
-                s1.push(Expr(e1));
-                return s1;
-            },
+            Expr(e) => self.expr_statement(e),
             CJump(e, t, f) => {
                 let (mut s1, e1) = self.expression(e);
                 s1.push(CJump(e1, *t, *f));
@@ -22,6 +18,14 @@ impl Reducer {
             Move(d, s) => return self._move(d, s),
             Seq(s) => return self.seq(s),
         }
+    }
+    fn expr_statement(&mut self, e: &Expr) -> Vec<Statement> {
+        let (mut s1, e1) = self.expression(e);
+        match *e1 {
+            Expr::Call(_, _) => s1.push(Statement::Expr(e1)),
+            _ => ()
+        }
+        return s1;
     }
     fn _move(&mut self, d: &Expr, s: &Expr) -> Vec<Statement> {
         use Expr::*;
@@ -144,6 +148,7 @@ impl Reducer {
 mod tests {
     use super::*;
     use std::fs;
+    use std::path::Path;
     use crate::parser::moduleParser;
     use crate::semantic::Semantic;
     use crate::astprinter;
@@ -152,24 +157,19 @@ mod tests {
 
     #[test]
     fn visualize() {
-        let path0 = "tests/data/parser/input0.c";
-        let input0 = fs::read_to_string(path0).expect("File not found!");
-        let mut m = moduleParser::new().parse(&input0).expect("Parse Error!");
-        let mut semantic = Semantic::new();
-        semantic.analyze(&mut m);
-        let ir  = Translator::new().translate(&mut m);
-        let lir = Reducer::new(semantic.nid()).reduce(&ir);
-        astprinter::Printer::new().print(&m);
-        irprinter::Printer::new().print(&lir);
-
-        let path1 = "tests/data/parser/input1.c";
-        let input1 = fs::read_to_string(path1).expect("File not found!");
-        let mut m = moduleParser::new().parse(&input1).expect("Parse Error!");
-        let mut semantic = Semantic::new();
-        semantic.analyze(&mut m);
-        let ir  = Translator::new().translate(&mut m);
-        let lir = Reducer::new(semantic.nid()).reduce(&ir);
-        astprinter::Printer::new().print(&m);
-        irprinter::Printer::new().print(&lir);
+        let mut i = 0;
+        let dir = "tests/data/";
+        while Path::new(&format!("{dir}/input{i}.c")).exists() {
+            let filepath = &format!("{dir}/input{i}.c");
+            let input = fs::read_to_string(filepath).expect("File not found!");
+            let mut m = moduleParser::new().parse(&input).expect("Parse Error!");
+            let mut semantic = Semantic::new();
+            semantic.analyze(&mut m);
+            let ir  = Translator::new().translate(&mut m);
+            let lir = Reducer::new(semantic.nid()).reduce(&ir);
+            astprinter::Printer::new().print(&m);
+            irprinter::Printer::new().print(&lir);
+            i += 1;
+        }
     }
 }
