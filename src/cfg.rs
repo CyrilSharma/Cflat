@@ -1,47 +1,84 @@
 use std::collections::HashMap;
 
 use crate::ir::*;
-struct Node {
-    range: (usize, usize),
-    edges: Vec<u32>
-}
 
-struct CFG { 
-    nodes: Vec<Node>
+#[derive(Clone)]
+struct Node {
+    // exclusive range [s...e)
+    range: (usize, usize),
+    edges: Vec<usize>
 }
-impl CFG {
-    fn new(stmts: Vec<Statement>) {
+struct CFG { nodes: Vec<Node> }
+struct CfgBuilder {
+    nodes: Vec<Node>,
+    lookup: HashMap<u32, usize>
+}
+impl CfgBuilder {
+    fn new() -> CfgBuilder  { 
+        CfgBuilder {
+            nodes: Vec::new(),
+            lookup: HashMap::new()
+        } 
+    }
+    fn build(&mut self, stmts: Vec<Statement>) -> CFG {
         use Statement::*;
-        let mut nodes = Vec::<Node>::new();
-        let mut lookup = HashMap::<u32, Box<Node>>::new();
-        let idx: usize = 0;
-        loop {
-            let mut node = Node { 
+        let mut nid;
+        let mut idx: usize = 0;
+        while idx < stmts.len() {
+            nid = self.nodes.len();
+            self.nodes.push(Node { 
                 range: (idx, idx), 
                 edges: Vec::new()
-            };
+            });
             while idx < stmts.len() {
-                match stmts[idx] {
+                idx += 1; // counter increases even on break.
+                match stmts[idx - 1] {
                     Expr(_) | Move(_, _) => {
-                        node.range.1 += 1;
-                    }
-                    Jump(_) => {
-
-                    }
-                    CJump(_, _, _) => {
-
-                    }
+                        self.nodes[nid].range.1 += 1;
+                    },
+                    Jump(l) => {
+                        self.nodes[nid].range.1 += 1;
+                        let id = self.find(l.id);
+                        self.nodes[nid].edges.push(id);
+                        break;
+                    },
+                    CJump(_, l1, l2) => {
+                        self.nodes[nid].range.1 += 1;
+                        let id1 = self.find(l1.id);
+                        self.nodes[nid].edges.push(id1);
+                        let id2 = self.find(l2.id);
+                        self.nodes[nid].edges.push(id2);
+                        break;
+                    },
                     Return(_) => {
-
-                    }
-                    Label(_) => {
-
+                        self.nodes[nid].range.1 += 1;
+                        break;
+                    },
+                    Label(l) => {
+                        nid = self.find(l.id);
+                        self.nodes[nid].range = (idx - 1, idx);
                     }
                     _ => unreachable!()
                 }
             }
-            nodes.push(node);
         }
+        return CFG {
+            nodes: self.nodes
+                .iter()
+                .cloned()
+                .filter(|n| n.range.0 != n.range.1)
+                .collect()
+        }
+    }
+    fn find(&mut self, i: u32) -> usize {
+        return match self.lookup.get(&i) {
+            None => {
+                self.lookup.insert(i, self.nodes.len());
+                self.nodes.push(Node { range: (0, 0), edges: Vec::new() });
+                self.nodes.len() - 1
+            }
+            Some(id) => *id
+        };
     }
 
 }
