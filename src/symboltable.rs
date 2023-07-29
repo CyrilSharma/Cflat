@@ -22,18 +22,19 @@ pub struct SymbolTable<T: Symbol> {
 }
 
 impl SymbolTable<VSymbol> {
-    pub fn insert(&mut self, name: &str, kind: Kind) {
+    pub fn insert(&mut self, name: &str, kind: Kind) -> u32 {
         let table = self.stk.last_mut().unwrap();
         table.insert(
             name.to_string(),
             VSymbol { id: self.count, kind }
         );
         self.count += 1;
+        return self.count - 1;
     } 
 }
 
 impl SymbolTable<FSymbol> {
-    pub fn insert(&mut self, func: &FunctionDeclaration) {
+    pub fn insert(&mut self, func: &FunctionDeclaration) -> u32 {
         let table = self.stk.last_mut().unwrap();
         let kind = func.ret;
         let args = func.params.iter().map(|p| p.kind).collect();
@@ -42,6 +43,7 @@ impl SymbolTable<FSymbol> {
             FSymbol { id: self.count, kind, args}
         );
         self.count += 1;
+        return self.count - 1;
     } 
 }
 

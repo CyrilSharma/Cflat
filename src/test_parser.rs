@@ -1,6 +1,6 @@
 use std::fs;
 use crate::parser::moduleParser;
-use crate::printer::Printer;
+use crate::astprinter::Printer;
 
 #[test]
 fn test0() {

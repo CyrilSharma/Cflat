@@ -1,6 +1,6 @@
 use crate::ast::*;
 use crate::symboltable::{SymbolTable, VSymbol, FSymbol};
-struct Semantic {
+pub struct Semantic {
     fname: String,
     vsym: SymbolTable<VSymbol>,
     fsym: SymbolTable<FSymbol>
@@ -18,11 +18,11 @@ impl Semantic {
     }
     pub fn analyze(&mut self, m: &mut Module) {
         // Forward Declarations!
-        for f in &m.functions {
-            self.fsym.insert(f);
+        for i in 0..m.functions.len() {
+            self.fsym.insert(&m.functions[i]);
+            m.functions[i].id = i as u32;
         }
         for f in &mut m.functions {
-            self.fsym.insert(f);
             self.function_declaration(f);
         }
     }
@@ -51,8 +51,9 @@ impl Semantic {
         if self.vsym.contains_key_in_scope(&d.name) {
             panic!("Defining already defined variable!");
         }
-        self.vsym.insert(&d.name, d.kind);
-        if let Some(e) = &d.val {
+        d.id = self.vsym.insert(&d.name, d.kind);
+        if let Some(e) = &mut d.val {
+            self.expression(e);
             assert!(d.kind == e.kind().unwrap(), "{}",
                 &format!(
                     "variable should have type {:?}, but is actually {:?}.",
@@ -130,6 +131,7 @@ impl Semantic {
             }
         }
         f.kind = Some(fsym.kind);
+        f.id = fsym.id;
     }
     fn expression(&mut self, e: &mut Expr) {
         use Expr::*;
@@ -263,7 +265,7 @@ mod tests {
     use super::*;
     use std::fs;
     use crate::parser::moduleParser;
-    use crate::printer::Printer;
+    use crate::astprinter::Printer;
 
     #[test]
     #[allow(dead_code)]

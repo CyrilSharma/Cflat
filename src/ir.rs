@@ -6,6 +6,7 @@ pub enum Expr {
     Mem(Box<Expr>),
     Call(Label, Vec<Expr>),
     Name(Label),
+    Address(u32), /* ID */
     ESeq(Box<Statement>, Box<Expr>)
 }
 
@@ -24,13 +25,15 @@ pub struct Label {
     pub id: u32
 }
 
+#[derive(Debug)]
 pub enum Primitive {
     Int(i32),
     Float(f32)
 }
 
-#[derive(PartialEq, Eq)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum Operator {
+    Neg,
     Add,
     Sub,
     Mul,
@@ -45,13 +48,4 @@ pub enum Operator {
     Geq,
     Lt,
     Gt,
-    Peq,
-    Meq,
-    Seq,
-    Teq,
-    Deq,
-    Assign,
-    Star,
-    Neg,
-    Address
 }

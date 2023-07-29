@@ -14,7 +14,7 @@ impl Printer {
     }
     fn function_declaration(&mut self, f: &FunctionDeclaration) {
         let idx = self.count;
-        self.add_label(&format!("Declare {} {}()", f.ret, f.name));
+        self.add_label(&format!("Declare {} {}({})", f.ret, f.name, f.id));
         self.add_edge(idx, self.count);
         self.statement(&f.stmt);
     }
@@ -31,7 +31,7 @@ impl Printer {
     }
     fn declare_statement(&mut self, d: &DeclareStatement) {
         let idx = self.count;
-        self.add_label(&format!("Declare: {} {}", d.kind, d.name));
+        self.add_label(&format!("Declare: {} {}({})", d.kind, d.name, d.id));
         if let Some(e) = &d.val {
             self.add_edge(idx, self.count);
             self.expr(e);
@@ -117,7 +117,7 @@ impl Printer {
     }
     fn function(&mut self, f: &FunctionCall) {
         let idx = self.count;
-        self.add_label(&format!("Call Function: {}", f.name));
+        self.add_label(&format!("Call Function: {}({})", f.name, f.id));
         for e in &f.args {
             self.add_edge(idx, self.count);
             self.expr(e); 

@@ -2,7 +2,7 @@ use crate::ast;
 use crate::ast::FunctionDeclaration;
 use crate::ir::{self, Operator};
 
-struct Translator {
+pub struct Translator {
     nlabels:     u32,
     loop_starts: Vec<ir::Label>,
     loop_ends:   Vec<ir::Label>
@@ -10,7 +10,7 @@ struct Translator {
 
 impl Translator {
     pub fn new() -> Self { 
-        Self { 
+        Self {
             nlabels:     0,
             loop_starts: Vec::new(),
             loop_ends:   Vec::new()
@@ -19,19 +19,22 @@ impl Translator {
     pub fn translate(&mut self, m: &mut ast::Module) -> Vec::<ir::Statement> {
         let mut res = Vec::<ir::Statement>::new();
         for f in &m.functions {
-            res.push(self.function_definition(f));
+            match self.function_declaration(f) {
+                None => (),
+                Some(s) => res.push(s)
+            }
         }
         return res;
     }
-    fn function_definition(&mut self, f: &FunctionDeclaration) -> ir::Statement {
+    fn function_declaration(&mut self, f: &FunctionDeclaration) -> Option<ir::Statement> {
         let mut ret = vec![ir::Statement::Label(
             self.create_label()
         )];
         match self.statement(&f.stmt) {
-            None => panic!("Function should have return!"),
+            None => return None,
             Some(s) => ret.push(s)
         }
-        return ir::Statement::Seq(ret);
+        return Some(ir::Statement::Seq(ret));
     }
     /*----------------STATEMENTS--------------------*/
     fn statement(&mut self, s: &ast::Statement) -> Option<ir::Statement> {
@@ -265,7 +268,6 @@ impl Translator {
         }
         return ir::Expr::Call(ir::Label { id: f.id }, v);
     }
-    /* TODO. Concactenate into one giant addition */
     fn access(&mut self, a: &ast::AccessExpr) -> ir::Expr {
         let mut prod: u32 = 1;
         let t = ir::Expr::Temp(a.id);
@@ -274,7 +276,6 @@ impl Translator {
             let mul = ir::Expr::BinOp(
                 Box::new(ir::Expr::Const(
                     ir::Primitive::Int(
-                        /* until I implement pointers correctly */ 
                         8 * prod as i32
                     )
                 )),
@@ -301,10 +302,12 @@ impl Translator {
     fn unary(&mut self, u: &ast::UnaryExpr) -> ir::Expr {
         use ast::UnaryOp::*;
         let op = match u.unary_op {
-            Star    => ir::Operator::Star,
-            Not     => ir::Operator::Not,
-            Neg     => ir::Operator::Neg,
-            Address => ir::Operator::Address,
+            Not  => ir::Operator::Not,
+            Neg  => ir::Operator::Neg,
+            Star => return ir::Expr::Mem(Box::new(
+                self.expression(&u.expr)
+            )),
+            Address => return ir::Expr::Address(u.expr.id())
         };
         return ir::Expr::UnOp(op,
             Box::new(self.expression(&u.expr))
@@ -312,7 +315,7 @@ impl Translator {
     }
     fn binary(&mut self, b: &ast::BinaryExpr) -> ir::Expr {
         use ast::BinaryOp::*;
-        let mut op = match b.binary_op {
+        let op = match b.binary_op {
             Mul    => ir::Operator::Mul,
             Div    => ir::Operator::Div,
             Add    => ir::Operator::Add,
@@ -322,43 +325,46 @@ impl Translator {
             Lt     => ir::Operator::Lt,
             Gt     => ir::Operator::Gt,
             Eq     => ir::Operator::Eq,
-            Peq    => ir::Operator::Assign,
-            Teq    => ir::Operator::Assign,
-            Deq    => ir::Operator::Assign,
-            Seq    => ir::Operator::Assign,
-            Neq    => ir::Operator::Assign,
             Or     => ir::Operator::Or,
             And    => ir::Operator::And,
-            Assign => ir::Operator::Assign,
+            Peq | Teq | Deq |
+            Seq | Neq | Assign  
+                => return self.assign(b),
         };
-        if op != ir::Operator::Assign {
-            return ir::Expr::BinOp(
-                Box::new(self.expression(&b.left)),
-                op,
-                Box::new(self.expression(&b.right)),
-            );
-        }
-        op = match b.binary_op {
-            Peq => ir::Operator::Add,
-            Teq => ir::Operator::Mul,
-            Seq => ir::Operator::Sub,
-            Deq => ir::Operator::Div,
-            _   => ir::Operator::Xor,
-        };
+        return ir::Expr::BinOp(
+            Box::new(self.expression(&b.left)),
+            op,
+            Box::new(self.expression(&b.right)),
+        );
+    }
+    fn assign(&mut self, b: &ast::BinaryExpr) -> ir::Expr {
+        use ast::BinaryOp::*;
+        // Ideally we'd implement Clone for Expr, but
+        // b.left should only be an access or temp,
+        // so it's not terribly expensive.
         let stmt = match b.binary_op {
-            Peq | Teq | Seq | Deq => ir::Statement::Move(
-                Box::new(ir::Expr::Temp(b.left.id())),
-                Box::new(ir::Expr::BinOp(
-                    Box::new(ir::Expr::Temp(b.left.id())),
-                    op,
-                    Box::new(self.expression(&b.right))
-                ))
-            ),
+            Peq | Teq | Seq | Deq => {
+                let op = match b.binary_op {
+                    Peq => ir::Operator::Add,
+                    Teq => ir::Operator::Mul,
+                    Seq => ir::Operator::Sub,
+                    Deq => ir::Operator::Div,
+                    _   => unreachable!()
+                };
+                ir::Statement::Move(
+                    Box::new(self.expression(&b.left)),
+                    Box::new(ir::Expr::BinOp(
+                        Box::new(self.expression(&b.left)),
+                        op,
+                        Box::new(self.expression(&b.right))
+                    ))
+                )
+            },
             Assign => ir::Statement::Move(
-                Box::new(ir::Expr::Temp(b.left.id())),
+                Box::new(self.expression(&b.left)),
                 Box::new(self.expression(&b.right))
             ),
-            _ => panic!("Oh no!")
+            _ => unreachable!()
         };
         return ir::Expr::ESeq(
             Box::new(stmt),
@@ -368,5 +374,34 @@ impl Translator {
     fn create_label(&mut self) -> ir::Label {
         self.nlabels += 1;
         return ir::Label { id: self.nlabels - 1 }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::fs;
+    use crate::parser::moduleParser;
+    use crate::semantic::Semantic;
+    use crate::astprinter;
+    use crate::irprinter;
+
+    #[test]
+    fn visualize() {
+        let path0 = "tests/data/parser/input0.c";
+        let input0 = fs::read_to_string(path0).expect("File not found!");
+        let mut m = moduleParser::new().parse(&input0).expect("Parse Error!");
+        Semantic::new().analyze(&mut m);
+        let stmts = Translator::new().translate(&mut m);
+        astprinter::Printer::new().print(&m);
+        irprinter::Printer::new().print(&stmts);
+
+        let path1 = "tests/data/parser/input1.c";
+        let input1 = fs::read_to_string(path1).expect("File not found!");
+        let mut m = moduleParser::new().parse(&input1).expect("Parse Error!");
+        Semantic::new().analyze(&mut m);
+        let stmts = Translator::new().translate(&mut m);
+        astprinter::Printer::new().print(&m);
+        irprinter::Printer::new().print(&stmts);
     }
 }
