@@ -51,9 +51,11 @@ impl CfgBuilder {
     }
     fn expr(&mut self, e: &Expr) {
         if let ir::Expr::Call(f, _) = e {
-            let id1 = self.get(f.id);
-            self.nodes[self.nid].edges.push(id1);
-            self.nodes[id1].edges.push(self.nid);
+            let id1 = self.lookup.get(&f.id).expect(
+                &format!("id: {} doesn't exist", f.id)
+            );
+            self.nodes[self.nid].edges.push(*id1);
+            self.nodes[*id1].edges.push(self.nid);
         }
         self.nodes[self.nid].stmts.push(
             Statement::Expr(Box::new(e.clone()))

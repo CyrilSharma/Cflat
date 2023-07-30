@@ -17,6 +17,7 @@ impl Translator {
         } 
     }
     pub fn translate(&mut self, m: &mut ast::Module) -> Vec::<ir::Statement> {
+        self.nlabels = m.functions.len() as u32; // function ids are their labels.
         let mut res = Vec::<ir::Statement>::new();
         for f in &m.functions {
             match self.function_declaration(f) {
@@ -27,8 +28,8 @@ impl Translator {
         return res;
     }
     fn function_declaration(&mut self, f: &FunctionDeclaration) -> Option<ir::Statement> {
-        let mut ret = vec![ir::Statement::Label(
-            self.create_label()
+        let mut ret = vec![ir::Statement::Label( // function ids are their labels.
+            ir::Label { id: f.id }
         )];
         match self.statement(&f.stmt) {
             None => return None,
