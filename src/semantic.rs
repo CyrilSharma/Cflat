@@ -19,8 +19,14 @@ impl Semantic {
     pub fn analyze(&mut self, m: &mut Module) {
         // Forward Declarations!
         for i in 0..m.functions.len() {
-            m.functions[i].id = 
-                self.fsym.insert(&m.functions[i]);
+            if m.functions[i].name != "main" { continue; }
+            m.functions[i].id = self.fsym
+                .insert(&m.functions[i]);
+        }
+        for i in 0..m.functions.len() {
+            if m.functions[i].name == "main" { continue; }
+            m.functions[i].id = self.fsym
+                .insert(&m.functions[i]);
         }
         for f in &mut m.functions {
             self.function_declaration(f);

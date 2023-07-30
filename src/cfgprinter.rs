@@ -4,10 +4,12 @@ pub struct Printer { count: u32 }
 /* note that this only works for LIR CFG */
 impl Printer {
     pub fn new() -> Self { Self{count: 0} }
-    pub fn print(&mut self, nodes: &Vec<Node>) {
+    pub fn print(&mut self, cfg: &CFG) {
         println!("digraph CFG {{");
         println!(r#"  node [shape=box, fontname="Helvetica", fontsize=12]"#);
-        for n in nodes {
+        println!("{}", format!(r#"  node{} [label="Start"]"#, cfg.nodes.len()));
+        self.add_edge(cfg.nodes.len() as u32, cfg.start as u32);
+        for n in &cfg.nodes {
             self.node(n);
             self.count += 1;
         }

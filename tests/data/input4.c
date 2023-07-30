@@ -1,9 +1,9 @@
 float complexFunc1(float x) {
-    if (x <= 0) {
-        return x;
-    } else {
-        return complexFunc1(x - 1) + x;
-    }
+  if (x <= 0) {
+      return x;
+  } else {
+      return complexFunc1(x - 1) + x;
+  }
 }
 
 void complexFunc2(int n) {
@@ -21,19 +21,19 @@ void complexFunc2(int n) {
 }
 
 int factorial(int num) {
-    if (num == 0 || num == 1) {
-        return 1;
-    } else {
-        return num * factorial(num - 1);
-    }
+  if (num == 0 || num == 1) {
+    return 1;
+  } else {
+    return num * factorial(num - 1);
+  }
 }
 
 int fibonacci(int num) {
-    if (num <= 1) {
-        return num;
-    } else {
-        return fibonacci(num - 1) + fibonacci(num - 2);
-    }
+  if (num <= 1) {
+    return num;
+  } else {
+    return fibonacci(num - 1) + fibonacci(num - 2);
+  }
 }
 
 int main() {

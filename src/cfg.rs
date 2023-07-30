@@ -1,27 +1,31 @@
 use std::collections::{HashMap, HashSet};
-use crate::ir::{self, *};
+use crate::ir::*;
 
 #[derive(Clone)]
 pub struct Node {
     pub stmts: Vec<Statement>,
     pub edges: Vec<usize>
 }
-pub struct CFG { pub nodes: Vec<Node> }
+pub struct CFG { 
+    pub nodes: Vec<Node>,
+    pub start: usize
+}
 pub struct CfgBuilder {
     nid: usize, // the current block
     link: bool, // whether prev & cur should be connectd.
     lookup: HashMap<u32, usize>,
-    nodes: Vec<Node>
+    nodes: Vec<Node>,
+    start: Option<usize>,
 }
-// TODO: Organize, use LinkedLists for Nodes,
-// and prune duplicate connections with Hash tables.
+
 impl CfgBuilder {
     pub fn new() -> CfgBuilder  { 
         CfgBuilder {
             nid: 0,
             link: true,
             lookup: HashMap::new(),
-            nodes: Vec::new()
+            nodes: Vec::new(),
+            start: None,
         }
     }
     pub fn build(&mut self, stmts: &Vec<Statement>) -> CFG {
@@ -47,16 +51,12 @@ impl CfgBuilder {
                 .into_iter()
                 .collect::<Vec<_>>();
         }
-        return CFG { nodes: std::mem::take(&mut self.nodes) }
+        return CFG { 
+            nodes: std::mem::take(&mut self.nodes),
+            start: self.start.unwrap(),
+        }
     }
     fn expr(&mut self, e: &Expr) {
-        if let ir::Expr::Call(f, _) = e {
-            let id1 = self.lookup.get(&f.id).expect(
-                &format!("id: {} doesn't exist", f.id)
-            );
-            self.nodes[self.nid].edges.push(*id1);
-            self.nodes[*id1].edges.push(self.nid);
-        }
         self.nodes[self.nid].stmts.push(
             Statement::Expr(Box::new(e.clone()))
         );
@@ -103,10 +103,13 @@ impl CfgBuilder {
                 }
             )
         );
-        self.link = false;
         self.nid = self.create_node();
+        self.link = false;
     }
     fn label(&mut self, l: &Label) {
+        if l.id == 0 {
+            self.start = Some(self.nid);
+        }
         let old = self.nid;
         let mut removed = false;
         if self.nodes[old].stmts.len() == 0 {
@@ -167,7 +170,7 @@ mod tests {
             let lir = Reducer::new(semantic.nid()).reduce(&ir);
             let cfg = CfgBuilder::new().build(&lir);
             println!("{}", &format!("FILE: {filepath}"));
-            cfgprinter::Printer::new().print(&cfg.nodes);
+            cfgprinter::Printer::new().print(&cfg);
             //irprinter::Printer::new().print(&lir);
             println!("\n\n\n\n\n");
             i += 1;

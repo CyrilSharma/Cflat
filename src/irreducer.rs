@@ -16,7 +16,7 @@ impl Reducer {
             },
             Jump(_) | Label(_) => return vec![s.clone()],
             Return(r)  => match r {
-                None => return Vec::new(),
+                None => return vec![Return(None)],
                 Some(e) => {
                     let (mut s1, e1) = self.expression(e);
                     s1.push(Return(Some(e1)));
