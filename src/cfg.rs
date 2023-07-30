@@ -22,6 +22,7 @@ impl CfgBuilder {
         use Statement::*;
         let mut nid;
         let mut idx: usize = 0;
+        let mut shift_control = true;
         while idx < stmts.len() {
             nid = self.nodes.len();
             self.nodes.push(Node { 
@@ -40,11 +41,13 @@ impl CfgBuilder {
                         self.nodes[nid].stmts.push(
                             stmts[idx-1].clone()
                         );
+                        shift_control = true;
                     },
                     Move(_, _) => {
                         self.nodes[nid].stmts.push(
                             stmts[idx-1].clone()
                         );
+                        shift_control = true;
                     },
                     Jump(l) => {
                         self.nodes[nid].stmts.push(
@@ -52,6 +55,7 @@ impl CfgBuilder {
                         );
                         let id = self.find(l.id);
                         self.nodes[nid].edges.push(id);
+                        shift_control = false;
                         break;
                     },
                     CJump(_, l1, l2) => {
@@ -62,23 +66,31 @@ impl CfgBuilder {
                         self.nodes[nid].edges.push(id1);
                         let id2 = self.find(l2.id);
                         self.nodes[nid].edges.push(id2);
+                        shift_control = false;
                         break;
                     },
                     Return(_) => {
                         self.nodes[nid].stmts.push(
                             stmts[idx-1].clone()
                         );
+                        shift_control = false;
                         break;
                     },
                     Label(l) => {
                         /* remove empty nodes. */
-                        if self.nodes[nid].stmts.len() == 0 {
+                        let old = nid;
+                        let mut removed = false;
+                        if self.nodes[old].stmts.len() == 0 {
                             self.nodes.pop();
+                            removed = true;
                         }
                         nid = self.find(l.id);
                         self.nodes[nid].stmts.push(
                             stmts[idx-1].clone()
                         );
+                        if !removed && shift_control {
+                            self.nodes[old].edges.push(nid);
+                        }
                     }
                     _ => unreachable!()
                 }
