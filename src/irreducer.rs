@@ -14,7 +14,15 @@ impl Reducer {
                 s1.push(CJump(e1, *t, *f));
                 return s1;
             },
-            Jump(_) | Label(_) | Return(_)=> return vec![s.clone()],
+            Jump(_) | Label(_) => return vec![s.clone()],
+            Return(r)  => match r {
+                None => return Vec::new(),
+                Some(e) => {
+                    let (mut s1, e1) = self.expression(e);
+                    s1.push(Return(Some(e1)));
+                    return s1;
+                }
+            }
             Move(d, s) => return self._move(d, s),
             Seq(s) => return self.seq(s),
         }
