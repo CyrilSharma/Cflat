@@ -265,30 +265,21 @@ impl Semantic {
 mod tests {
     use super::*;
     use std::fs;
+    use std::path::Path;
     use crate::parser::moduleParser;
     use crate::astprinter::Printer;
 
     #[test]
-    #[allow(dead_code)]
     fn visualize() {
-        // TODO: Reorganize test cases (only need a data directory)
-        // Iterate over all test cases.
-        let path0 = "tests/data/parser/input0.c";
-        let input0 = fs::read_to_string(path0).expect("File not found!");
-        let mut m = moduleParser::new().parse(&input0).expect("Parse Error!");
-        Semantic::new().analyze(&mut m);
-        Printer::new().print(&mut m);
-
-        let path1 = "tests/data/parser/input1.c";
-        let input1 = fs::read_to_string(path1).expect("File not found!");
-        let mut m = moduleParser::new().parse(&input1).expect("Parse Error!");
-        Semantic::new().analyze(&mut m);
-        Printer::new().print(&mut m);
-
-        let path1 = "tests/data/parser/input2.c";
-        let input1 = fs::read_to_string(path1).expect("File not found!");
-        let mut m = moduleParser::new().parse(&input1).expect("Parse Error!");
-        Semantic::new().analyze(&mut m);
-        Printer::new().print(&mut m);
+        let mut i = 0;
+        let dir = "tests/data/";
+        while Path::new(&format!("{dir}/input{i}.c")).exists() {
+            let filepath = &format!("{dir}/input{i}.c");
+            let input = fs::read_to_string(filepath).expect("File not found!");
+            let mut m = moduleParser::new().parse(&input).expect("Parse Error!");
+            Semantic::new().analyze(&mut m);
+            Printer::new().print(&mut m);
+            i += 1
+        }
     }
 }
