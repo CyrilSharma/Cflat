@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 use crate::ir::{self, *};
 
 #[derive(Clone)]
@@ -8,105 +8,131 @@ pub struct Node {
 }
 pub struct CFG { pub nodes: Vec<Node> }
 pub struct CfgBuilder {
-    nodes: Vec<Node>,
-    lookup: HashMap<u32, usize>
+    idx: usize, // the current statement
+    nid: usize, // the current block
+    link: bool, // whether prev & cur should be connectd.
+    lookup: HashMap<u32, usize>,
+    nodes: Vec<Node>
 }
+// TODO: Organize, use LinkedLists for Nodes,
+// and prune duplicate connections with Hash tables.
 impl CfgBuilder {
     fn new() -> CfgBuilder  { 
         CfgBuilder {
-            nodes: Vec::new(),
-            lookup: HashMap::new()
-        } 
+            idx: 0,
+            nid: 0,
+            link: true,
+            lookup: HashMap::new(),
+            nodes: Vec::new()
+        }
     }
     fn build(&mut self, stmts: &Vec<Statement>) -> CFG {
         use Statement::*;
-        let mut nid;
-        let mut idx: usize = 0;
-        let mut shift_control = true;
-        while idx < stmts.len() {
-            nid = self.nodes.len();
-            self.nodes.push(Node { 
-                stmts: Vec::new(),
-                edges: Vec::new()
-            });
-            while idx < stmts.len() {
-                idx += 1; // counter increases even on break.
-                match stmts[idx - 1] {
-                    Expr(ref e) => {
-                        if let ir::Expr::Call(f, _) = **e {
-                            let id1 = self.find(f.id);
-                            self.nodes[nid].edges.push(id1);
-                            self.nodes[id1].edges.push(nid);
-                        }
-                        self.nodes[nid].stmts.push(
-                            stmts[idx-1].clone()
-                        );
-                        shift_control = true;
-                    },
-                    Move(_, _) => {
-                        self.nodes[nid].stmts.push(
-                            stmts[idx-1].clone()
-                        );
-                        shift_control = true;
-                    },
-                    Jump(l) => {
-                        self.nodes[nid].stmts.push(
-                            stmts[idx-1].clone()
-                        );
-                        let id = self.find(l.id);
-                        self.nodes[nid].edges.push(id);
-                        shift_control = false;
-                        break;
-                    },
-                    CJump(_, l1, l2) => {
-                        self.nodes[nid].stmts.push(
-                            stmts[idx-1].clone()
-                        );
-                        let id1 = self.find(l1.id);
-                        self.nodes[nid].edges.push(id1);
-                        let id2 = self.find(l2.id);
-                        self.nodes[nid].edges.push(id2);
-                        shift_control = false;
-                        break;
-                    },
-                    Return(_) => {
-                        self.nodes[nid].stmts.push(
-                            stmts[idx-1].clone()
-                        );
-                        shift_control = false;
-                        break;
-                    },
-                    Label(l) => {
-                        /* remove empty nodes. */
-                        let old = nid;
-                        let mut removed = false;
-                        if self.nodes[old].stmts.len() == 0 {
-                            self.nodes.pop();
-                            removed = true;
-                        }
-                        nid = self.find(l.id);
-                        self.nodes[nid].stmts.push(
-                            stmts[idx-1].clone()
-                        );
-                        if !removed && shift_control {
-                            self.nodes[old].edges.push(nid);
-                        }
-                    }
-                    _ => unreachable!()
-                }
+        for stmt in stmts {
+            match stmt {
+                Expr(e)          => self.expr(&e),
+                Move(d, s)       => self._move(&d, &s),
+                Jump(l)          => self.jump(&l),
+                CJump(e, l1, l2) => self.cjump(&e, &l1, &l2),
+                Return(r)        => self._return(&r),
+                Label(l)         => self.label(&l),
+                _ => unreachable!()
             }
         }
-        return CFG { nodes: self.nodes.clone() }
+        // Deduplicate Edges.
+        for node in &self.nodes {
+            node.edges = node.edges.into_iter()
+                .collect::<HashSet<_>>()
+                .into_iter()
+                .collect::<Vec<_>>();
+        }
+        return CFG { nodes: std::mem::take(&mut self.nodes) }
     }
-    fn find(&mut self, i: u32) -> usize {
-        return match self.lookup.get(&i) {
+    fn expr(&mut self, e: &Expr) {
+        if let ir::Expr::Call(f, _) = e {
+            let id1 = self.get(f.id);
+            self.nodes[self.nid].edges.push(id1);
+            self.nodes[id1].edges.push(self.nid);
+        }
+        self.nodes[self.nid].stmts.push(
+            Statement::Expr(Box::new(*e))
+        );
+        self.link = true;
+    }
+    fn _move(&mut self, d: &Expr, s: &Expr) {
+        self.nodes[self.nid].stmts.push(
+            Statement::Move(
+                Box::new(*d),
+                Box::new(*s)
+            )
+        );
+        self.link = true;
+    }
+    fn jump(&mut self, l: &Label) {
+        self.nodes[self.nid].stmts.push(
+            Statement::Jump(*l)
+        );
+        let id = self.get(l.id);
+        self.nodes[self.nid].edges.push(id);
+        self.link = false;
+        self.nid = self.create_node();
+    }
+    fn cjump(&mut self, e: &Expr, l1: &Label, l2: &Label) {
+        self.nodes[self.nid].stmts.push(
+            Statement::CJump(
+                Box::new(*e),
+                *l1, *l2
+            )
+        );
+        let id1 = self.get(l1.id);
+        self.nodes[self.nid].edges.push(id1);
+        let id2 = self.get(l2.id);
+        self.nodes[self.nid].edges.push(id2);
+        self.link = false;
+        self.nid = self.create_node();
+    }
+    fn _return(&mut self, o: &Option<Box<Expr>>) {
+        self.nodes[self.nid].stmts.push(
+            Statement::Return(
+                match o {
+                    None => None,
+                    Some(e) => Some(Box::new(**e))
+                }
+            )
+        );
+        self.link = false;
+        self.nid = self.create_node();
+    }
+    fn label(&mut self, l: &Label) {
+        let old = self.nid;
+        let mut removed = false;
+        if self.nodes[old].stmts.len() == 0 {
+            self.nodes.pop();
+            removed = true;
+        }
+        self.nid = self.get(l.id);
+        self.nodes[self.nid].stmts.push(
+            Statement::Label(*l)
+        );
+        if !removed && self.link {
+            self.nodes[old].edges.push(self.nid);
+        }
+    }
+    fn get(&mut self, i: u32) -> usize {
+        match self.lookup.get(&i) {
             None => {
                 self.lookup.insert(i, self.nodes.len());
-                self.nodes.push(Node { stmts: Vec::new(), edges: Vec::new() });
-                self.nodes.len() - 1
+                return self.create_node();
             }
-            Some(id) => *id
+            Some(id) => return *id
         };
+    }
+    fn create_node(&mut self) -> usize {
+        self.nodes.push(Node { 
+            stmts: Vec::new(), 
+            edges: Vec::new() 
+        });
+        return self.nodes.len() - 1;
     }
 }
 
@@ -119,7 +145,7 @@ mod tests {
     use crate::parser::moduleParser;
     use crate::semantic::Semantic;
     //use crate::astprinter;
-    use crate::irprinter;
+    //use crate::irprinter;
     use crate::irtranslator::Translator;
     use crate::irreducer::Reducer;
     use crate::cfgprinter;

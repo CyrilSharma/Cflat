@@ -222,16 +222,21 @@ iteration_statement: Box<Statement> = {
             stmt: s
         })
     ),
-	"for" "(" <e1: expression?> ";" <e2: expression?> ";" <e3: expression?> ")"
+	"for" "(" <i: simple_statement> <e1: expression?> ";" <e2: expression?> ")"
         <s: statement> => Box::new(
         Statement::For( ForStatement { 
-            init: e1,
-            cond: e2,
-            each: e3,
+            init: i,
+            cond: e1,
+            each: e2,
             stmt: s
         })
     )
 };
+
+simple_statement: Box<Statement> = {
+    declare_statement,
+    expression_statement
+}
 
 jump_statement: Box<Statement> = {
 	"continue" ";" => Box::new(Statement::Jump(
