@@ -1,6 +1,7 @@
 pub mod ast;
 pub mod astprinter;
 pub mod cfg;
+pub mod cfgbuilder;
 pub mod cfgprinter;
 pub mod ir;
 pub mod irprinter;
