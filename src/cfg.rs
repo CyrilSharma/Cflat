@@ -8,7 +8,6 @@ pub struct Node {
 }
 pub struct CFG { pub nodes: Vec<Node> }
 pub struct CfgBuilder {
-    idx: usize, // the current statement
     nid: usize, // the current block
     link: bool, // whether prev & cur should be connectd.
     lookup: HashMap<u32, usize>,
@@ -17,17 +16,17 @@ pub struct CfgBuilder {
 // TODO: Organize, use LinkedLists for Nodes,
 // and prune duplicate connections with Hash tables.
 impl CfgBuilder {
-    fn new() -> CfgBuilder  { 
+    pub fn new() -> CfgBuilder  { 
         CfgBuilder {
-            idx: 0,
             nid: 0,
             link: true,
             lookup: HashMap::new(),
             nodes: Vec::new()
         }
     }
-    fn build(&mut self, stmts: &Vec<Statement>) -> CFG {
+    pub fn build(&mut self, stmts: &Vec<Statement>) -> CFG {
         use Statement::*;
+        self.create_node();
         for stmt in stmts {
             match stmt {
                 Expr(e)          => self.expr(&e),
@@ -39,9 +38,11 @@ impl CfgBuilder {
                 _ => unreachable!()
             }
         }
+        // last node is always a return which allocates a node.
+        self.nodes.pop();
         // Deduplicate Edges.
-        for node in &self.nodes {
-            node.edges = node.edges.into_iter()
+        for node in &mut self.nodes {
+            node.edges = node.edges.clone().into_iter()
                 .collect::<HashSet<_>>()
                 .into_iter()
                 .collect::<Vec<_>>();
@@ -55,15 +56,15 @@ impl CfgBuilder {
             self.nodes[id1].edges.push(self.nid);
         }
         self.nodes[self.nid].stmts.push(
-            Statement::Expr(Box::new(*e))
+            Statement::Expr(Box::new(e.clone()))
         );
         self.link = true;
     }
     fn _move(&mut self, d: &Expr, s: &Expr) {
         self.nodes[self.nid].stmts.push(
             Statement::Move(
-                Box::new(*d),
-                Box::new(*s)
+                Box::new(d.clone()),
+                Box::new(s.clone())
             )
         );
         self.link = true;
@@ -80,7 +81,7 @@ impl CfgBuilder {
     fn cjump(&mut self, e: &Expr, l1: &Label, l2: &Label) {
         self.nodes[self.nid].stmts.push(
             Statement::CJump(
-                Box::new(*e),
+                Box::new(e.clone()),
                 *l1, *l2
             )
         );
@@ -96,7 +97,7 @@ impl CfgBuilder {
             Statement::Return(
                 match o {
                     None => None,
-                    Some(e) => Some(Box::new(**e))
+                    Some(e) => Some(Box::new(*e.clone()))
                 }
             )
         );

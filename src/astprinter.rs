@@ -63,10 +63,8 @@ impl Printer {
     fn for_statement(&mut self, f: &ForStatement) {
         let idx = self.count;
         self.add_label("For");
-        if let Some(e) = &f.init {
-            self.add_edge(idx, self.count);
-            self.expr(e);
-        }
+        self.add_edge(idx, self.count);
+        self.statement(&f.init);
         if let Some(e) = &f.cond {
             self.add_edge(idx, self.count);
             self.expr(e);

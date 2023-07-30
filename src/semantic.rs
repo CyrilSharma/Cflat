@@ -76,9 +76,7 @@ impl Semantic {
     }
     fn for_statement(&mut self, f: &mut ForStatement) {
         self.vsym.scope_in();
-        if let Some(e) = &mut f.init {
-            self.expression(e);
-        }
+        self.statement(&mut f.init);
         if let Some(e) = &mut f.cond {
             self.expression(e);
         }

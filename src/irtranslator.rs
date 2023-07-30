@@ -98,11 +98,9 @@ impl Translator {
     }
     fn for_statement(&mut self, f: &ast::ForStatement) -> ir::Statement {
         let mut ret = Vec::<ir::Statement>::new();
-        match &f.init {
+        match self.statement(&f.init) {
             None    => (),
-            Some(e) => ret.push(ir::Statement::Expr(
-                Box::new(self.expression(e))
-            ))
+            Some(s) => ret.push(s)
         }
         let lt = self.create_label();
         let lb = self.create_label();
