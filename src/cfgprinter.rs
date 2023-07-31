@@ -1,5 +1,5 @@
 use crate::ir::*;
-use crate::cfgbuilder::*;
+use crate::cfg::*;
 pub struct Printer { count: u32 }
 /* note that this only works for LIR CFG */
 impl Printer {
@@ -20,11 +20,11 @@ impl Printer {
             .map(|x| self.statement(x))
             .collect();
         self.label(strs);
-        for e in &n.edges {
-            self.add_edge(
-                self.count, 
-                *e as u32
-            );
+        if let Some(e) = n.t { 
+            self.add_edge(self.count, e as u32) 
+        }
+        if let Some(e) = n.f { 
+            self.add_edge(self.count, e as u32) 
         }
     }
     fn statement(&mut self, s: &Statement) -> String {

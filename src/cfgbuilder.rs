@@ -1,4 +1,4 @@
-use std::collections::{HashMap, HashSet};
+use std::collections::HashMap;
 use crate::ir::*;
 use crate::cfg::*;
 pub struct CfgBuilder {
@@ -35,13 +35,6 @@ impl CfgBuilder {
         }
         // last node is always a return which allocates a node.
         self.nodes.pop();
-        // Deduplicate Edges.
-        for node in &mut self.nodes {
-            node.edges = node.edges.clone().into_iter()
-                .collect::<HashSet<_>>()
-                .into_iter()
-                .collect::<Vec<_>>();
-        }
         return CFG { 
             nodes: std::mem::take(&mut self.nodes),
             start: self.start.unwrap(),
@@ -67,7 +60,7 @@ impl CfgBuilder {
             Statement::Jump(*l)
         );
         let id = self.get(l.id);
-        self.nodes[self.nid].edges.push(id);
+        self.nodes[self.nid].t = Some(id);
         self.link = false;
         self.nid = self.create_node();
     }
@@ -79,9 +72,9 @@ impl CfgBuilder {
             )
         );
         let id1 = self.get(l1.id);
-        self.nodes[self.nid].edges.push(id1);
+        self.nodes[self.nid].t = Some(id1);
         let id2 = self.get(l2.id);
-        self.nodes[self.nid].edges.push(id2);
+        self.nodes[self.nid].f = Some(id2);
         self.link = false;
         self.nid = self.create_node();
     }
@@ -108,11 +101,8 @@ impl CfgBuilder {
             removed = true;
         }
         self.nid = self.get(l.id);
-        self.nodes[self.nid].stmts.push(
-            Statement::Label(*l)
-        );
         if !removed && self.link {
-            self.nodes[old].edges.push(self.nid);
+            self.nodes[old].t = Some(self.nid);
         }
     }
     fn get(&mut self, i: u32) -> usize {
@@ -127,7 +117,7 @@ impl CfgBuilder {
     fn create_node(&mut self) -> usize {
         self.nodes.push(Node { 
             stmts: Vec::new(), 
-            edges: Vec::new() 
+            t: None, f: None
         });
         return self.nodes.len() - 1;
     }
