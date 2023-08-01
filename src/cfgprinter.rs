@@ -34,7 +34,7 @@ impl Printer {
             Move(d, s) => self._move(d, s),
             Jump(j) => format!("Jump {:?}", j),
             CJump(c, t, f) => self.cjump(c, *t, *f),
-            Label(l) => format!("{:?}: ", l),
+            Label(l) => format!("{}: ", l),
             Return(r) => self._return(r),
             _ => unreachable!()
         };
@@ -90,7 +90,7 @@ impl Printer {
         );
     }
     fn call(&mut self, l: Label, v: &Vec<Expr>) -> String {
-        return format!("Call(f={}, {})", l.id,
+        return format!("Call(f={}, {})", l,
             v.iter().map(|e| self.expression(e))
                 .collect::<Vec<String>>().join(", ")
         );

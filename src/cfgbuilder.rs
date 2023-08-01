@@ -26,10 +26,10 @@ impl CfgBuilder {
             match stmt {
                 Expr(e)          => self.expr(&e),
                 Move(d, s)       => self._move(&d, &s),
-                Jump(l)          => self.jump(&l),
-                CJump(e, l1, l2) => self.cjump(&e, &l1, &l2),
+                Jump(l)          => self.jump(*l),
+                CJump(e, l1, l2) => self.cjump(&e, *l1, *l2),
                 Return(r)        => self._return(&r),
-                Label(l)         => self.label(&l),
+                Label(l)         => self.label(*l),
                 _ => unreachable!()
             }
         }
@@ -55,52 +55,48 @@ impl CfgBuilder {
         );
         self.link = true;
     }
-    fn jump(&mut self, l: &Label) {
+    fn jump(&mut self, l: Label) {
         self.nodes[self.nid].stmts.push(
-            Statement::Jump(*l)
+            Statement::Jump(l)
         );
-        let id = self.get(l.id);
+        let id = self.get(l);
         self.nodes[self.nid].t = Some(id);
         self.link = false;
         self.nid = self.create_node();
     }
-    fn cjump(&mut self, e: &Expr, l1: &Label, l2: &Label) {
+    fn cjump(&mut self, e: &Expr, l1: Label, l2: Label) {
         self.nodes[self.nid].stmts.push(
             Statement::CJump(
                 Box::new(e.clone()),
-                *l1, *l2
+                l1, l2
             )
         );
-        let id1 = self.get(l1.id);
+        let id1 = self.get(l1);
         self.nodes[self.nid].t = Some(id1);
-        let id2 = self.get(l2.id);
+        let id2 = self.get(l2);
         self.nodes[self.nid].f = Some(id2);
         self.link = false;
         self.nid = self.create_node();
     }
     fn _return(&mut self, o: &Option<Box<Expr>>) {
         self.nodes[self.nid].stmts.push(
-            Statement::Return(
-                match o {
-                    None => None,
-                    Some(e) => Some(Box::new(*e.clone()))
-                }
-            )
+            Statement::Return(match o {
+                None => None,
+                Some(e) => Some(Box::new(*e.clone()))
+            })
         );
         self.nid = self.create_node();
         self.link = false;
     }
-    fn label(&mut self, l: &Label) {
-        if l.id == 0 {
-            self.start = Some(self.nid);
-        }
+    fn label(&mut self, l: Label) {
+        if l == 0 { self.start = Some(self.nid); }
         let old = self.nid;
         let mut removed = false;
         if self.nodes[old].stmts.len() == 0 {
             self.nodes.pop();
             removed = true;
         }
-        self.nid = self.get(l.id);
+        self.nid = self.get(l);
         if !removed && self.link {
             self.nodes[old].t = Some(self.nid);
         }

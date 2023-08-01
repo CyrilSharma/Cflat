@@ -1,3 +1,4 @@
+pub type Label = u32;
 #[derive(Clone)]
 pub enum Expr {
     Const(Primitive),
@@ -19,11 +20,6 @@ pub enum Statement {
     CJump(Box<Expr>, Label, Label),
     Label(Label),
     Return(Option<Box<Expr>>)
-}
-
-#[derive(Debug, Clone, Copy)]
-pub struct Label {
-    pub id: u32
 }
 
 #[derive(Debug, Clone)]

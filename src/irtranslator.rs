@@ -28,9 +28,7 @@ impl Translator {
         return res;
     }
     fn function_declaration(&mut self, f: &FunctionDeclaration) -> Option<ir::Statement> {
-        let mut ret = vec![ir::Statement::Label( // function ids are their labels.
-            ir::Label { id: f.id }
-        )];
+        let mut ret = vec![ir::Statement::Label(f.id)];
         match self.statement(&f.stmt) {
             None => return None,
             Some(s) => ret.push(s)
@@ -261,7 +259,7 @@ impl Translator {
         for exp in &f.args {
             v.push(self.expression(exp));
         }
-        return ir::Expr::Call(ir::Label { id: f.id }, v);
+        return ir::Expr::Call(f.id, v);
     }
     fn access(&mut self, a: &ast::AccessExpr) -> ir::Expr {
         let mut prod: u32 = 1;
@@ -370,7 +368,7 @@ impl Translator {
     }
     fn create_label(&mut self) -> ir::Label {
         self.nlabels += 1;
-        return ir::Label { id: self.nlabels - 1 }
+        return self.nlabels - 1;
     }
 }
 

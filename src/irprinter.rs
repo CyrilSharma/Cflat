@@ -17,7 +17,7 @@ impl Printer {
             Seq(s) => self.seq(s),
             Jump(j) => self.add_label(&format!("Jump: {:?}", j)),
             CJump(c, t, f) => self.cjump(c, *t, *f),
-            Label(l) => self.add_label(&format!("{:?}", l)),
+            Label(l) => self.add_label(&format!("{}", l)),
             Return(r) => self._return(r)
         }
     }
@@ -43,10 +43,10 @@ impl Printer {
         self.add_edge(idx, self.count);
         self.expression(j);
 
-        self.add_label(&format!("{:?}", t));
+        self.add_label(&format!("{}", t));
         self.add_edge(idx, self.count);
 
-        self.add_label(&format!("{:?}", f));
+        self.add_label(&format!("{}", f));
         self.add_edge(idx, self.count);
     }
     fn _return(&mut self, r: &Option<Box<Expr>>) {
@@ -97,7 +97,7 @@ impl Printer {
         let idx = self.count;
         self.add_label("Call");
         self.add_edge(idx, self.count);
-        self.add_label(&format!("{:?}", l));
+        self.add_label(&format!("{}", l));
         for e in v {
             self.add_edge(idx, self.count);
             self.expression(e);

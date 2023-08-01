@@ -15,7 +15,7 @@ impl CFG {
         let mut res = Vec::<Statement>::new();
         for idx in order.clone() {
             let n = &self.nodes[idx];
-            res.push(Statement::Label(ir::Label{id: idx as u32}));
+            res.push(Statement::Label(idx as u32));
             res.extend(n.stmts.iter()
                 .take(n.stmts.len() - 1)
                 .cloned()
@@ -28,13 +28,9 @@ impl CFG {
                 }
             };
             let jump = || -> Vec<Statement> { match peek() {
-                None => vec![Jump(ir::Label {
-                    id: n.t.unwrap() as u32
-                })],
+                None => vec![Jump(n.t.unwrap() as u32)],
                 Some(nxt) => match n.t.unwrap() == nxt {
-                    true => vec![Jump(ir::Label {
-                        id: n.t.unwrap() as u32
-                    })],
+                    true => vec![Jump(n.t.unwrap() as u32)],
                     false => vec![],
                 }
             }};
@@ -42,39 +38,34 @@ impl CFG {
                 None => vec![
                     CJump(
                         Box::new(e.clone()),
-                        ir::Label { id: n.t.unwrap() as u32 },
-                        ir::Label { id: 0 }
+                        n.t.unwrap() as u32,
+                        0
                     ),
-                    Jump(ir::Label {
-                        id: n.f.unwrap() as u32
-                    })
+                    Jump(n.f.unwrap() as u32)
                 ],
                 Some(nxt) => match (n.t.unwrap() == nxt,
                                     n.f.unwrap() == nxt) {
                     (true, true) => unreachable!(),
-                    (true, false) => vec![
-                        CJump(
+                    (true, false) => vec![CJump(
                         Box::new(ir::Expr::UnOp(
                             ir::Operator::Not,
                             Box::new(e.clone())
                         )),
-                        ir::Label { id: n.t.unwrap() as u32 },
-                        ir::Label { id: 0 }
+                        n.t.unwrap() as u32,
+                        0
                     )],
                     (false, true) => vec![CJump(
                         Box::new(e.clone()),
-                        ir::Label { id: n.t.unwrap() as u32 },
-                        ir::Label { id: 0 }
+                        n.t.unwrap() as u32,
+                        0
                     )],
                     (false, false) => vec![
                         CJump(
                             Box::new(e.clone()),
-                            ir::Label { id: n.t.unwrap() as u32 },
-                            ir::Label { id: 0 }
+                            n.t.unwrap() as u32,
+                            0
                         ),
-                        Jump(ir::Label {
-                            id: n.f.unwrap() as u32
-                        })
+                        Jump(n.f.unwrap() as u32)
                     ]
                 }
             }};
@@ -84,9 +75,7 @@ impl CFG {
                     true => vec![last.clone()],
                     false => vec![
                         last.clone(),
-                        Jump(ir::Label {
-                            id: n.t.unwrap() as u32
-                        })
+                        Jump(n.t.unwrap() as u32)
                     ],
                 }
             }};
