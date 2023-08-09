@@ -1,17 +1,16 @@
 use crate::ir::*;
+use crate::registry::Registry;
+
 use bumpalo::Bump;
-pub struct Reducer {
+pub struct Reducer<'a> {
     arena: Bump,
-    count: u32,
-    ret: u32
+    reg: &'a mut Registry
 }
-impl Reducer {
-    pub fn new(nid: u32) -> Self { 
-        Self {
-            arena: Bump::new(),
-            count: nid+1,
-            ret: nid
-        }
+impl<'a> Reducer<'a> {
+    pub fn new(arena: Bump, reg: &mut Registry) -> Self {
+        reg.ret = reg.nids;
+        reg.nids += 1;
+        return Self { arena, reg }
     }
     pub fn reduce(&mut self, stmts: &Vec<Statement>) -> Vec<Statement> {
         return self.seq(stmts);
@@ -159,37 +158,7 @@ impl Reducer {
     #[allow(dead_code, unused_variables)]
     fn commute(l: &Expr, r: &Expr) -> bool { todo!() }
     fn create_temp(&mut self) -> u32 {
-        self.count += 1;
-        return self.count - 1;
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use std::fs;
-    use std::path::Path;
-    use crate::parser::moduleParser;
-    use crate::semantic::Semantic;
-    use crate::astprinter;
-    use crate::irprinter;
-    use crate::irtranslator::Translator;
-
-    #[test]
-    fn visualize() {
-        let mut i = 0;
-        let dir = "tests/data/";
-        while Path::new(&format!("{dir}/input{i}.c")).exists() {
-            let filepath = &format!("{dir}/input{i}.c");
-            let input = fs::read_to_string(filepath).expect("File not found!");
-            let mut m = moduleParser::new().parse(&input).expect("Parse Error!");
-            let mut semantic = Semantic::new();
-            semantic.analyze(&mut m);
-            let ir  = Translator::new().translate(&mut m);
-            let lir = Reducer::new(semantic.nid()).reduce(&ir);
-            astprinter::Printer::new().print(&m);
-            irprinter::Printer::new().print(&lir);
-            i += 1;
-        }
+        self.reg.nids += 1;
+        return self.reg.nids - 1;
     }
 }

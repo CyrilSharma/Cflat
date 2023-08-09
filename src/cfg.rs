@@ -37,7 +37,7 @@ impl<'l> CFG<'l> {
             let cjump = |e: &ir::Expr| { match peek() {
                 None => vec![
                     CJump(
-                        self.arena.alloc(e.clone()),
+                        Box::(e.clone()),
                         n.t.unwrap() as u32,
                         0
                     ),

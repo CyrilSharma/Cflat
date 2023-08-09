@@ -1,19 +1,22 @@
 use crate::ast::*;
+use crate::registry::Registry;
 use crate::symboltable::{SymbolTable, VSymbol, FSymbol};
-pub struct Semantic {
+pub struct Semantic<'a> {
     fname: String,
     vsym: SymbolTable<VSymbol>,
-    fsym: SymbolTable<FSymbol>
+    fsym: SymbolTable<FSymbol>,
+    reg:  &'a mut Registry
 }
 // TODO: for proper error detection,
 // Add errors to a list instead of Panicing.
 // " Error Handling? Just don't make errors... "
-impl Semantic {
-    pub fn new() -> Self {
+impl<'a> Semantic<'a> {
+    pub fn new(r: &mut Registry) -> Self {
         Self {
             fname: String::new(),
             vsym: SymbolTable::new(),
-            fsym: SymbolTable::new()
+            fsym: SymbolTable::new(),
+            reg: r
         }
     }
     pub fn analyze(&mut self, m: &mut Module) {
@@ -31,6 +34,7 @@ impl Semantic {
         for f in &mut m.functions {
             self.function_declaration(f);
         }
+        self.reg.nids = self.vsym.count;
     }
     fn function_declaration(&mut self, f: &mut FunctionDeclaration) {
         self.vsym.scope_in();
@@ -108,7 +112,7 @@ impl Semantic {
     fn jump_statement(&mut self, j: &mut JumpStatement) {
         if j.jump_type != JumpOp::Return { return; }
         let kind = match &mut j.expr {
-            None => Some(Kind::void()),
+            None => None,
             Some(e) => {
                 self.expression(e);
                 e.kind()
@@ -259,33 +263,6 @@ impl Semantic {
                 i.kind = Some(s.kind);
                 i.id = s.id;
             }
-        }
-    }
-    pub fn nid(&self) -> u32 {
-        return self.vsym.count;
-    }
-}
-
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use std::fs;
-    use std::path::Path;
-    use crate::parser::moduleParser;
-    use crate::astprinter::Printer;
-
-    #[test]
-    fn visualize() {
-        let mut i = 0;
-        let dir = "tests/data/";
-        while Path::new(&format!("{dir}/input{i}.c")).exists() {
-            let filepath = &format!("{dir}/input{i}.c");
-            let input = fs::read_to_string(filepath).expect("File not found!");
-            let mut m = moduleParser::new().parse(&input).expect("Parse Error!");
-            Semantic::new().analyze(&mut m);
-            Printer::new().print(&mut m);
-            i += 1
         }
     }
 }

@@ -11,12 +11,12 @@ pub struct Translator {
 }
 
 impl Translator {
-    pub fn new() -> Self { 
+    pub fn new(arena: Bump) -> Self { 
         Self {
             nlabels:     0,
             loop_starts: Vec::new(),
             loop_ends:   Vec::new(),
-            arena:       Bump::new()
+            arena
         } 
     }
     pub fn translate(&mut self, m: &mut ast::Module) -> Vec::<ir::Statement> {
@@ -376,33 +376,5 @@ impl Translator {
     fn create_label(&mut self) -> ir::Label {
         self.nlabels += 1;
         return self.nlabels - 1;
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use std::fs;
-    use std::path::Path;
-    use crate::parser::moduleParser;
-    use crate::semantic::Semantic;
-    use crate::astprinter;
-    use crate::irprinter;
-
-    #[test]
-    fn visualize() {
-        let mut i = 0;
-        let dir = "tests/data/";
-        while Path::new(&format!("{dir}/input{i}.c")).exists() {
-            let filepath = &format!("{dir}/input{i}.c");
-            let input = fs::read_to_string(filepath).expect("File not found!");
-            let mut m = moduleParser::new().parse(&input).expect("Parse Error!");
-            let mut semantic = Semantic::new();
-            semantic.analyze(&mut m);
-            let ir  = Translator::new().translate(&mut m);
-            astprinter::Printer::new().print(&m);
-            irprinter::Printer::new().print(&ir);
-            i += 1;
-        }
     }
 }

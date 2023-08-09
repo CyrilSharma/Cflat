@@ -10,6 +10,7 @@ pub mod irprinter;
 pub mod irreducer;
 pub mod irtranslator;
 pub mod parser;
+pub mod registry;
 pub mod semantic;
 pub mod symboltable;
 pub mod utils;
