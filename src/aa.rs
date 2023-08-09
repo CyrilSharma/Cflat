@@ -1,54 +1,69 @@
 pub type Label = u32;
+pub type Const = u32;
+// Presume everything costs the same.
 pub enum AA {
-    Mov(Reg, Reg),
-    Add(Reg, Reg, Reg),
-    Sub(Reg, Reg, Reg),
-    MAdd(Reg, Reg, Reg),
-    MNeg(Reg, Reg),
-    MSub(Reg, Reg, Reg),
-    Mul(Reg, Reg),
-    SDiv(Reg, Reg),
-    Dec(Reg),
-    And(Reg),
-    Or(Reg),
-    Xor(Reg),
-    Not(Reg),
+    Label(Label),
+    Mov1(Reg, Const),
+    Mov2(Reg, Reg),
+    Add1(Reg, Reg, Const),
+    Add2(Reg, Reg, Reg),
+    Sub1(Reg, Reg, Const),
+    Sub2(Reg, Reg, Reg),
+    SMAddL(Reg, Reg, Reg, Reg),
+    SMNegL(Reg, Reg, Reg),
+    SMSubL(Reg, Reg, Reg, Reg),
+    SMulL(Reg, Reg, Reg),
+    SDiv(Reg, Reg, Reg),
+    And1(Reg, Reg, Const),
+    And2(Reg, Reg, Reg),
+    Or1(Reg, Reg, Const),
+    Or2(Reg, Reg, Reg),
+    Mvn1(Reg, Const),
+    Mvn2(Reg, Reg),
     B(Label),
-    Bcc(Label),
     BL(Label),
-    CBZ(Label),
-    RET(Label),
-    Jne(Label),
-    Jl(Label),
-    Jle(Label),
-    Jg(Label),
-    Jge(Label),
-    Push(Reg),
-    Pop(Ref),
-    Call(Label),
+    CBZ(Label, CC),
+    CBNZ(Label, CC),
+    CMP1(Reg, Const),
+    CMP2(Reg, Reg),
+    LDR1(Reg, Reg, Const),
+    LDR2(Reg, Reg),
+    STR1(Reg, Reg, Const),
+    STR2(Reg, Reg),
     Ret
 }
 
 pub enum Reg {
     // Args && Return Values
-    X0, X1, X2, X3, X4, X5, X6, X7,
+    R0, R1, R2, R3, R4, R5, R6, R7,
     // Indirect Result
-    X8,
+    R8,
     // Temporary
-    X9, X10, X11, X12, X13, X14, X15,
+    R9, R10, R11, R12, R13, R14, R15,
     // ???
-    X18,
+    R18,
     // Temporary (must be preserved)
-    X19, X20, X21, X22, X23, X24, X25,
-    X26, X27, X28,
+    R19, R20, R21, R22, R23, R24, R25,
+    R26, R27, R28,
     // Frame Pointer (must be preserved)
-    X29,
+    R29,
     // Return Address
-    X30,
+    R30,
     // Stack Pointer
     SP,
     // Zero
-    XZR,
+    RZR,
     // Program Counter
-    PC
+    PC,
+    // Fake Registers
+    ID(u32)
+}
+
+pub enum CC {
+    EQ,
+    NE,
+    GE,
+    LT,
+    GT,
+    LE
 }

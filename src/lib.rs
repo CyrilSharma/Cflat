@@ -1,3 +1,5 @@
+pub mod aa;
+pub mod aatranslator;
 pub mod ast;
 pub mod astprinter;
 pub mod cfg;
