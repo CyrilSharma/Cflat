@@ -1,37 +1,46 @@
-use crate::ir::{Statement, Expr, Operator};
+use std::collections::{BTreeMap};
+use crate::ir::{self, Statement, Expr, Operator};
 use crate::aa::{AA, Reg};
+
 pub struct Translator { 
-    count: usize,
-    costs: Vec<u32>,
-    asm:   Vec<Vec<AA>>
+    opt:   BTreeMap<usize, (Vec<AA>, u32)>,
+    count: usize
 }
+
 impl Translator {
-    pub fn new() -> Self { Self { count: 0, costs: vec![0, todo!()] } }
+    pub fn new(cnt: usize) -> Self { 
+        Self { 
+            opt: BTreeMap::new(),
+            count: cnt
+        }
+    }
     pub fn translate(&mut self, stmts: &Vec<Statement>) -> Vec<AA> {
         let mut res = Vec::<AA>::new();
         for s in stmts {
             self.statement(s);
-            res.extend(self.asm[self.count]);
+            let (v, _) = self.opt.get(&s.addr()).unwrap();
+            res.extend(*v);
         }
         return res;
     }
     fn statement(&mut self, s: &Statement) {
-        let save = self.count;
-        self.count += 1;
         use Statement::*;
+        let nid = s.addr();
         match s {
-            Expr(e)        => self.expression(e),
-            Move(d, s)     => self._move(d, s),
-            Jump(j)        => self.jump(j),
-            CJump(c, t, _) => self.cjump(c, *t),
+            Expr(e)        => { // only used for calls after reduction.
+                let ir::Expr::Call(f, args) = **e else { unreachable!(); };
+                self.call(f, args);
+            }
+            Move(d, s)     => self._move(d, s, nid),
+            Jump(j)        => self.jump(j, nid),
+            CJump(c, t, _) => self.cjump(c, *t, nid),
             Label(l)  => vec![AA::Label(*l)],
             Return(r) => vec![AA::Ret],
             _ => unreachable!()
         }
     }
     fn expression(&mut self, e: &Expr) {
-        if self.costs[self.count] != 0 { return }
-        let save = self.count += 1;
+        if self.opt.contains_key(e) { return }
         use Expr::*;
         use Operator::*;
         match e {
@@ -39,43 +48,61 @@ impl Translator {
             Temp(t) => self.add_label(&format!("Temp ({})", t)),
             UnOp(op, e) => self.unary(*op, e),
             BinOp(l, op, r) => self.binary(l, *op, r),
-            Mem(e) => self.mem(e),
-            Call(l, s) => self.call(*l, s),
+            Mem(m) if !self.costs.contains_key(&e.bits()) => self.mem(m),
             Address(e) => self.address(e),
             _ => unreachable!()
         }
     }
-    fn _move(&mut self, d: &Expr, s: &Expr) {
-        if self.costs[self.count] != 0 { return }
+    fn _move(&mut self, d: &Expr, s: &Expr, nid: usize) {
+        if self.opt.contains_key(&nid) { return; }
         use Expr::*;
-        self.costs[self.count] = 1;
-        self.asm[self.count] = match (d, s) {
-            (Temp(a), Const(b))  => vec![AA::Mov1(Reg::ID(*a), b.bits())],
-            (Temp(a), Temp(b))   => vec![AA::Mov2(Reg::ID(*a), Reg::ID(*b))],
+        let mut best: u32 = u32::MAX;
+        let mut best_asm: Vec<AA> = Vec::new();
+        let test = ||{};
+        match (d, s) {
+            (Temp(a), Const(b))  => {
+                let res = vec![AA::Mov1(Reg::ID(*a), b.bits())];
+                (res, res.len() as u32)
+            },
+            (Temp(a), Temp(b))   => {
+                let res = vec![AA::Mov2(Reg::ID(*a), Reg::ID(*b))];
+                (res, res.len() as u32)
+            },
             (Temp(a), Mem(T))    => {
                 let Temp(i) = **T else { unreachable!() };
-                vec![AA::LDR2(Reg::ID(*a), Reg::ID(i))]
-            },
-            (Mem(T), Const(b))   => {
-                let Temp(i) = **T else { unreachable!() };
-                vec![AA::STR2(Reg::ID(i), b.bits())]
+                let res = vec![AA::LDR2(Reg::ID(*a), Reg::ID(i))];
+                (res, res.len() as u32)
             }
+        }
+        if let 
+        match (d, s) {
+            (Mem(T), Const(b))   => {
+                let t = self.temp();
+                let Temp(reg) = **T else { unreachable!() };
+                let res = vec![
+                    AA::Mov1(Reg::ID(t), b.bits()),
+                    AA::STR2(Reg::ID(t), Reg::ID(reg))
+                ];
+                (res, res.len() as u32)
+            },
             (Mem(T), Temp(b))    => {
                 let Temp(i) = **T else { unreachable!() };
-                vec![AA::STR2(Reg::ID(i), Reg::ID(*b))]
+                let res = vec![AA::STR2(Reg::ID(i), Reg::ID(*b))];
+                (res, res.len() as u32)
             },
             (Mem(D), Mem(S)) => {
-                self.costs[self.count] = 2;
-                let id = self.create_temp();
-                let Temp(r1) = **D else { unreachable!() };
-                let Temp(r2) = **S else { unreachable!() };
-                vec![
-                    AA::LDR2(Reg::ID(id), Reg::ID(r2)),
-                    AA::STR2(Reg::ID(r1), Reg::ID(id)),
-                ]
+                let t = self.temp();
+                let Temp(reg1) = **D else { unreachable!() };
+                let Temp(reg2) = **S else { unreachable!() };
+                let res = vec![
+                    AA::LDR2(Reg::ID(t), Reg::ID(reg2)),
+                    AA::STR2(Reg::ID(reg1), Reg::ID(t)),
+                ];
+                (res, res.len() as u32)
             }
             _ => unreachable!()
-        };
+        }
+        self.opt.insert(nid, (best_asm, best));
     }
     fn cjump(&mut self, j: &Expr, t: Label, f: Label) {
         let idx = self.count;
@@ -119,28 +146,14 @@ impl Translator {
             self.expression(e);
         }
     }
-    fn eseq(&mut self, s: &Statement, e: &Expr) {
-        let idx = self.count;
-        self.add_label("ESEQ");
-        self.add_edge(idx, self.count);
-        self.statement(s);
-        self.add_edge(idx, self.count);
-        self.expression(e);
-    }
     fn address(&mut self, e: &Expr) {
         let idx = self.count;
         self.add_label("Address");
         self.add_edge(idx, self.count);
         self.expression(e);
     }
-    fn add_edge(&mut self, i: u32, j: u32) {
-        println!("    node{} -> node{};", i, j)
-    }
-    fn add_label(&mut self, s: &str) {
-        println!("{}", &format!(
-            "    node{} [label=\"{}\"];",
-            self.count, s
-        ));
+    fn temp(&mut self) -> u32 {
         self.count += 1;
+        return (self.count - 1) as u32;
     }
 }

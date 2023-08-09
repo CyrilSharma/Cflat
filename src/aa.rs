@@ -1,5 +1,5 @@
 pub type Label = u32;
-pub type Const = u32;
+pub type Const = usize;
 // Presume everything costs the same.
 pub enum AA {
     Label(Label),
