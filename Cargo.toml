@@ -10,4 +10,5 @@ lalrpop = "*"
 regex = "*"
 
 [dependencies]
+bumpalo = "3.13.0"
 lalrpop-util = { version = "*", features = ["lexer", "unicode"] }

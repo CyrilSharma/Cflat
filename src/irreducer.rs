@@ -1,7 +1,18 @@
 use crate::ir::*;
-pub struct Reducer { count: u32, ret: Expr }
+use bumpalo::Bump;
+pub struct Reducer {
+    arena: Bump,
+    count: u32,
+    ret: u32
+}
 impl Reducer {
-    pub fn new(nid: u32) -> Self { Self{count: nid+1, ret: Expr::Temp(nid) } }
+    pub fn new(nid: u32) -> Self { 
+        Self {
+            arena: Bump::new(),
+            count: nid+1,
+            ret: nid
+        }
+    }
     pub fn reduce(&mut self, stmts: &Vec<Statement>) -> Vec<Statement> {
         return self.seq(stmts);
     }
@@ -41,7 +52,7 @@ impl Reducer {
             Temp(_) => {
                 let (mut s1, e1) = self.expression(s);
                 s1.push(Statement::Move(
-                    Box::new(d.clone()),
+                    self.arena.alloc(d.clone()),
                     e1
                 ));
                 return s1;
@@ -54,12 +65,12 @@ impl Reducer {
                 let (sr, er) = self.expression(s);
                 v.extend(sl);
                 v.push(Statement::Move(
-                    Box::new(Expr::Temp(id)),
+                    self.arena.alloc(Expr::Temp(id)),
                     el,
                 ));
                 v.extend(sr);
                 v.push(Statement::Move(
-                    Box::new(Temp(id)),
+                    self.arena.alloc(Temp(id)),
                     er
                 ));
                 return v;
@@ -74,27 +85,28 @@ impl Reducer {
         }
         return v;
     }
-    fn expression(&mut self, e: &Expr) -> (Vec<Statement>, Box<Expr>) {
+    fn expression(&mut self, e: &Expr) -> (Vec<Statement>, &Expr) {
         use Expr::*;
         match e {
-            Const(_) | Temp(_) => {
-                return (Vec::new(), Box::new(e.clone()))
-            }
             Mem(e1) | Address(e1) => {
                 let (v, e2) = self.expression(e1);
-                return (v, Box::new(Mem(e2)))
-            }
+                return (v, self.arena.alloc(Mem(e2)))
+            },
             UnOp(op, e) => return self.unary(*op, e),
             BinOp(l, op, r) => return self.binary(l, *op, r),
             Call(l, exprs) => return self.call(*l, exprs),
-            ESeq(s, e) => return self.eseq(s, e)
+            ESeq(s, e) => return self.eseq(s, e),
+            Const(_) | Temp(_) => return (Vec::new(), e)
         }
     }
-    fn unary(&mut self, op: Operator, e: &Expr) -> (Vec<Statement>, Box<Expr>) {
+    fn unary(&mut self, op: Operator, e: &Expr) -> (Vec<Statement>, &Expr) {
         let (s1, e1) = self.expression(e);
-        return (s1, Box::new(Expr::UnOp(op, Box::new(*e1))));
+        let e = self.arena.alloc(
+            Expr::UnOp(op, self.arena.alloc(*e1))
+        );
+        return (s1, e);
     }
-    fn binary(&mut self, l: &Expr, op: Operator, r: &Expr) -> (Vec<Statement>, Box<Expr>) {
+    fn binary(&mut self, l: &Expr, op: Operator, r: &Expr) -> (Vec<Statement>, &Expr) {
         /* This can be made more efficient if you can somehow determine if the operators commute */
         let mut v = Vec::<Statement>::new();
         let (sl, el) = self.expression(l);
@@ -102,42 +114,42 @@ impl Reducer {
         let id = self.create_temp();
         v.extend(sl);
         v.push(Statement::Move(
-            Box::new(Expr::Temp(id)),
-            Box::new(*el)
+            self.arena.alloc(Expr::Temp(id)),
+            self.arena.alloc(*el)
         ));
         v.extend(sr);
         let e = Expr::BinOp(
-            Box::new(Expr::Temp(id)),
+            self.arena.alloc(Expr::Temp(id)),
             op,
-            Box::new(*er)
+            self.arena.alloc(*er)
         );
-        return (v, Box::new(e));
+        return (v, self.arena.alloc(e));
     }
-    fn call(&mut self, l: Label, exprs: &Vec<Expr>) -> (Vec<Statement>, Box<Expr>) {
+    fn call(&mut self, l: Label, exprs: &Vec<Expr>) -> (Vec<Statement>, &Expr) {
         use Expr::*;
         let mut temps = Vec::<Expr>::new();
         let mut v = Vec::<Statement>::new();
         for e1 in exprs {
             let (s2, e2) = self.expression(e1);
-            let t = Temp(self.create_temp());
             v.extend(s2);
+            let i = self.create_temp();
             v.push(Statement::Move(
-                Box::new(t.clone()),
-                Box::new(*e2)
+                self.arena.alloc(Temp(i)),
+                self.arena.alloc(*e2)
             ));
-            temps.push(t);
+            temps.push(Temp(i));
         }
         v.push(Statement::Expr(
-            Box::new(Call(l, temps))
+            self.arena.alloc(Call(l, temps))
         ));
         let id = self.create_temp();
         v.push(Statement::Move(
-            Box::new(Temp(id)),
-            Box::new(self.ret.clone())
+            self.arena.alloc(Temp(id)),
+            self.arena.alloc(Temp(self.ret))
         ));
-        return (v, Box::new(Temp(id)));
+        return (v, self.arena.alloc(Temp(id)));
     }
-    fn eseq(&mut self, s: &Statement, e: &Expr) -> (Vec<Statement>, Box<Expr>) {
+    fn eseq(&mut self, s: &Statement, e: &Expr) -> (Vec<Statement>, &Expr) {
         let mut s1 = self.statement(s);
         let (s2, e1) = self.expression(e);
         s1.extend(s2);

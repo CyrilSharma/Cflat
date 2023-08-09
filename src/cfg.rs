@@ -1,16 +1,16 @@
 use crate::ir::{Statement, self};
 #[derive(Clone)]
-pub struct Node {
-    pub stmts: Vec<Statement>,
+pub struct Node<'l> {
+    pub stmts: Vec<Statement<'l>>,
     pub t: Option<usize>,
-    pub f: Option<usize>
+    pub f: Option<usize>,
 }
-pub struct CFG { 
-    pub nodes: Vec<Node>,
+pub struct CFG<'l> { 
+    pub nodes: Vec<Node<'l>>,
     pub start: usize
 }
 
-impl CFG {
+impl<'l> CFG<'l> {
     fn export(&self, order: &Vec<usize>) -> Vec<Statement> {
         let mut res = Vec::<Statement>::new();
         for idx in order.clone() {
@@ -37,7 +37,7 @@ impl CFG {
             let cjump = |e: &ir::Expr| { match peek() {
                 None => vec![
                     CJump(
-                        Box::new(e.clone()),
+                        self.arena.alloc(e.clone()),
                         n.t.unwrap() as u32,
                         0
                     ),

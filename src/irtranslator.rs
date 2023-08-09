@@ -1,11 +1,13 @@
 use crate::ast;
+use bumpalo::Bump;
 use crate::ast::FunctionDeclaration;
 use crate::ir::{self, Operator};
 
 pub struct Translator {
     nlabels:     u32,
     loop_starts: Vec<ir::Label>,
-    loop_ends:   Vec<ir::Label>
+    loop_ends:   Vec<ir::Label>,
+    arena:       Bump
 }
 
 impl Translator {
@@ -13,7 +15,8 @@ impl Translator {
         Self {
             nlabels:     0,
             loop_starts: Vec::new(),
-            loop_ends:   Vec::new()
+            loop_ends:   Vec::new(),
+            arena:       Bump::new()
         } 
     }
     pub fn translate(&mut self, m: &mut ast::Module) -> Vec::<ir::Statement> {
@@ -52,8 +55,8 @@ impl Translator {
         match &d.val {
             None    => return None,
             Some(e) => return Some(ir::Statement::Move(
-                Box::new(ir::Expr::Temp(d.id)),
-                Box::new(self.expression(e))
+                self.arena.alloc(ir::Expr::Temp(d.id)),
+                self.arena.alloc(self.expression(e))
             ))
         }
     }
@@ -71,7 +74,7 @@ impl Translator {
         return match &e.expr {
             None     => None,
             Some(ex) => Some(ir::Statement::Expr(
-                Box::new(self.expression(ex))
+                self.arena.alloc(self.expression(ex))
             ))
         }
     }
@@ -120,7 +123,7 @@ impl Translator {
         match &f.each {
             None    => (),
             Some(e) => ret.push(ir::Statement::Expr(
-                Box::new(self.expression(e))
+                self.arena.alloc(self.expression(e))
             ))
         }
         ret.push(ir::Statement::Jump(lt));
@@ -171,7 +174,7 @@ impl Translator {
         match e {
             None    => ir::Statement::Return(None),
             Some(s) => ir::Statement::Return(Some(
-                Box::new(self.expression(&s))
+                self.arena.alloc(self.expression(&s))
             ))
         }
     }
@@ -191,14 +194,14 @@ impl Translator {
                 if *i != 0 { t } else { f }
             )),
             Ident(i) => Some(ir::Statement::CJump(
-                Box::new(ir::Expr::Temp(i.id)),
+                self.arena.alloc(ir::Expr::Temp(i.id)),
                 t, f
             )),
             _ => None
         };
         return match res {
             None    => ir::Statement::CJump(
-                Box::new(self.expression(expr)),
+                self.arena.alloc(self.expression(expr)),
                 t, f
             ),
             Some(s) => s
@@ -267,46 +270,50 @@ impl Translator {
         let mut root: Option<ir::Expr> = None;
         for i in (0..a.offsets.len()).rev() {
             let mul = ir::Expr::BinOp(
-                Box::new(ir::Expr::Const(
+                self.arena.alloc(ir::Expr::Const(
                     ir::Primitive::Int(
                         8 * prod as i32
                     )
                 )),
                 Operator::Mul,
-                Box::new(self.expression(&a.offsets[i]))
+                self.arena.alloc(self.expression(&a.offsets[i]))
             );
             root = match root {
                 None    => Some(mul),
                 Some(e) => Some(ir::Expr::BinOp(
-                    Box::new(e),
+                    self.arena.alloc(e),
                     Operator::Add,
-                    Box::new(mul)
+                    self.arena.alloc(mul)
                 ))
             };
             prod *= a.sizes[i];
         }
         let exp = ir::Expr::BinOp(
-            Box::new(t),
+            self.arena.alloc(t),
             Operator::Add,
-            Box::new(root.unwrap())
+            self.arena.alloc(root.unwrap())
         );
-        return ir::Expr::Mem(Box::new(exp));
+        return ir::Expr::Mem(self.arena.alloc(exp));
     }
     fn unary(&mut self, u: &ast::UnaryExpr) -> ir::Expr {
         use ast::UnaryOp::*;
         let op = match u.unary_op {
             Not  => ir::Operator::Not,
             Neg  => ir::Operator::Neg,
-            Star => return ir::Expr::Mem(Box::new(
-                self.expression(&u.expr)
-            )),
-            Address => return ir::Expr::Address(Box::new(
-                self.expression(&u.expr)
-            ))
+            Star => return ir::Expr::Mem(
+                self.arena.alloc(
+                    self.expression(&u.expr)
+                )
+            ),
+            Address => return ir::Expr::Address(
+                self.arena.alloc(
+                    self.expression(&u.expr)
+                )
+            )
         };
-        return ir::Expr::UnOp(op,
-            Box::new(self.expression(&u.expr))
-        );
+        return ir::Expr::UnOp(op, self.arena.alloc(
+            self.expression(&u.expr)
+        ));
     }
     fn binary(&mut self, b: &ast::BinaryExpr) -> ir::Expr {
         use ast::BinaryOp::*;
@@ -327,9 +334,9 @@ impl Translator {
                 => return self.assign(b),
         };
         return ir::Expr::BinOp(
-            Box::new(self.expression(&b.left)),
+            self.arena.alloc(self.expression(&b.left)),
             op,
-            Box::new(self.expression(&b.right)),
+            self.arena.alloc(self.expression(&b.right)),
         );
     }
     fn assign(&mut self, b: &ast::BinaryExpr) -> ir::Expr {
@@ -347,23 +354,23 @@ impl Translator {
                     _   => unreachable!()
                 };
                 ir::Statement::Move(
-                    Box::new(self.expression(&b.left)),
-                    Box::new(ir::Expr::BinOp(
-                        Box::new(self.expression(&b.left)),
+                    self.arena.alloc(self.expression(&b.left)),
+                    self.arena.alloc(ir::Expr::BinOp(
+                        self.arena.alloc(self.expression(&b.left)),
                         op,
-                        Box::new(self.expression(&b.right))
+                        self.arena.alloc(self.expression(&b.right))
                     ))
                 )
             },
             Assign => ir::Statement::Move(
-                Box::new(self.expression(&b.left)),
-                Box::new(self.expression(&b.right))
+                self.arena.alloc(self.expression(&b.left)),
+                self.arena.alloc(self.expression(&b.right))
             ),
             _ => unreachable!()
         };
         return ir::Expr::ESeq(
-            Box::new(stmt),
-            Box::new(self.expression(&b.left))
+            self.arena.alloc(stmt),
+            self.arena.alloc(self.expression(&b.left))
         );
     }
     fn create_label(&mut self) -> ir::Label {

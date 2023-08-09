@@ -18,7 +18,7 @@ impl Printer {
             Jump(j) => self.add_label(&format!("Jump: {:?}", j)),
             CJump(c, t, f) => self.cjump(c, *t, *f),
             Label(l) => self.add_label(&format!("{}", l)),
-            Return(r) => self._return(r)
+            Return(r) => self._return(*r)
         }
     }
     fn _move(&mut self, d: &Expr, s: &Expr) {
@@ -49,8 +49,8 @@ impl Printer {
         self.add_label(&format!("{}", f));
         self.add_edge(idx, self.count);
     }
-    fn _return(&mut self, r: &Option<Box<Expr>>) {
-        match *r {
+    fn _return(&mut self, r: Option<&Expr>) {
+        match r {
             None => self.add_label("Return"),
             Some(ref e) => {
                 let idx = self.count;
