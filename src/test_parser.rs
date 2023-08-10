@@ -1,4 +1,4 @@
-use crate::parser::moduleParser;
+use crate::astparser::moduleParser;
 
 #[test]
 fn test0() {

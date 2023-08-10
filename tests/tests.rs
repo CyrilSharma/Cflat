@@ -4,9 +4,9 @@ use compiler::cfgprinter;
 use compiler::irprinter;
 use compiler::irtranslator::Translator;
 use compiler::irreducer::Reducer;
-use compiler::parser::moduleParser;
+use compiler::astparser::moduleParser;
 use compiler::registry::Registry;
-use compiler::semantic::Semantic;
+use compiler::astanalyzer::Semantic;
 
 use std::fs;
 use std::path::Path;
