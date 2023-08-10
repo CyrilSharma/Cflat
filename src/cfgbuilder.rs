@@ -1,22 +1,26 @@
-use std::collections::HashMap;
 use crate::ir::*;
 use crate::cfg::*;
-pub struct CfgBuilder {
+
+use std::collections::HashMap;
+use bumpalo::Bump;
+pub struct CfgBuilder<'a> {
     nid: usize, // the current block
     link: bool, // whether prev & cur should be connectd.
     lookup: HashMap<u32, usize>,
-    nodes: Vec<Node>,
+    nodes: Vec<Node<'a>>,
     start: Option<usize>,
+    arena: &'a mut Bump
 }
 
-impl CfgBuilder {
-    pub fn new() -> CfgBuilder  { 
+impl<'a> CfgBuilder<'a> {
+    pub fn new(arena: &mut Bump) -> CfgBuilder  { 
         CfgBuilder {
             nid: 0,
             link: true,
             lookup: HashMap::new(),
             nodes: Vec::new(),
             start: None,
+            arena
         }
     }
     pub fn build(&mut self, stmts: &Vec<Statement>) -> CFG {
@@ -42,15 +46,17 @@ impl CfgBuilder {
     }
     fn expr(&mut self, e: &Expr) {
         self.nodes[self.nid].stmts.push(
-            Statement::Expr(Box::new(e.clone()))
+            Statement::Expr(self.arena.alloc(
+                Box::new(e.clone()))
+            )
         );
         self.link = true;
     }
     fn _move(&mut self, d: &Expr, s: &Expr) {
         self.nodes[self.nid].stmts.push(
             Statement::Move(
-                Box::new(d.clone()),
-                Box::new(s.clone())
+                self.arena.alloc(d.clone()),
+                self.arena.alloc(s.clone())
             )
         );
         self.link = true;
@@ -67,7 +73,7 @@ impl CfgBuilder {
     fn cjump(&mut self, e: &Expr, l1: Label, l2: Label) {
         self.nodes[self.nid].stmts.push(
             Statement::CJump(
-                Box::new(e.clone()),
+                self.arena.alloc(e.clone()),
                 l1, l2
             )
         );
@@ -82,7 +88,9 @@ impl CfgBuilder {
         self.nodes[self.nid].stmts.push(
             Statement::Return(match o {
                 None => None,
-                Some(e) => Some(Box::new(*e.clone()))
+                Some(e) => Some(
+                    self.arena.alloc(*e.clone())
+                )
             })
         );
         self.nid = self.create_node();
