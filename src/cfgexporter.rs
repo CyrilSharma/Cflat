@@ -7,81 +7,49 @@ impl<'l> Exporter<'l> {
     fn new(arena: &'l mut Bump) -> Self {
         return Self { arena }
     }
-    fn export(&self, cfg: CFG, order: &Vec<usize>) -> Vec<Statement> {
-        let mut res = Vec::<Statement>::new();
+    fn export(&mut self, cfg: CFG, order: Vec<usize>) -> Vec<&mut Statement> {
+        let mut res = Vec::<&mut Statement>::new();
         for idx in order.clone() {
             let n = &cfg.nodes[idx];
-            res.push(Statement::Label(idx as u32));
-            res.extend(n.stmts.iter()
-                .take(n.stmts.len() - 1)
-                .cloned()
-            );
-            let last = n.stmts.last().unwrap();
+            res.push(self.arena.alloc(Statement::Label(idx as u32)));
+            res.extend(n.stmts);
+            let last = res.pop().unwrap();
             let peek = || -> Option<usize> { 
                 match idx + 1 == order.len() {
                     true => None,
                     false => Some(idx + 1)
                 }
             };
-            let jump = || -> Vec<Statement> { match peek() {
-                None => vec![Jump(n.t.unwrap() as u32)],
+            let mut jump = || -> Vec<&mut Statement> { match peek() {
+                None => vec![last],
                 Some(nxt) => match n.t.unwrap() == nxt {
-                    true => vec![Jump(n.t.unwrap() as u32)],
+                    true => vec![last],
                     false => vec![],
                 }
             }};
-            let cjump = |e: &ir::Expr| { match peek() {
-                None => vec![
-                    CJump(
-                        self.arena.alloc(e.clone()),
-                        n.t.unwrap() as u32,
-                        0
-                    ),
+            let mut cjump = |e: &mut &mut ir::Expr, flabel: &mut ir::Label| {
+                *flabel = 0;
+                if let Some(nxt) = peek() {
+                    if n.t.unwrap() == nxt {
+                        *e = self.arena.alloc(ir::Expr::UnOp(
+                            ir::Operator::Not, *e
+                        ));
+                        return vec![last]
+                    } else if n.f.unwrap() == nxt {
+                        return vec![last]
+                    }
+                }
+                vec![last, self.arena.alloc(
                     Jump(n.f.unwrap() as u32)
-                ],
-                Some(nxt) => match (n.t.unwrap() == nxt,
-                                    n.f.unwrap() == nxt) {
-                    (true, true) => unreachable!(),
-                    (true, false) => vec![CJump(
-                        self.arena.alloc(ir::Expr::UnOp(
-                            ir::Operator::Not,
-                            self.arena.alloc(e.clone())
-                        )),
-                        n.t.unwrap() as u32,
-                        0
-                    )],
-                    (false, true) => vec![CJump(
-                        self.arena.alloc(e.clone()),
-                        n.t.unwrap() as u32,
-                        0
-                    )],
-                    (false, false) => vec![
-                        CJump(
-                            self.arena.alloc(e.clone()),
-                            n.t.unwrap() as u32,
-                            0
-                        ),
-                        Jump(n.f.unwrap() as u32)
-                    ]
-                }
-            }};
-            let notransfer = || -> Vec<Statement> { match peek() {
-                None => vec![last.clone()],
-                Some(nxt) => match n.t.unwrap() == nxt {
-                    true => vec![last.clone()],
-                    false => vec![
-                        last.clone(),
-                        Jump(n.t.unwrap() as u32)
-                    ],
-                }
-            }};
+                )]
+            };
             use Statement::*;
             res.extend(match &last {
                 Jump(_) => jump(),
-                CJump(e, _, _) => cjump(e),
-                Return(_) => vec![last.clone()],
+                CJump(mut e, _, mut f) => cjump(&mut e, &mut f),
+                Return(_) => vec![last],
                 Label(_) | Seq(_) => unreachable!(),
-                _ => notransfer()
+                _ => vec![last]
             });
         }
         return res;

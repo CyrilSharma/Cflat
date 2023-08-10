@@ -1,18 +1,21 @@
 use std::mem;
+use bumpalo::Bump;
 
 pub type Label = u32;
-pub type RefE<'l>  = &'l Expr<'l>;
+// Ugly but less ugly then &'l mut Expr<'l>
+// We mark these mutable to prevent accidental cloning.
+pub type RefE<'l>  = &'l mut Expr<'l>;
+pub type RefS<'l>  = &'l mut Statement<'l>;
 
-#[derive(Clone)]
 pub enum Expr<'l> {
     Const(Primitive),
     Temp(u32), /* ID */
     UnOp(Operator, RefE<'l>),
     BinOp(RefE<'l>, Operator, RefE<'l>),
     Mem(RefE<'l>),
-    Call(Label, Vec<Expr<'l>>),
+    Call(Label, Vec<RefE<'l>>),
     Address(RefE<'l>), /* Temp, Access */
-    ESeq(&'l Statement<'l>, RefE<'l>)
+    ESeq(RefS<'l>, RefE<'l>)
 }
 impl<'l> Expr<'l> {
     pub fn addr(&self) -> usize {
@@ -20,11 +23,10 @@ impl<'l> Expr<'l> {
     }
 }
 
-#[derive(Clone)]
 pub enum Statement<'l> {
     Expr(RefE<'l>),
     Move(RefE<'l>, RefE<'l>),
-    Seq(Vec<Statement<'l>>),
+    Seq(Vec<RefS<'l>>),
     Jump(Label),
     CJump(RefE<'l>, Label, Label),
     Label(Label),

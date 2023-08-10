@@ -1,7 +1,7 @@
 use crate::ast::*;
 use crate::registry::Registry;
 use crate::symboltable::{SymbolTable, VSymbol, FSymbol};
-pub struct Semantic<'a> {
+pub struct Analyzer<'a> {
     fname: String,
     vsym: SymbolTable<VSymbol>,
     fsym: SymbolTable<FSymbol>,
@@ -10,7 +10,7 @@ pub struct Semantic<'a> {
 // TODO: for proper error detection,
 // Add errors to a list instead of Panicing.
 // " Error Handling? Just don't make errors... "
-impl<'a> Semantic<'a> {
+impl<'a> Analyzer<'a> {
     pub fn new(r: &mut Registry) -> Self {
         Self {
             fname: String::new(),

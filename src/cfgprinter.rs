@@ -51,7 +51,7 @@ impl Printer {
             format!("{:?}", f),
         );
     }
-    fn _return(&mut self, r: &Option<Box<Expr>>) -> String {
+    fn _return(&mut self, r: &Option<&mut Expr>) -> String {
         return format!("Return {}",
             match r {
                 None => format!(""),
@@ -89,7 +89,7 @@ impl Printer {
             self.expression(m)
         );
     }
-    fn call(&mut self, l: Label, v: &Vec<Expr>) -> String {
+    fn call(&mut self, l: Label, v: &Vec<&mut Expr>) -> String {
         return format!("Call(f={}, {})", l,
             v.iter().map(|e| self.expression(e))
                 .collect::<Vec<String>>().join(", ")

@@ -1,7 +1,6 @@
 use crate::ir::Statement;
-#[derive(Clone)]
 pub struct Node<'l> {
-    pub stmts: Vec<Statement<'l>>,
+    pub stmts: Vec<&'l mut Statement<'l>>,
     pub t: Option<usize>,
     pub f: Option<usize>,
 }

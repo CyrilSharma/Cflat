@@ -6,7 +6,7 @@ use compiler::irtranslator::Translator;
 use compiler::irreducer::Reducer;
 use compiler::astparser::moduleParser;
 use compiler::registry::Registry;
-use compiler::astanalyzer::Semantic;
+use compiler::astanalyzer::Analyzer;
 
 use std::fs;
 use std::path::Path;
@@ -27,7 +27,7 @@ fn visualize() {
         // Might make these files use bump allocator as well.
         let mut ast = moduleParser::new().parse(&input).expect("Parse Error!");
         astprinter::Printer::new().print(&ast);
-        let semantic = Semantic::new(&mut r).analyze(&mut ast);
+        let analyzer = Analyzer::new(&mut r).analyze(&mut ast);
         astprinter::Printer::new().print(&ast);
 
         let (mut old, mut cur) = (Bump::new(), Bump::new());

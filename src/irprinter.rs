@@ -2,7 +2,7 @@ use crate::ir::*;
 pub struct Printer { count: u32 }
 impl Printer {
     pub fn new() -> Self { Self{count: 0} }
-    pub fn print(&mut self, stmts: &Vec<Statement>) {
+    pub fn print(&mut self, stmts: &Vec<&mut Statement>) {
         println!("digraph IR {{");
         for s in stmts {
             self.statement(s);
@@ -29,7 +29,7 @@ impl Printer {
         self.add_edge(idx, self.count);
         self.expression(s);
     }
-    fn seq(&mut self, stmts: &Vec<Statement>) {
+    fn seq(&mut self, stmts: &Vec<&mut Statement>) {
         let idx = self.count;
         self.add_label("Seq");
         for s in stmts {
@@ -49,7 +49,7 @@ impl Printer {
         self.add_label(&format!("{}", f));
         self.add_edge(idx, self.count);
     }
-    fn _return(&mut self, r: Option<&Expr>) {
+    fn _return(&mut self, r: Option<&mut Expr>) {
         match r {
             None => self.add_label("Return"),
             Some(ref e) => {
@@ -93,7 +93,7 @@ impl Printer {
         self.add_edge(idx, self.count);
         self.expression(m);
     }
-    fn call(&mut self, l: Label, v: &Vec<Expr>) {
+    fn call(&mut self, l: Label, v: &Vec<&mut Expr>) {
         let idx = self.count;
         self.add_label("Call");
         self.add_edge(idx, self.count);

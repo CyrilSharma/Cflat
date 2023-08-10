@@ -3,6 +3,7 @@ use bumpalo::Bump;
 use crate::ast::FunctionDeclaration;
 use crate::ir::{self, Operator};
 
+// We should return references instead of objects!!!
 pub struct Translator {
     nlabels:     u32,
     loop_starts: Vec<ir::Label>,
@@ -19,9 +20,9 @@ impl Translator {
             arena
         } 
     }
-    pub fn translate(&mut self, m: &mut ast::Module) -> Vec::<ir::Statement> {
+    pub fn translate(&mut self, m: &mut ast::Module) -> Vec::<&mut ir::Statement> {
         self.nlabels = m.functions.len() as u32; // function ids are their labels.
-        let mut res = Vec::<ir::Statement>::new();
+        let mut res = Vec::<&mut ir::Statement>::new();
         for f in &m.functions {
             match self.function_declaration(f) {
                 None => (),
@@ -30,16 +31,21 @@ impl Translator {
         }
         return res;
     }
-    fn function_declaration(&mut self, f: &FunctionDeclaration) -> Option<ir::Statement> {
-        let mut ret = vec![ir::Statement::Label(f.id)];
+    fn function_declaration(&mut self, f: &FunctionDeclaration)
+        -> Option<&mut ir::Statement> {
+        let mut ret = vec![self.arena.alloc(
+            ir::Statement::Label(f.id)
+        )];
         match self.statement(&f.stmt) {
             None => return None,
             Some(s) => ret.push(s)
         }
-        return Some(ir::Statement::Seq(ret));
+        return Some(self.arena.alloc(
+            ir::Statement::Seq(ret)
+        ));
     }
     /*----------------STATEMENTS--------------------*/
-    fn statement(&mut self, s: &ast::Statement) -> Option<ir::Statement> {
+    fn statement(&mut self, s: &ast::Statement) -> Option<&mut ir::Statement> {
         use ast::Statement::*;
         return match s {
             Declare  (ref d) => self.declare_statement(d),
@@ -51,55 +57,62 @@ impl Translator {
             Jump     (ref j) => Some(self.jump_statement(j))
         }
     }
-    fn declare_statement(&mut self, d: &ast::DeclareStatement) -> Option<ir::Statement> {
+    fn declare_statement(&mut self, d: &ast::DeclareStatement)
+        -> Option<&mut ir::Statement> {
         match &d.val {
             None    => return None,
-            Some(e) => return Some(ir::Statement::Move(
-                self.arena.alloc(ir::Expr::Temp(d.id)),
-                self.arena.alloc(self.expression(e))
+            Some(e) => return Some(self.arena.alloc(
+                ir::Statement::Move(
+                    self.arena.alloc(ir::Expr::Temp(d.id)),
+                    self.expression(e)
+                )
             ))
         }
     }
-    fn compound_statement(&mut self, c: &ast::CompoundStatement) -> ir::Statement {
-        let mut stmts = Vec::<ir::Statement>::new();
+    fn compound_statement(&mut self, c: &ast::CompoundStatement)
+        -> &mut ir::Statement {
+        let mut stmts = Vec::<&mut ir::Statement>::new();
         for stmt in &c.stmts {
             match self.statement(stmt) {
                 None    => (),
                 Some(s) => stmts.push(s)
             }
         }
-        return ir::Statement::Seq(stmts);
+        return self.arena.alloc(
+            ir::Statement::Seq(stmts)
+        );
     }
-    fn expr_statement(&mut self, e: &ast::ExprStatement) -> Option<ir::Statement> {
+    fn expr_statement(&mut self, e: &ast::ExprStatement)
+        -> Option<&mut ir::Statement> {
         return match &e.expr {
             None     => None,
-            Some(ex) => Some(ir::Statement::Expr(
-                self.arena.alloc(self.expression(ex))
+            Some(ex) => Some(self.arena.alloc(
+                ir::Statement::Expr(self.expression(ex))
             ))
         }
     }
-    fn if_statement(&mut self, i: &ast::IfStatement) -> ir::Statement {
+    fn if_statement(&mut self, i: &ast::IfStatement) -> &mut ir::Statement {
         let lt = self.create_label();
         let lf = self.create_label();
         let mut ret = vec![
             self.control(&i.condition, lt, lf),
-            ir::Statement::Label(lt),
+            self.arena.alloc(ir::Statement::Label(lt)),
         ];
         match self.statement(&i.true_stmt) {
             None    => (),
             Some(s) => ret.push(s)
         }
-        ret.push(ir::Statement::Label(lf));
+        ret.push(self.arena.alloc(ir::Statement::Label(lf)));
         if let Some(s) = &i.false_stmt {
             match self.statement(&s) {
                 None    => (),
                 Some(s) => ret.push(s)
             }
         }
-        return ir::Statement::Seq(ret);
+        return self.arena.alloc(ir::Statement::Seq(ret));
     }
-    fn for_statement(&mut self, f: &ast::ForStatement) -> ir::Statement {
-        let mut ret = Vec::<ir::Statement>::new();
+    fn for_statement(&mut self, f: &ast::ForStatement) -> &mut ir::Statement {
+        let mut ret = Vec::<&mut ir::Statement>::new();
         match self.statement(&f.init) {
             None    => (),
             Some(s) => ret.push(s)
@@ -110,30 +123,31 @@ impl Translator {
         self.loop_starts.push(lt);
         self.loop_ends.push(lb);
 
-        ret.push(ir::Statement::Label(lt));
+        ret.push(self.arena.alloc(ir::Statement::Label(lt)));
         match &f.cond {
             None => (),
             Some(e) => ret.push(self.control(e, lb, le))
         }
-        ret.push(ir::Statement::Label(lb));
+        ret.push(self.arena.alloc(ir::Statement::Label(lb)));
         match self.statement(&f.stmt) {
             None => (),
             Some(s) => ret.push(s)
         }
         match &f.each {
             None    => (),
-            Some(e) => ret.push(ir::Statement::Expr(
-                self.arena.alloc(self.expression(e))
-            ))
+            Some(e) => ret.push(self.arena.alloc(
+                ir::Statement::Expr(self.expression(e))
+                )
+            )
         }
-        ret.push(ir::Statement::Jump(lt));
-        ret.push(ir::Statement::Label(le));
+        ret.push(self.arena.alloc(ir::Statement::Jump(lt)));
+        ret.push(self.arena.alloc(ir::Statement::Label(le)));
 
         self.loop_starts.pop();
         self.loop_ends.pop();
-        return ir::Statement::Seq(ret);
+        return self.arena.alloc(ir::Statement::Seq(ret));
     }
-    fn while_statement(&mut self, w: &ast::WhileStatement) -> ir::Statement {
+    fn while_statement(&mut self, w: &ast::WhileStatement) -> &mut ir::Statement {
         let lt = self.create_label();
         let lb = self.create_label();
         let le = self.create_label();
@@ -141,22 +155,22 @@ impl Translator {
         self.loop_ends.push(lb);
 
         let mut ret = vec![
-            ir::Statement::Label(lt),
+            self.arena.alloc(ir::Statement::Label(lt)),
             self.control(&w.condition, lb, le),
-            ir::Statement::Label(lb)
+            self.arena.alloc(ir::Statement::Label(lb))
         ];
         match self.statement(&w.stmt) {
             None => (),
             Some(s) => ret.push(s)
         }
-        ret.push(ir::Statement::Jump(lt));
-        ret.push(ir::Statement::Label(le));
+        ret.push(self.arena.alloc(ir::Statement::Jump(lt)));
+        ret.push(self.arena.alloc(ir::Statement::Label(le)));
 
         self.loop_starts.pop();
         self.loop_ends.pop();
-        return ir::Statement::Seq(ret);
+        return self.arena.alloc(ir::Statement::Seq(ret));
     }
-    fn jump_statement(&mut self, j: &ast::JumpStatement) -> ir::Statement {
+    fn jump_statement(&mut self, j: &ast::JumpStatement) -> &mut ir::Statement {
         use ast::JumpOp::*;
         match j.jump_type {
             Continue => self._continue(),
@@ -164,51 +178,57 @@ impl Translator {
             Break => self._break()
         }
     }
-    fn _continue(&mut self) -> ir::Statement {
-        match self.loop_starts.iter().last() {
+    fn _continue(&mut self) -> &mut ir::Statement {
+        return self.arena.alloc(match self.loop_starts.iter().last() {
             None    => panic!("You done goof"),
-            Some(l) => return ir::Statement::Jump(*l)
-        }
+            Some(l) => ir::Statement::Jump(*l)
+        });
     }
-    fn _return(&mut self, e: &Option<Box<ast::Expr>>) -> ir::Statement {
-        match e {
+    fn _return(&mut self, e: &Option<Box<ast::Expr>>) -> &mut ir::Statement {
+        return self.arena.alloc(match e {
             None    => ir::Statement::Return(None),
             Some(s) => ir::Statement::Return(Some(
                 self.arena.alloc(self.expression(&s))
             ))
-        }
+        });
     }
-    fn _break(&mut self) -> ir::Statement {
-        match self.loop_ends.iter().last() {
+    fn _break(&mut self) -> &mut ir::Statement {
+        return self.arena.alloc(match self.loop_ends.iter().last() {
             None    => panic!("You done goof"),
-            Some(l) => return ir::Statement::Jump(*l)
-        }
+            Some(l) => ir::Statement::Jump(*l)
+        });
     }
     /*----------------CONTROL--------------------*/
-    fn control(&mut self, expr: &ast::Expr, t: ir::Label, f: ir::Label) -> ir::Statement {
+    fn control(&mut self, expr: &ast::Expr, t: ir::Label, f: ir::Label) -> &mut ir::Statement {
         use ast::Expr::*;
         let res = match expr {
             Unary(u) => self.control_unary(&u, t, f),
             Binary(b) => self.control_binary(&b, t, f),
-            Integer(i) => Some(ir::Statement::Jump(
-                if *i != 0 { t } else { f }
+            Integer(i) => Some(self.arena.alloc(
+                ir::Statement::Jump(
+                    if *i != 0 { t } else { f }
+                )
             )),
-            Ident(i) => Some(ir::Statement::CJump(
-                self.arena.alloc(ir::Expr::Temp(i.id)),
-                t, f
+            Ident(i) => Some(self.arena.alloc(
+                ir::Statement::CJump(
+                    self.arena.alloc(ir::Expr::Temp(i.id)),
+                    t, f
+                )
             )),
             _ => None
         };
         return match res {
-            None    => ir::Statement::CJump(
-                self.arena.alloc(self.expression(expr)),
-                t, f
+            None    => return self.arena.alloc(
+                ir::Statement::CJump(
+                    self.expression(expr),
+                    t, f
+                )
             ),
             Some(s) => s
-        }
+        };
     }
     fn control_unary(&mut self, u: &ast::UnaryExpr, t: ir::Label, f: ir::Label)
-        -> Option<ir::Statement> {
+        -> Option<&mut ir::Statement> {
         use ast::UnaryOp::*;
         return match u.unary_op {
             Not => Some(self.control(
@@ -218,104 +238,100 @@ impl Translator {
         }
     }
     fn control_binary(&mut self, b: &ast::BinaryExpr, t: ir::Label, f: ir::Label)
-        -> Option<ir::Statement> {
+        -> Option<&mut ir::Statement> {
         use ast::BinaryOp::*;
         return match b.binary_op {
             And => {
                 let l1 = self.create_label();
-                Some(ir::Statement::Seq(vec![
+                Some(self.arena.alloc(ir::Statement::Seq(vec![
                     self.control(&b.left, l1, f),
-                    ir::Statement::Label(l1),
+                    self.arena.alloc(ir::Statement::Label(l1)),
                     self.control(&b.right, t, f),
-                ]))
+                ])))
             },
             Or => {
                 let l1 = self.create_label();
-                Some(ir::Statement::Seq(vec![
+                Some(self.arena.alloc(ir::Statement::Seq(vec![
                     self.control(&b.left, t, l1),
-                    ir::Statement::Label(l1),
+                    self.arena.alloc(ir::Statement::Label(l1)),
                     self.control(&b.right, t, f),
-                ]))
+                ])))
             },
             _   => None
         }
     }
     /*----------------EXPRESSIONS--------------------*/
-    fn expression(&mut self, e: &ast::Expr) -> ir::Expr {
+    fn expression(&mut self, e: &ast::Expr) -> &mut ir::Expr {
         use ast::Expr::*;
         match e {
             Function(f) => self.function(&f),
             Access(a) => self.access(&a),
             Unary(u) => self.unary(&u),
             Binary(b) => self.binary(&b),
-            Integer(i) => return ir::Expr::Const(
-                ir::Primitive::Int(*i)
+            Integer(i) => return self.arena.alloc(
+                ir::Expr::Const(ir::Primitive::Int(*i))
             ),
-            Float(f) => return ir::Expr::Const(
-                ir::Primitive::Float(*f)
+            Float(f) => return self.arena.alloc(
+                ir::Expr::Const(ir::Primitive::Float(*f))
             ),
-            Ident(i) => return ir::Expr::Temp(i.id),
+            Ident(i) => return self.arena.alloc(
+                ir::Expr::Temp(i.id)
+            )
         }
     }
-    fn function(&mut self, f: &ast::FunctionCall) -> ir::Expr {
-        let mut v = Vec::<ir::Expr>::new();
+    fn function(&mut self, f: &ast::FunctionCall) -> &mut ir::Expr {
+        let mut v = Vec::<&mut ir::Expr>::new();
         for exp in &f.args {
             v.push(self.expression(exp));
         }
-        return ir::Expr::Call(f.id, v);
+        return self.arena.alloc(ir::Expr::Call(f.id, v));
     }
-    fn access(&mut self, a: &ast::AccessExpr) -> ir::Expr {
+    fn access(&mut self, a: &ast::AccessExpr) -> &mut ir::Expr {
         let mut prod: u32 = 1;
         let t = ir::Expr::Temp(a.id);
-        let mut root: Option<ir::Expr> = None;
+        let mut root: Option<&mut ir::Expr> = None;
         for i in (0..a.offsets.len()).rev() {
-            let mul = ir::Expr::BinOp(
+            let mul = self.arena.alloc(ir::Expr::BinOp(
                 self.arena.alloc(ir::Expr::Const(
                     ir::Primitive::Int(
                         8 * prod as i32
                     )
                 )),
                 Operator::Mul,
-                self.arena.alloc(self.expression(&a.offsets[i]))
-            );
+                self.expression(&a.offsets[i])
+            ));
             root = match root {
                 None    => Some(mul),
-                Some(e) => Some(ir::Expr::BinOp(
-                    self.arena.alloc(e),
-                    Operator::Add,
-                    self.arena.alloc(mul)
+                Some(e) => Some(self.arena.alloc(
+                    ir::Expr::BinOp(e, Operator::Add, mul)
                 ))
             };
             prod *= a.sizes[i];
         }
-        let exp = ir::Expr::BinOp(
+        let exp = self.arena.alloc(ir::Expr::BinOp(
             self.arena.alloc(t),
             Operator::Add,
-            self.arena.alloc(root.unwrap())
-        );
-        return ir::Expr::Mem(self.arena.alloc(exp));
+            root.unwrap()
+        ));
+        return self.arena.alloc(ir::Expr::Mem(exp));
     }
-    fn unary(&mut self, u: &ast::UnaryExpr) -> ir::Expr {
+    fn unary(&mut self, u: &ast::UnaryExpr) -> &mut ir::Expr {
         use ast::UnaryOp::*;
         let op = match u.unary_op {
             Not  => ir::Operator::Not,
             Neg  => ir::Operator::Neg,
-            Star => return ir::Expr::Mem(
-                self.arena.alloc(
-                    self.expression(&u.expr)
-                )
+            Star => return self.arena.alloc(
+                ir::Expr::Mem(self.expression(&u.expr))
             ),
-            Address => return ir::Expr::Address(
-                self.arena.alloc(
-                    self.expression(&u.expr)
-                )
+            Address => return self.arena.alloc(
+                ir::Expr::Address(self.expression(&u.expr))
             )
         };
-        return ir::Expr::UnOp(op, self.arena.alloc(
+        return self.arena.alloc(ir::Expr::UnOp(op,
             self.expression(&u.expr)
         ));
     }
-    fn binary(&mut self, b: &ast::BinaryExpr) -> ir::Expr {
+    fn binary(&mut self, b: &ast::BinaryExpr) -> &mut ir::Expr {
         use ast::BinaryOp::*;
         let op = match b.binary_op {
             Mul    => ir::Operator::Mul,
@@ -333,18 +349,18 @@ impl Translator {
             Seq | Neq | Assign  
                 => return self.assign(b),
         };
-        return ir::Expr::BinOp(
-            self.arena.alloc(self.expression(&b.left)),
+        return self.arena.alloc(ir::Expr::BinOp(
+            self.expression(&b.left),
             op,
-            self.arena.alloc(self.expression(&b.right)),
-        );
+            self.expression(&b.right),
+        ));
     }
-    fn assign(&mut self, b: &ast::BinaryExpr) -> ir::Expr {
+    fn assign(&mut self, b: &ast::BinaryExpr) -> &mut ir::Expr {
         use ast::BinaryOp::*;
         // Ideally we'd implement Clone for Expr, but
         // b.left should only be an access or temp,
         // so it's not terribly expensive.
-        let stmt = match b.binary_op {
+        let stmt = self.arena.alloc(match b.binary_op {
             Peq | Teq | Seq | Deq => {
                 let op = match b.binary_op {
                     Peq => ir::Operator::Add,
@@ -354,24 +370,23 @@ impl Translator {
                     _   => unreachable!()
                 };
                 ir::Statement::Move(
-                    self.arena.alloc(self.expression(&b.left)),
+                    self.expression(&b.left),
                     self.arena.alloc(ir::Expr::BinOp(
-                        self.arena.alloc(self.expression(&b.left)),
+                        self.expression(&b.left),
                         op,
-                        self.arena.alloc(self.expression(&b.right))
+                        self.expression(&b.right)
                     ))
                 )
             },
             Assign => ir::Statement::Move(
-                self.arena.alloc(self.expression(&b.left)),
-                self.arena.alloc(self.expression(&b.right))
+                self.expression(&b.left),
+                self.expression(&b.right)
             ),
             _ => unreachable!()
-        };
-        return ir::Expr::ESeq(
-            self.arena.alloc(stmt),
-            self.arena.alloc(self.expression(&b.left))
-        );
+        });
+        return self.arena.alloc(ir::Expr::ESeq(
+            stmt,self.expression(&b.left)
+        ));
     }
     fn create_label(&mut self) -> ir::Label {
         self.nlabels += 1;
