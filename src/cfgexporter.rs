@@ -1,12 +1,16 @@
-struct Exporter { arena: Bump }
-impl Exporter {
-    fn new() -> Self {
+use crate::cfg::CFG;
+use crate::ir::{Statement, self};
+use bumpalo::Bump;
 
+struct Exporter<'l> { arena: &'l mut Bump }
+impl<'l> Exporter<'l> {
+    fn new(arena: &'l mut Bump) -> Self {
+        return Self { arena }
     }
-    fn export(&self, order: &Vec<usize>) -> Vec<Statement> {
+    fn export(&self, cfg: CFG, order: &Vec<usize>) -> Vec<Statement> {
         let mut res = Vec::<Statement>::new();
         for idx in order.clone() {
-            let n = &self.nodes[idx];
+            let n = &cfg.nodes[idx];
             res.push(Statement::Label(idx as u32));
             res.extend(n.stmts.iter()
                 .take(n.stmts.len() - 1)
@@ -29,7 +33,7 @@ impl Exporter {
             let cjump = |e: &ir::Expr| { match peek() {
                 None => vec![
                     CJump(
-                        Box::(e.clone()),
+                        self.arena.alloc(e.clone()),
                         n.t.unwrap() as u32,
                         0
                     ),
@@ -39,21 +43,21 @@ impl Exporter {
                                     n.f.unwrap() == nxt) {
                     (true, true) => unreachable!(),
                     (true, false) => vec![CJump(
-                        Box::new(ir::Expr::UnOp(
+                        self.arena.alloc(ir::Expr::UnOp(
                             ir::Operator::Not,
-                            Box::new(e.clone())
+                            self.arena.alloc(e.clone())
                         )),
                         n.t.unwrap() as u32,
                         0
                     )],
                     (false, true) => vec![CJump(
-                        Box::new(e.clone()),
+                        self.arena.alloc(e.clone()),
                         n.t.unwrap() as u32,
                         0
                     )],
                     (false, false) => vec![
                         CJump(
-                            Box::new(e.clone()),
+                            self.arena.alloc(e.clone()),
                             n.t.unwrap() as u32,
                             0
                         ),

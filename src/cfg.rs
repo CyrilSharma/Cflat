@@ -1,4 +1,4 @@
-use crate::ir::{Statement, self};
+use crate::ir::Statement;
 #[derive(Clone)]
 pub struct Node<'l> {
     pub stmts: Vec<Statement<'l>>,
