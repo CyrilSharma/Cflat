@@ -15,6 +15,3 @@ pub mod irtranslator;
 pub mod registry;
 pub mod symboltable;
 pub mod utils;
-
-#[cfg(test)]
-pub mod test_parser;
