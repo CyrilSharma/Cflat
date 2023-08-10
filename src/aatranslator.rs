@@ -72,10 +72,7 @@ impl Translator {
                 let Temp(i) = **T else { unreachable!() };
                 let res = vec![AA::LDR2(Reg::ID(*a), Reg::ID(i))];
                 (res, res.len() as u32)
-            }
-        }
-        if let 
-        match (d, s) {
+            },
             (Mem(T), Const(b))   => {
                 let t = self.temp();
                 let Temp(reg) = **T else { unreachable!() };

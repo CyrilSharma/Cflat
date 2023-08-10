@@ -1,5 +1,4 @@
 use std::mem;
-use bumpalo::Bump;
 
 pub type Label = u32;
 // Ugly but less ugly then &'l mut Expr<'l>
