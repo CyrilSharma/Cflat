@@ -1,37 +1,40 @@
 use crate::ast;
+use crate::allocator::ir_arena;
 use crate::ast::FunctionDeclaration;
 use crate::ir::{self, Operator};
 
-pub struct Translator {
+use bumpalo::{Bump, boxed::Box};
+
+pub struct Translator<'l> {
     nlabels:     u32,
     loop_starts: Vec<ir::Label>,
-    loop_ends:   Vec<ir::Label>
+    loop_ends:   Vec<ir::Label>,
+    arena:       &'l Bump
 }
-
-impl Translator {
+impl<'l> Translator<'l> {
     pub fn new() -> Self { 
         Self {
             nlabels:     0,
             loop_starts: Vec::new(),
-            loop_ends:   Vec::new()
+            loop_ends:   Vec::new(),
         } 
     }
-    pub fn translate(&mut self, m: &mut ast::Module) -> Vec::<ir::Statement> {
+    pub fn translate(&mut self, m: &mut ast::Module) -> Vec::<&mut ir::Statement> {
         self.nlabels = m.functions.len() as u32; // function ids are their labels.
-        let mut res = Vec::<ir::Statement>::new();
+        let mut res = Vec::<&mut ir::Statement>::new();
         for f in &m.functions {
             match self.function_declaration(f) {
                 None => (),
-                Some(s) => res.push(s)
+                Some(s) => res.push(Box::new_in(s))
             }
         }
         return res;
     }
     fn function_declaration(&mut self, f: &FunctionDeclaration) -> Option<ir::Statement> {
-        let mut ret = vec![ir::Statement::Label(f.id)];
+        let mut ret = vec![Box::new_in(ir::Statement::Label(f.id))];
         match self.statement(&f.stmt) {
             None => return None,
-            Some(s) => ret.push(s)
+            Some(s) => ret.push(Box::new_in(s))
         }
         return Some(ir::Statement::Seq(ret));
     }
@@ -52,17 +55,17 @@ impl Translator {
         match &d.val {
             None    => return None,
             Some(e) => return Some(ir::Statement::Move(
-                Box::new(ir::Expr::Temp(d.id)),
-                Box::new(self.expression(e))
+                Box::new_in(ir::Expr::Temp(d.id)),
+                Box::new_in(self.expression(e))
             ))
         }
     }
     fn compound_statement(&mut self, c: &ast::CompoundStatement) -> ir::Statement {
-        let mut stmts = Vec::<ir::Statement>::new();
+        let mut stmts = Vec::<&mut ir::Statement>::new();
         for stmt in &c.stmts {
             match self.statement(stmt) {
                 None    => (),
-                Some(s) => stmts.push(s)
+                Some(s) => stmts.push(Box::new_in(s))
             }
         }
         return ir::Statement::Seq(stmts);
@@ -71,7 +74,7 @@ impl Translator {
         return match &e.expr {
             None     => None,
             Some(ex) => Some(ir::Statement::Expr(
-                Box::new(self.expression(ex))
+                Box::new_in(self.expression(ex))
             ))
         }
     }
@@ -79,27 +82,27 @@ impl Translator {
         let lt = self.create_label();
         let lf = self.create_label();
         let mut ret = vec![
-            self.control(&i.condition, lt, lf),
-            ir::Statement::Label(lt),
+            Box::new_in(self.control(&i.condition, lt, lf)),
+            Box::new_in(ir::Statement::Label(lt)),
         ];
         match self.statement(&i.true_stmt) {
             None    => (),
-            Some(s) => ret.push(s)
+            Some(s) => ret.push(Box::new_in(s))
         }
-        ret.push(ir::Statement::Label(lf));
+        ret.push(Box::new_in(ir::Statement::Label(lf)));
         if let Some(s) = &i.false_stmt {
             match self.statement(&s) {
                 None    => (),
-                Some(s) => ret.push(s)
+                Some(s) => ret.push(Box::new_in(s))
             }
         }
         return ir::Statement::Seq(ret);
     }
     fn for_statement(&mut self, f: &ast::ForStatement) -> ir::Statement {
-        let mut ret = Vec::<ir::Statement>::new();
+        let mut ret = Vec::<&mut ir::Statement>::new();
         match self.statement(&f.init) {
             None    => (),
-            Some(s) => ret.push(s)
+            Some(s) => ret.push(Box::new_in(s))
         }
         let lt = self.create_label();
         let lb = self.create_label();
@@ -107,25 +110,28 @@ impl Translator {
         self.loop_starts.push(lt);
         self.loop_ends.push(lb);
 
-        ret.push(ir::Statement::Label(lt));
+        ret.push(Box::new_in(ir::Statement::Label(lt)));
         match &f.cond {
             None => (),
-            Some(e) => ret.push(self.control(e, lb, le))
+            Some(e) => ret.push(Box::new_in(
+                self.control(e, lb, le)
+            ))
         }
-        ret.push(ir::Statement::Label(lb));
+        ret.push(Box::new_in(ir::Statement::Label(lb)));
         match self.statement(&f.stmt) {
             None => (),
-            Some(s) => ret.push(s)
+            Some(s) => ret.push(Box::new_in(s))
         }
         match &f.each {
             None    => (),
-            Some(e) => ret.push(ir::Statement::Expr(
-                Box::new(self.expression(e))
+            Some(e) => ret.push(Box::new_in(
+                ir::Statement::Expr(Box::new_in(
+                    self.expression(e)
+                ))
             ))
         }
-        ret.push(ir::Statement::Jump(lt));
-        ret.push(ir::Statement::Label(le));
-
+        ret.push(Box::new_in(ir::Statement::Jump(lt)));
+        ret.push(Box::new_in(ir::Statement::Label(le)));
         self.loop_starts.pop();
         self.loop_ends.pop();
         return ir::Statement::Seq(ret);
@@ -138,16 +144,16 @@ impl Translator {
         self.loop_ends.push(lb);
 
         let mut ret = vec![
-            ir::Statement::Label(lt),
-            self.control(&w.condition, lb, le),
-            ir::Statement::Label(lb)
+            Box::new_in(ir::Statement::Label(lt)),
+            Box::new_in(self.control(&w.condition, lb, le)),
+            Box::new_in(ir::Statement::Label(lb))
         ];
         match self.statement(&w.stmt) {
             None => (),
-            Some(s) => ret.push(s)
+            Some(s) => ret.push(Box::new_in(s))
         }
-        ret.push(ir::Statement::Jump(lt));
-        ret.push(ir::Statement::Label(le));
+        ret.push(Box::new_in(ir::Statement::Jump(lt)));
+        ret.push(Box::new_in(ir::Statement::Label(le)));
 
         self.loop_starts.pop();
         self.loop_ends.pop();
@@ -171,7 +177,7 @@ impl Translator {
         match e {
             None    => ir::Statement::Return(None),
             Some(s) => ir::Statement::Return(Some(
-                Box::new(self.expression(&s))
+                Box::new_in(self.expression(&s))
             ))
         }
     }
@@ -191,14 +197,14 @@ impl Translator {
                 if *i != 0 { t } else { f }
             )),
             Ident(i) => Some(ir::Statement::CJump(
-                Box::new(ir::Expr::Temp(i.id)),
+                Box::new_in(ir::Expr::Temp(i.id)),
                 t, f
             )),
             _ => None
         };
         return match res {
             None    => ir::Statement::CJump(
-                Box::new(self.expression(expr)),
+                Box::new_in(self.expression(expr)),
                 t, f
             ),
             Some(s) => s
@@ -221,17 +227,17 @@ impl Translator {
             And => {
                 let l1 = self.create_label();
                 Some(ir::Statement::Seq(vec![
-                    self.control(&b.left, l1, f),
-                    ir::Statement::Label(l1),
-                    self.control(&b.right, t, f),
+                    Box::new_in(self.control(&b.left, l1, f)),
+                    Box::new_in(ir::Statement::Label(l1)),
+                    Box::new_in(self.control(&b.right, t, f)),
                 ]))
             },
             Or => {
                 let l1 = self.create_label();
                 Some(ir::Statement::Seq(vec![
-                    self.control(&b.left, t, l1),
-                    ir::Statement::Label(l1),
-                    self.control(&b.right, t, f),
+                    Box::new_in(self.control(&b.left, t, l1)),
+                    Box::new_in(ir::Statement::Label(l1)),
+                    Box::new_in(self.control(&b.right, t, f)),
                 ]))
             },
             _   => None
@@ -255,60 +261,60 @@ impl Translator {
         }
     }
     fn function(&mut self, f: &ast::FunctionCall) -> ir::Expr {
-        let mut v = Vec::<ir::Expr>::new();
+        let mut v = Vec::<&mut ir::Expr>::new();
         for exp in &f.args {
-            v.push(self.expression(exp));
+            v.push(Box::new_in(
+                self.expression(exp)
+            ));
         }
         return ir::Expr::Call(f.id, v);
     }
-    fn access(&mut self, a: &ast::AccessExpr) -> ir::Expr {
+    fn access(&mut self, a: &ast::AccessExpr) -> Box<'l, ir::Expr> {
         let mut prod: u32 = 1;
-        let t = ir::Expr::Temp(a.id);
         let mut root: Option<ir::Expr> = None;
         for i in (0..a.offsets.len()).rev() {
             let mul = ir::Expr::BinOp(
-                Box::new(ir::Expr::Const(
+                Box::new_in(ir::Expr::Const(
                     ir::Primitive::Int(
                         8 * prod as i32
                     )
                 )),
                 Operator::Mul,
-                Box::new(self.expression(&a.offsets[i]))
+                Box::new_in(self.expression(&a.offsets[i]))
             );
             root = match root {
                 None    => Some(mul),
                 Some(e) => Some(ir::Expr::BinOp(
-                    Box::new(e),
+                    Box::new_in(e),
                     Operator::Add,
-                    Box::new(mul)
+                    Box::new_in(mul)
                 ))
             };
             prod *= a.sizes[i];
         }
-        let exp = ir::Expr::BinOp(
-            Box::new(t),
-            Operator::Add,
-            Box::new(root.unwrap())
-        );
-        return ir::Expr::Mem(Box::new(exp));
+        let t = Box::new_in(ir::Expr::Temp(a.id), self.arena);
+        let inc = Box::new_in(root.unwrap(), self.arena);
+        let exp = Box::new_in(ir::Expr::BinOp(t, Operator::Add, inc), self.arena);
+        return Box::new_in(ir::Expr::Mem(exp), self.arena);
     }
-    fn unary(&mut self, u: &ast::UnaryExpr) -> ir::Expr {
+    fn unary(&mut self, u: &ast::UnaryExpr) -> Box<'l, ir::Expr> {
         use ast::UnaryOp::*;
         let op = match u.unary_op {
             Not  => ir::Operator::Not,
             Neg  => ir::Operator::Neg,
-            Star => return ir::Expr::Mem(Box::new(
-                self.expression(&u.expr)
-            )),
-            Address => return ir::Expr::Address(Box::new(
-                self.expression(&u.expr)
-            ))
+            Star => {
+                let e = Box::new_in(self.expression(&u.expr), self.arena);
+                return Box::new_in(ir::Expr::Mem(e), self.arena);
+            }
+            Address => {
+                let e = Box::new_in(self.expression(&u.expr), self.arena);
+                return Box::new_in(ir::Expr::Address(e), self.arena);
+            }
         };
-        return ir::Expr::UnOp(op,
-            Box::new(self.expression(&u.expr))
-        );
+        let e = Box::new_in(self.expression(&u.expr), self.arena);
+        return Box::new_in(ir::Expr::UnOp(op, e), self.arena);
     }
-    fn binary(&mut self, b: &ast::BinaryExpr) -> ir::Expr {
+    fn binary(&mut self, b: &ast::BinaryExpr) -> Box<'l, ir::Expr> {
         use ast::BinaryOp::*;
         let op = match b.binary_op {
             Mul    => ir::Operator::Mul,
@@ -326,17 +332,12 @@ impl Translator {
             Seq | Neq | Assign  
                 => return self.assign(b),
         };
-        return ir::Expr::BinOp(
-            Box::new(self.expression(&b.left)),
-            op,
-            Box::new(self.expression(&b.right)),
-        );
+        let l = Box::new_in(self.expression(&b.left), self.arena);
+        let r = Box::new_in(self.expression(&b.right), self.arena);
+        return Box::new_in(ir::Expr::BinOp(l, op, r), self.arena);
     }
-    fn assign(&mut self, b: &ast::BinaryExpr) -> ir::Expr {
+    fn assign(&mut self, b: &ast::BinaryExpr) -> Box<'l, ir::Expr> {
         use ast::BinaryOp::*;
-        // Ideally we'd implement Clone for Expr, but
-        // b.left should only be an access or temp,
-        // so it's not terribly expensive.
         let stmt = match b.binary_op {
             Peq | Teq | Seq | Deq => {
                 let op = match b.binary_op {
@@ -346,56 +347,24 @@ impl Translator {
                     Deq => ir::Operator::Div,
                     _   => unreachable!()
                 };
-                ir::Statement::Move(
-                    Box::new(self.expression(&b.left)),
-                    Box::new(ir::Expr::BinOp(
-                        Box::new(self.expression(&b.left)),
-                        op,
-                        Box::new(self.expression(&b.right))
-                    ))
-                )
+                let e = Box::new_in(self.expression(&b.left), self.arena);
+                let l = Box::new_in(self.expression(&b.left), self.arena);
+                let r = Box::new_in(self.expression(&b.right), self.arena);
+                let o = Box::new_in(ir::Expr::BinOp(l, op, r), self.arena);
+                Box::new_in(ir::Statement::Move(e, o), self.arena)
             },
-            Assign => ir::Statement::Move(
-                Box::new(self.expression(&b.left)),
-                Box::new(self.expression(&b.right))
-            ),
+            Assign => {
+                let l = Box::new_in(self.expression(&b.left), self.arena);
+                let r = Box::new_in(self.expression(&b.right), self.arena);
+                Box::new_in(ir::Statement::Move(l, r), self.arena)
+            },
             _ => unreachable!()
         };
-        return ir::Expr::ESeq(
-            Box::new(stmt),
-            Box::new(self.expression(&b.left))
-        );
+        let e = Box::new_in(self.expression(&b.left), self.arena);
+        return Box::new_in(ir::Expr::ESeq(stmt, e), self.arena);
     }
     fn create_label(&mut self) -> ir::Label {
         self.nlabels += 1;
         return self.nlabels - 1;
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use std::fs;
-    use std::path::Path;
-    use crate::parser::moduleParser;
-    use crate::semantic::Semantic;
-    use crate::astprinter;
-    use crate::irprinter;
-
-    #[test]
-    fn visualize() {
-        let mut i = 0;
-        let dir = "tests/data/";
-        while Path::new(&format!("{dir}/input{i}.c")).exists() {
-            let filepath = &format!("{dir}/input{i}.c");
-            let input = fs::read_to_string(filepath).expect("File not found!");
-            let mut m = moduleParser::new().parse(&input).expect("Parse Error!");
-            let mut semantic = Semantic::new();
-            semantic.analyze(&mut m);
-            let ir  = Translator::new().translate(&mut m);
-            astprinter::Printer::new().print(&m);
-            irprinter::Printer::new().print(&ir);
-            i += 1;
-        }
     }
 }
