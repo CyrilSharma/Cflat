@@ -1,26 +1,36 @@
-use crate::ir::{Statement, Expr, Operator};
+use std::collections::{BTreeMap};
+use crate::ir::{self, Statement, Expr, Operator};
 use crate::aa::{AA, Reg};
+
+type ID = u32;
+type Info = (u32, ID, Vec<AA>);
 pub struct Translator { 
-    count: usize,
-    costs: Vec<u32>,
-    asm:   Vec<Vec<AA>>
+    opt:   BTreeMap<usize, Info>,
+    count: usize
 }
+
 impl Translator {
-    pub fn new() -> Self { Self { count: 0, costs: vec![0, todo!()] } }
+    pub fn new(cnt: usize) -> Self { 
+        Self { 
+            opt: BTreeMap::new(),
+            count: cnt
+        }
+    }
     pub fn translate(&mut self, stmts: &Vec<Statement>) -> Vec<AA> {
         let mut res = Vec::<AA>::new();
         for s in stmts {
-            self.statement(s);
-            res.extend(self.asm[self.count]);
+            res.extend(self.statement(s));
         }
         return res;
     }
-    fn statement(&mut self, s: &Statement) {
-        let save = self.count;
-        self.count += 1;
+    fn statement(&mut self, s: &Statement) -> Vec<AA> {
         use Statement::*;
         match s {
-            Expr(e)        => self.expression(e),
+            Expr(e)        => {
+                // Weird but lowered IR should only have Calls
+                let ir::Expr::Call(f, args) = **e else { unreachable!(); };
+                self.call(f, &args)
+            },
             Move(d, s)     => self._move(d, s),
             Jump(j)        => self.jump(j),
             CJump(c, t, _) => self.cjump(c, *t),
@@ -29,43 +39,63 @@ impl Translator {
             _ => unreachable!()
         }
     }
-    fn expression(&mut self, e: &Expr) {
-        if self.costs[self.count] != 0 { return }
-        let save = self.count += 1;
-        use Expr::*;
-        use Operator::*;
-        match e {
-            Const(p) => self.add_label(&format!("Const ({:?})", p)),
-            Temp(t) => self.add_label(&format!("Temp ({})", t)),
-            UnOp(op, e) => self.unary(*op, e),
-            BinOp(l, op, r) => self.binary(l, *op, r),
-            Mem(e) => self.mem(e),
-            Call(l, s) => self.call(*l, s),
-            Address(e) => self.address(e),
-            _ => unreachable!()
-        }
+    fn call(&mut self, e: &Expr) -> &Info {
+        let ir::Expr::Call(f, args) = e else { unreachable!(); };
+        for e in args { self.expression(e); }
+        return todo!();
     }
     fn _move(&mut self, d: &Expr, s: &Expr) {
-        if self.costs[self.count] != 0 { return }
+        let mut bc: u32 = u32::MAX;
+        let mut basm: Vec<AA> = Vec::new();
+        let update = |c: u32, asm: Vec<AA>| {
+            if c >= bc { return }
+            (bc, basm) = (c, asm);
+        };
+        // Writing update(asm.len() as u32, asm) every time seems redundant,
+        // but in the future the cost function may be more complex.
         use Expr::*;
-        self.costs[self.count] = 1;
-        self.asm[self.count] = match (d, s) {
-            (Temp(a), Const(b))  => vec![AA::Mov1(Reg::ID(*a), b.bits())],
-            (Temp(a), Temp(b))   => vec![AA::Mov2(Reg::ID(*a), Reg::ID(*b))],
-            (Temp(a), Mem(T))    => {
-                let Temp(i) = **T else { unreachable!() };
-                vec![AA::LDR2(Reg::ID(*a), Reg::ID(i))]
+        match (d, s) {
+            (Temp(a), Const(b))  => {
+                let asm = vec![AA::Mov1(Reg::ID(*a), b.bits())];
+                update(asm.len() as u32, asm);
             },
+            (Temp(a), Temp(b))   => {
+                let asm = vec![AA::Mov2(Reg::ID(*a), Reg::ID(*b))];
+                update(asm.len() as u32, asm);
+            },
+            (Temp(a), Mem(T))    => {
+                if let Temp(i) = **T {
+                    let asm = vec![AA::LDR2(Reg::ID(*a), Reg::ID(i))];
+                    update(asm.len() as u32, asm);
+                } else { 
+                    let (_, temp, tasm) = self.expression(T);
+                    let mut asm = tasm.clone();
+                    asm.push(AA::Mov2(Reg::ID(*a), Reg::ID(*temp)));
+                    update(asm.len() as u32, asm);
+                }
+            },
+            (Temp(a), e)    => {
+                let (_, temp, easm) = self.expression(e);
+                let asm = easm.clone();
+                asm.push(AA::Mov2(Reg::ID(*a), Reg::ID(*temp)));
+                update(asm.len() as u32, asm);
+            }
             (Mem(T), Const(b))   => {
-                let Temp(i) = **T else { unreachable!() };
-                vec![AA::STR2(Reg::ID(i), b.bits())]
+                if let Temp(i) = **T {
+                    let asm = vec![AA::STR2(Reg::ID(i), b.bits())];
+                    update(asm.len() as u32, asm);
+                } else { 
+                    let (_, temp, tasm) = self.expression(T);
+                    let mut asm = tasm.clone();
+                    asm.push(AA::Mov2(Reg::ID(*temp), b.bits()));
+                    update(asm.len() as u32, asm);
+                };
             }
             (Mem(T), Temp(b))    => {
                 let Temp(i) = **T else { unreachable!() };
                 vec![AA::STR2(Reg::ID(i), Reg::ID(*b))]
             },
             (Mem(D), Mem(S)) => {
-                self.costs[self.count] = 2;
                 let id = self.create_temp();
                 let Temp(r1) = **D else { unreachable!() };
                 let Temp(r2) = **S else { unreachable!() };
@@ -74,73 +104,181 @@ impl Translator {
                     AA::STR2(Reg::ID(r1), Reg::ID(id)),
                 ]
             }
+        }
+        //---------LHS = TEMP------------
+        case!({ // STORE TEMP <== CONST
+            let (Temp(a), Const(b)) = (d, s) else { break };
+            let asm = vec![AA::Mov1(Reg::ID(*a), b.bits())];
+            update(asm.len() as u32, asm);
+        });
+        case!({ // STORE TEMP <== TEMP
+            let (Temp(a), Temp(b)) = (d, s) else { break };
+            let asm = vec![AA::Mov2(Reg::ID(*a), Reg::ID(*b))];
+            update(asm.len() as u32, asm);
+        });
+        case!({ // LOAD TEMP <== [ REG ]
+            let (Temp(a), Mem(T)) = (d, s) else { break };
+            let Temp(i) = **T else { break };
+            let asm = vec![AA::LDR2(Reg::ID(*a), Reg::ID(i))];
+            update(asm.len() as u32, asm);
+        });
+        case!({ // LOAD TEMP <== [ REG ]
+            let (Temp(a), Mem(T)) = (d, s) else { break };
+            let Temp(i) = **T else { break };
+            let asm = vec![AA::LDR2(Reg::ID(*a), Reg::ID(i))];
+            update(asm.len() as u32, asm);
+        });
+        case!({ // LOAD TEMP <== EXPR -- DEFAULT
+            let Temp(a) = d else { break };
+            let (t, mut asm) = self.expression(s);
+            asm.push(AA::Mov2(Reg::ID(*a), Reg::ID(t)));
+            update(asm.len() as u32, asm);
+        });
+
+        //---------LHS = MEM------------
+        case!({ // STORE [ REG ] <== CONST
+            let (Mem(T), Const(b)) = (d, s);
+            let Temp(reg) = **T else { break };
+            let t = self.temp();
+            let asm = vec![
+                AA::Mov1(Reg::ID(t), b.bits()),
+                AA::STR2(Reg::ID(reg), Reg::ID(t))
+            ];
+            update(asm.len() as u32, asm);
+        });
+        case!({ // STORE [ REG ] <== TEMP
+            let (Mem(T), Temp(b)) = (d, s) else { break };
+            let Temp(i) = **T else { break };
+            let asm = vec![AA::STR2(Reg::ID(i), Reg::ID(*b))];
+            update(asm.len() as u32, asm);
+        });
+        case!({ // STORE [ REG ] <== EXPR
+            let Mem(T) = d else { break };
+            let Temp(i) = **T else { break };
+            let (t, mut asm) = self.expression(s);
+            asm.push(AA::STR2(Reg::ID(i), Reg::ID(t)));
+            update(asm.len() as u32, asm);
+        });
+    }
+    fn cjump(&mut self, j: &Expr, t: ir::Label, f: ir::Label) {
+        let idx = self.count;
+    }
+    fn expression(&mut self, e: &Expr) -> &Info {
+        let nid = e.addr();
+        match self.opt.get(&nid) {
+            None => (),
+            Some(s) => return s
+        }
+        use Expr::*;
+        match e {
+            UnOp(op, e)        => self.unary(*op, e, nid),
+            BinOp(l, op, r)    => self.binary(l, *op, r, nid),
+            Mem(m)             => self.mem(m, nid),
+            Address(e)         => self.address(e, nid),
+            // Must be handled explicitly by calling methods.
+            Const(_) | Temp(_) => unreachable!(),
             _ => unreachable!()
-        };
-    }
-    fn cjump(&mut self, j: &Expr, t: Label, f: Label) {
-        let idx = self.count;
-        self.add_label("Jump");
-        self.add_edge(idx, self.count);
-        self.expression(j);
-
-        self.add_label(&format!("{}", t));
-        self.add_edge(idx, self.count);
-
-        self.add_label(&format!("{}", f));
-        self.add_edge(idx, self.count);
-    }
-    fn unary(&mut self, op: Operator, e: &Expr) {
-        let idx = self.count;
-        self.add_label(&format!("Unary {:?}", op));
-        self.add_edge(idx, self.count);
-        self.expression(e);
-    }
-    fn binary(&mut self, l: &Expr, op: Operator, r: &Expr) {
-        let idx = self.count;
-        self.add_label(&format!("Binary {:?}", op));
-        self.add_edge(idx, self.count);
-        self.expression(l);
-        self.add_edge(idx, self.count);
-        self.expression(r);
-    }
-    fn mem(&mut self, m: &Expr) {
-        let idx = self.count;
-        self.add_label("Mem");
-        self.add_edge(idx, self.count);
-        self.expression(m);
-    }
-    fn call(&mut self, l: Label, v: &Vec<Expr>) {
-        let idx = self.count;
-        self.add_label("Call");
-        self.add_edge(idx, self.count);
-        self.add_label(&format!("{}", l));
-        for e in v {
-            self.add_edge(idx, self.count);
-            self.expression(e);
         }
     }
-    fn eseq(&mut self, s: &Statement, e: &Expr) {
+    fn unary(&mut self, op: Operator, e: &Expr, nid: usize) -> &Info {
+        match self.opt.get(&nid) {
+            None => (),
+            Some(s) => return s
+        }
+        let mut bc: u32 = u32::MAX;
+        let mut basm: Vec<AA> = Vec::new();
+        let update = |c: u32, asm: Vec<AA>| {
+            if c >= bc { return }
+            (bc, basm) = (c, asm);
+        };
+        let res = self.create_temp();
+        use Expr::*;
+        case!({ // LOAD TEMP <== Neg-Mul
+            if op != Operator::Neg { break };
+            let BinOp(l, Operator::Mul, r) = e else { break };
+            let (_, ltemp, lasm) = self.expression(&l);
+            let (_, rtemp, rasm) = self.expression(&r);
+            let asm = lasm.clone();
+            asm.extend(*rasm);
+            asm.push(AA::SMNegL(
+                Reg::ID(res),
+                Reg::ID(*ltemp), Reg::ID(*rtemp)
+            ));
+            update(asm.len() as u32, asm);
+        });
+        case!({ // MOVN TEMP <== !CONST
+            if op != Operator::Neg { break };
+            let (_, temp, mut asm) = self.expression(e);
+            asm.push(AA::Mvn2(
+                Reg::ID(res),
+                Reg::ID(*temp)
+            ));
+            update(asm.len() as u32, asm);
+        });
+        self.opt.insert(nid, (bc, res, basm));
+        return self.opt.get(&nid).unwrap();
+    }
+    fn binary(&mut self, l: &Expr, op: Operator, r: &Expr, nid: usize) -> &Info {
+        match self.opt.get(&nid) {
+            None => (),
+            Some(s) => return s
+        }
+        let mut bc: u32 = u32::MAX;
+        let mut basm: Vec<AA> = Vec::new();
+        let update = |c: u32, asm: Vec<AA>| {
+            if c >= bc { return }
+            (bc, basm) = (c, asm);
+        };
+        let res = self.create_temp();
+        use Expr::*;
+        case!({ // LOAD TEMP <== MUL-ADD
+            if op != Operator::Add && op != Operator::Sub { break };
+            let BinOp(l2, Operator::Mul, r2) = r else { break };
+            let (_, ltmp, lasm)    = self.expression(l);
+            let (_, l2temp, l2asm) = self.expression(&l2);
+            let (_, r2temp, r2asm) = self.expression(&r2);
+            let mut asm = lasm.clone();
+            asm.extend(*l2asm);
+            asm.extend(*r2asm);
+            if op == Operator::Add {
+                asm.push(AA::SMAddL(
+                    Reg::ID(res),     Reg::ID(*ltmp),
+                    Reg::ID(*l2temp), Reg::ID(*r2temp)
+                ));
+            } else {
+                asm.push(AA::SMSubL(
+                    Reg::ID(res),     Reg::ID(*ltmp),
+                    Reg::ID(*l2temp), Reg::ID(*r2temp)
+                ));
+            }
+            update(asm.len() as ID, asm);
+        });
+        // TODO ADD SUB OR etc.
+        self.opt.insert(nid, (bc, res, basm));
+        return self.opt.get(&nid).unwrap();
+    }
+    fn mem(&mut self, m: &Expr, nid: usize) -> &Info {
         let idx = self.count;
-        self.add_label("ESEQ");
-        self.add_edge(idx, self.count);
-        self.statement(s);
-        self.add_edge(idx, self.count);
-        self.expression(e);
+        self.expression(m);
+        return todo!();
     }
-    fn address(&mut self, e: &Expr) {
+    fn address(&mut self, e: &Expr, nid: usize) -> &Info {
         let idx = self.count;
-        self.add_label("Address");
-        self.add_edge(idx, self.count);
         self.expression(e);
+        return todo!();
     }
-    fn add_edge(&mut self, i: u32, j: u32) {
-        println!("    node{} -> node{};", i, j)
-    }
-    fn add_label(&mut self, s: &str) {
-        println!("{}", &format!(
-            "    node{} [label=\"{}\"];",
-            self.count, s
-        ));
+    fn create_temp(&mut self) -> ID {
         self.count += 1;
+        return (self.count - 1) as ID;
     }
 }
+
+macro_rules! case {
+    ($code:block) => {
+        loop {
+            $code
+            break;
+        }
+    }
+}
+pub(crate) use case;

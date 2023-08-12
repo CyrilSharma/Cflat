@@ -1,7 +1,7 @@
 use crate::ir::*;
-pub struct Reducer { count: u32, ret: Expr }
+pub struct Reducer { count: u32, ret: u32 }
 impl Reducer {
-    pub fn new(nid: u32) -> Self { Self{count: nid+1, ret: Expr::Temp(nid) } }
+    pub fn new(nid: u32) -> Self { Self{count: nid+1, ret: nid } }
     pub fn reduce(&mut self, stmts: &Vec<Statement>) -> Vec<Statement> {
         return self.seq(stmts);
     }
@@ -133,7 +133,7 @@ impl Reducer {
         let id = self.create_temp();
         v.push(Statement::Move(
             Box::new(Temp(id)),
-            Box::new(self.ret.clone())
+            Box::new(Temp(self.ret))
         ));
         return (v, Box::new(Temp(id)));
     }

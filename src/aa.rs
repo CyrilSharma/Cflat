@@ -1,6 +1,8 @@
 pub type Label = u32;
 pub type Const = u32;
 // Presume everything costs the same.
+
+#[derive(Clone)]
 pub enum AA {
     Label(Label),
     Mov1(Reg, Const),
@@ -9,9 +11,9 @@ pub enum AA {
     Add2(Reg, Reg, Reg),
     Sub1(Reg, Reg, Const),
     Sub2(Reg, Reg, Reg),
-    SMAddL(Reg, Reg, Reg, Reg),
-    SMNegL(Reg, Reg, Reg),
-    SMSubL(Reg, Reg, Reg, Reg),
+    SMAddL(Reg, Reg, Reg, Reg), // Xd = Xa + (Wn × Wm)
+    SMNegL(Reg, Reg, Reg),      // Xd = - (Wn × Wm)
+    SMSubL(Reg, Reg, Reg, Reg), // Xd = Xa − (Wn × Wm)
     SMulL(Reg, Reg, Reg),
     SDiv(Reg, Reg, Reg),
     And1(Reg, Reg, Const),
@@ -33,6 +35,7 @@ pub enum AA {
     Ret
 }
 
+#[derive(Clone)]
 pub enum Reg {
     // Args && Return Values
     R0, R1, R2, R3, R4, R5, R6, R7,
@@ -59,6 +62,7 @@ pub enum Reg {
     ID(u32)
 }
 
+#[derive(Clone)]
 pub enum CC {
     EQ,
     NE,
