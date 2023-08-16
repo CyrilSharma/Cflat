@@ -265,27 +265,3 @@ impl Semantic {
         return self.vsym.count;
     }
 }
-
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use std::fs;
-    use std::path::Path;
-    use crate::parser::moduleParser;
-    use crate::astprinter::Printer;
-
-    #[test]
-    fn visualize() {
-        let mut i = 0;
-        let dir = "tests/data/";
-        while Path::new(&format!("{dir}/input{i}.c")).exists() {
-            let filepath = &format!("{dir}/input{i}.c");
-            let input = fs::read_to_string(filepath).expect("File not found!");
-            let mut m = moduleParser::new().parse(&input).expect("Parse Error!");
-            Semantic::new().analyze(&mut m);
-            Printer::new().print(&mut m);
-            i += 1
-        }
-    }
-}

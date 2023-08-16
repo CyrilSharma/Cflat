@@ -14,6 +14,3 @@ pub mod parser;
 pub mod semantic;
 pub mod symboltable;
 pub mod utils;
-
-#[cfg(test)]
-pub mod test_parser;

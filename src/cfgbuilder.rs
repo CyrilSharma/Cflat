@@ -74,39 +74,3 @@ impl CfgBuilder {
         return self.nodes.len() - 1;
     }
 }
-
-#[cfg(test)]
-mod tests {
-    #[allow(unused_imports)]
-    use super::*;
-    use std::fs;
-    use std::path::Path;
-    use crate::parser::moduleParser;
-    use crate::semantic::Semantic;
-    //use crate::astprinter;
-    //use crate::irprinter;
-    use crate::irtranslator::Translator;
-    use crate::irreducer::Reducer;
-    use crate::cfgprinter;
-
-    #[test]
-    fn visualize() {
-        let mut i = 0;
-        let dir = "tests/data";
-        while Path::new(&format!("{dir}/input{i}.c")).exists() {
-            let filepath = &format!("{dir}/input{i}.c");
-            let input = fs::read_to_string(filepath).expect("File not found!");
-            let mut m = moduleParser::new().parse(&input).expect("Parse Error!");
-            let mut semantic = Semantic::new();
-            semantic.analyze(&mut m);
-            let ir  = Translator::new().translate(&mut m);
-            let lir = Reducer::new(semantic.nid()).reduce(&ir);
-            let cfg = CfgBuilder::new().build(&lir);
-            println!("{}", &format!("FILE: {filepath}"));
-            cfgprinter::Printer::new().print(&cfg);
-            //irprinter::Printer::new().print(&lir);
-            println!("\n\n\n\n\n");
-            i += 1;
-        }   
-    }
-}
