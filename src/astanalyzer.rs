@@ -112,7 +112,7 @@ impl<'l> Analyzer<'l> {
     fn jump_statement(&mut self, j: &mut JumpStatement) {
         if j.jump_type != JumpOp::Return { return; }
         let kind = match &mut j.expr {
-            None => None,
+            None => Some(Kind::void()),
             Some(e) => {
                 self.expression(e);
                 e.kind()

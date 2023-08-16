@@ -30,18 +30,20 @@ fn visualize() {
         Analyzer::new(&mut r).analyze(&mut ast);
         astprinter::Printer::new().print(&ast);
 
-        let ir  = Translator::new().translate(&mut ast);
+        let ir  = Translator::new(&mut r).translate(&mut ast);
         irprinter::Printer::new().print(&ir);
 
         let lir = Reducer::new(&mut r).reduce(ir);
         irprinter::Printer::new().print(&lir);
 
-        let cfg = Builder::new().build(lir);
+        let cfg = Builder::new(&mut r).build(lir);
         cfgprinter::Printer::new().print(&cfg);
 
-        let order = (0..cfg.nodes.len()).collect();
+        let mut order: Vec<usize> = (0..cfg.nodes.len()).collect();
+        order.swap(0, cfg.start);
         let fir = export(cfg, order);
         irprinter::Printer::new().print(&fir);
+
         println!("\n\n\n\n\n");
         i += 1;
     }

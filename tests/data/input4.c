@@ -18,6 +18,7 @@ void complexFunc2(int n) {
         break;
     }
   }
+  return;
 }
 
 int factorial(int num) {

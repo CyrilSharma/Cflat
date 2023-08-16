@@ -1,23 +1,24 @@
 use crate::ast;
 use crate::ast::FunctionDeclaration;
 use crate::ir::{self, Operator};
+use crate::registry::Registry;
 
-pub struct Translator {
-    nlabels:     u32,
+pub struct Translator<'l> {
     loop_starts: Vec<ir::Label>,
-    loop_ends:   Vec<ir::Label>
+    loop_ends:   Vec<ir::Label>,
+    reg:         &'l mut Registry
 }
 
-impl Translator {
-    pub fn new() -> Self { 
+impl<'l> Translator<'l> {
+    pub fn new(registry: &'l mut Registry) -> Self { 
         Self {
-            nlabels:     0,
             loop_starts: Vec::new(),
-            loop_ends:   Vec::new()
+            loop_ends:   Vec::new(),
+            reg:         registry
         } 
     }
     pub fn translate(&mut self, m: &mut ast::Module) -> Vec::<Box<ir::Statement>> {
-        self.nlabels = m.functions.len() as u32; // function ids are their labels.
+        self.reg.nlabels = m.functions.len() as u32; // function ids are their labels.
         let mut res = Vec::<Box<ir::Statement>>::new();
         for f in &m.functions {
             match self.function_declaration(f) {
@@ -367,7 +368,7 @@ impl Translator {
         ));
     }
     fn create_label(&mut self) -> ir::Label {
-        self.nlabels += 1;
-        return self.nlabels - 1;
+        self.reg.nlabels += 1;
+        return self.reg.nlabels - 1;
     }
 }

@@ -181,6 +181,12 @@ pub struct Kind {
     pub prim: Primitive,
 }
 impl Kind {
+    pub fn void() -> Self {
+        Self {
+            indir: 0,
+            prim: Void,
+        }
+    }
     pub fn int() -> Self {
         Self {
             indir: 0,
@@ -208,14 +214,10 @@ pub enum Primitive {
 }
 impl fmt::Display for Primitive {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(
-            f,
-            "{}",
-            match self {
-                Void => "void",
-                Int => "int",
-                Float => "float",
-            }
-        )
+        write!(f, "{}", match self {
+            Void => "void",
+            Int => "int",
+            Float => "float",
+        })
     }
 }

@@ -1,13 +1,15 @@
 use crate::ir::{self, *};
 use crate::cfg::CFG;
+const INVALID: u32 = 1e9 as u32;
 pub fn export(mut cfg: CFG, order: Vec<usize>) -> Vec<Box<Statement>> {
     let mut res = Vec::<Box<Statement>>::new();
     for ind in 0..order.len() {
         let idx = order[ind];
+        if ind == 0 { assert!(idx == cfg.start); }
         let n = &mut cfg.nodes[idx];
-        res.push(Box::new(Statement::Label(idx as u32)));
-        res.extend(std::mem::take(&mut n.stmts));
-        let last = res.pop().unwrap();
+        let mut cur = vec![Box::new(Statement::Label(idx as u32))];
+        cur.extend(std::mem::take(&mut n.stmts));
+        let last = cur.pop().unwrap();
         let peek = || { 
             match ind + 1 == order.len() {
                 false => Some(order[ind+1]),
@@ -15,21 +17,23 @@ pub fn export(mut cfg: CFG, order: Vec<usize>) -> Vec<Box<Statement>> {
             }
         };
         use Statement::*;
-        res.extend(match *last {
+        cur.extend(match *last {
             // I don't know how to avoid this extra allocation.
-            CJump(e, t, f) => {
+            CJump(e, _, _) => {
                 let pk = peek();
+                let nt = n.t.unwrap() as u32;
+                let nf = n.f.unwrap() as u32;
                 if n.t == pk {
                     use ir::Expr::UnOp;
                     use ir::Operator::Not;
                     let e2 = Box::new(UnOp(Not, e));
-                    vec![Box::new(CJump(e2, f, t))]
+                    vec![Box::new(CJump(e2, nf, INVALID))]
                 } else if n.f == pk {
-                    vec![Box::new(CJump(e, t, f))]
+                    vec![Box::new(CJump(e, nt, INVALID))]
                 } else {
                     let i = n.f.unwrap() as u32;
                     let j = Box::new(Jump(i));
-                    vec![Box::new(CJump(e, t, f)), j]
+                    vec![Box::new(CJump(e, nt, INVALID)), j]
                 }
             },
             Jump(_)   => {
@@ -41,6 +45,8 @@ pub fn export(mut cfg: CFG, order: Vec<usize>) -> Vec<Box<Statement>> {
             },
             _ => vec![last]
         });
+        if cur.len() == 1 { continue; }
+        res.extend(cur);
     }
     return res;
 }

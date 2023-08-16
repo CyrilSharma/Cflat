@@ -1,22 +1,25 @@
 use std::collections::HashMap;
 use crate::ir::*;
 use crate::cfg::*;
-pub struct Builder {
+use crate::registry::Registry;
+pub struct Builder<'l> {
     nid: usize, // the current block
     link: bool, // whether prev & cur should be connectd.
     lookup: HashMap<u32, usize>,
     nodes: Vec<Node>,
     start: Option<usize>,
+    reg: &'l mut Registry
 }
 
-impl Builder {
-    pub fn new() -> Builder  { 
+impl<'l> Builder<'l> {
+    pub fn new(registry: &mut Registry) -> Builder  { 
         Builder {
             nid: 0,
             link: true,
             lookup: HashMap::new(),
             nodes: Vec::new(),
             start: None,
+            reg: registry
         }
     }
     pub fn build(&mut self, stmts: Vec<Box<Statement>>) -> CFG {
@@ -29,6 +32,7 @@ impl Builder {
                 Jump(l)              => self.jump(l),
                 CJump(_, l1, l2)     => self.cjump(l1, l2),
                 Label(l)             => self.label(l),
+                // Expr(e)              => self.expr(e),
                 Return(_)            => self.link = false,
                 _                    => self.link = true,
             }
@@ -39,6 +43,14 @@ impl Builder {
         return CFG { 
             nodes: std::mem::take(&mut self.nodes),
             start: self.start.unwrap(),
+        }
+    }
+    fn expr(&mut self, e: Box<Expr>) {
+        match *e {
+            Expr::Call(l, v) => {
+                Box::new(Expr::Call())
+            },
+            _ => unreachable!()
         }
     }
     fn jump(&mut self, l: Label) {
@@ -56,7 +68,6 @@ impl Builder {
         self.nid = self.create_node();
     }
     fn label(&mut self, l: Label) {
-        if l == 0 { self.start = Some(self.nid); }
         let old = self.nid;
         let mut removed = false;
         if self.nodes[old].stmts.len() == 0 {
@@ -64,6 +75,7 @@ impl Builder {
             removed = true;
         }
         self.nid = self.get(l);
+        if l == 0 { self.start = Some(self.nid); }
         if !removed && self.link {
             self.nodes[old].t = Some(self.nid);
         }
