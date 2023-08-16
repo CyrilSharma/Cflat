@@ -1,19 +1,22 @@
 use crate::ast::*;
+use crate::registry::Registry;
 use crate::symboltable::{SymbolTable, VSymbol, FSymbol};
-pub struct Semantic {
+pub struct Analyzer<'l> {
     fname: String,
     vsym: SymbolTable<VSymbol>,
-    fsym: SymbolTable<FSymbol>
+    fsym: SymbolTable<FSymbol>,
+    reg:  &'l mut Registry
 }
 // TODO: for proper error detection,
 // Add errors to a list instead of Panicing.
 // " Error Handling? Just don't make errors... "
-impl Semantic {
-    pub fn new() -> Self {
+impl<'l> Analyzer<'l> {
+    pub fn new(registry: &'l mut Registry) -> Self {
         Self {
             fname: String::new(),
             vsym: SymbolTable::new(),
-            fsym: SymbolTable::new()
+            fsym: SymbolTable::new(),
+            reg:  registry
         }
     }
     pub fn analyze(&mut self, m: &mut Module) {
@@ -31,6 +34,7 @@ impl Semantic {
         for f in &mut m.functions {
             self.function_declaration(f);
         }
+        self.reg.nids = self.vsym.count;
     }
     fn function_declaration(&mut self, f: &mut FunctionDeclaration) {
         self.vsym.scope_in();
@@ -108,7 +112,7 @@ impl Semantic {
     fn jump_statement(&mut self, j: &mut JumpStatement) {
         if j.jump_type != JumpOp::Return { return; }
         let kind = match &mut j.expr {
-            None => Some(Kind::void()),
+            None => None,
             Some(e) => {
                 self.expression(e);
                 e.kind()
@@ -260,8 +264,5 @@ impl Semantic {
                 i.id = s.id;
             }
         }
-    }
-    pub fn nid(&self) -> u32 {
-        return self.vsym.count;
     }
 }

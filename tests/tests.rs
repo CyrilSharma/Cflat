@@ -1,12 +1,14 @@
 #[allow(unused_imports)]
+use compiler::astanalyzer::Analyzer;
+use compiler::astparser::moduleParser;
 use compiler::astprinter;
+use compiler::cfgbuilder::Builder;
 use compiler::cfgprinter;
+use compiler::cfgexporter::export;
 use compiler::irprinter;
 use compiler::irtranslator::Translator;
 use compiler::irreducer::Reducer;
-use compiler::astparser::moduleParser;
 use compiler::registry::Registry;
-use compiler::astanalyzer::Analyzer;
 
 use std::fs;
 use std::path::Path;
@@ -22,10 +24,10 @@ fn visualize() {
         println!("{}", &format!("FILE: {filepath}"));
         let mut r = Registry::new();
 
-        // Might make these files use bump allocator as well.
         let mut ast = moduleParser::new().parse(&input).expect("Parse Error!");
         astprinter::Printer::new().print(&ast);
-        let analyzer = Analyzer::new(&mut r).analyze(&mut ast);
+        
+        Analyzer::new(&mut r).analyze(&mut ast);
         astprinter::Printer::new().print(&ast);
 
         let ir  = Translator::new().translate(&mut ast);
@@ -34,8 +36,11 @@ fn visualize() {
         let lir = Reducer::new(&mut r).reduce(&ir);
         irprinter::Printer::new().print(&lir);
 
-        let cfg = CfgBuilder::new(cur).build(&lir);
+        let cfg = Builder::new().build(lir);
         cfgprinter::Printer::new().print(&cfg);
+
+        let fir = export(cfg, (0..cfg.nodes.len()).collect());
+        cfgprinter::Printer::new().print(&fir);
         println!("\n\n\n\n\n");
         i += 1;
     }

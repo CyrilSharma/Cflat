@@ -1,12 +1,12 @@
 use crate::ir::{self, *};
 use crate::cfg::CFG;
-fn export(cfg: CFG, order: Vec<usize>) -> Vec<Box<Statement>> {
+pub fn export(mut cfg: CFG, order: Vec<usize>) -> Vec<Box<Statement>> {
     let mut res = Vec::<Box<Statement>>::new();
     for ind in 0..order.len() {
         let idx = order[ind];
-        let n = &cfg.nodes[idx];
+        let n = &mut cfg.nodes[idx];
         res.push(Box::new(Statement::Label(idx as u32)));
-        res.extend(n.stmts);
+        res.extend(std::mem::take(&mut n.stmts));
         let last = res.pop().unwrap();
         let peek = || { 
             match ind + 1 == order.len() {
@@ -14,37 +14,30 @@ fn export(cfg: CFG, order: Vec<usize>) -> Vec<Box<Statement>> {
                 true  => None
             }
         };
-        let mut jump = || {
-            let pk = peek();
-            match n.t == pk {
-                false => vec![last],
-                true  => vec![],
-            };
-            vec![last]
-        };
-        let mut cjump = |
-            e: &Box<ir::Expr>,
-            t: &mut ir::Label,
-            f: &mut ir::Label | {
-            let pk = peek();
-            if n.t == pk {
-                use ir::Expr::UnOp;
-                use ir::Operator::Not;
-                *e = Box::new(UnOp(Not, *e));
-                std::mem::swap(t, f);
-                return vec![last]
-            } else if n.f == pk {
-                return vec![last]
-            }
-            let i = n.f.unwrap() as u32;
-            let j = Box::new(Jump(i));
-            vec![last, j]
-        };
         use Statement::*;
         res.extend(match *last {
-            CJump(mut e, mut t, mut f)
-                      => cjump(&mut e, &mut t, &mut f),
-            Jump(_)   => jump(),
+            // I don't know how to avoid this extra allocation.
+            CJump(e, t, f) => {
+                let pk = peek();
+                if n.t == pk {
+                    use ir::Expr::UnOp;
+                    use ir::Operator::Not;
+                    let e2 = Box::new(UnOp(Not, e));
+                    return vec![Box::new(CJump(e2, f, t))]
+                } else if n.f == pk {
+                    return vec![Box::new(CJump(e, t, f))]
+                }
+                let i = n.f.unwrap() as u32;
+                let j = Box::new(Jump(i));
+                vec![Box::new(CJump(e, t, f)), j]
+            },
+            Jump(_)   => {
+                let pk = peek();
+                match n.t == pk {
+                    false => vec![last],
+                    true  => vec![],
+                }
+            },
             Return(_) => vec![last],
             _         => unreachable!(),
         });

@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 use crate::ir::*;
 use crate::cfg::*;
-pub struct CfgBuilder {
+pub struct Builder {
     nid: usize, // the current block
     link: bool, // whether prev & cur should be connectd.
     lookup: HashMap<u32, usize>,
@@ -9,9 +9,9 @@ pub struct CfgBuilder {
     start: Option<usize>,
 }
 
-impl CfgBuilder {
-    pub fn new() -> CfgBuilder  { 
-        CfgBuilder {
+impl Builder {
+    pub fn new() -> Builder  { 
+        Builder {
             nid: 0,
             link: true,
             lookup: HashMap::new(),
@@ -19,20 +19,20 @@ impl CfgBuilder {
             start: None,
         }
     }
-    pub fn build(&mut self, stmts: &[Box<Statement>]) -> CFG {
+    pub fn build(&mut self, stmts: Vec<Box<Statement>>) -> CFG {
         use Statement::*;
         self.create_node();
         for stmt in stmts {
-            let ns = &self.nodes[self.nid].stmts;
-            if let Label(_) = **stmt { ns.push(*stmt); }
-            match **stmt {
+            match *stmt {
                 Expr(_) | Seq(_)     => unreachable!(),
                 Jump(l)              => self.jump(l),
-                CJump(e, l1, l2)     => self.cjump(&e, l1, l2),
+                CJump(_, l1, l2)     => self.cjump(l1, l2),
                 Label(l)             => self.label(l),
                 Return(_)            => self.link = false,
                 _                    => self.link = true,
             }
+            let ns = &mut self.nodes[self.nid].stmts;
+            if let Label(_) = *stmt { ns.push(stmt); }
         }
         return CFG { 
             nodes: std::mem::take(&mut self.nodes),
@@ -45,7 +45,7 @@ impl CfgBuilder {
         self.link = false;
         self.nid = self.create_node();
     }
-    fn cjump(&mut self, e: &Expr, l1: Label, l2: Label) {
+    fn cjump(&mut self, l1: Label, l2: Label) {
         let id1 = self.get(l1);
         self.nodes[self.nid].t = Some(id1);
         let id2 = self.get(l2);

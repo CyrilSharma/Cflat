@@ -102,7 +102,7 @@ impl Printer {
         println!("    node{} -> node{};", i, j)
     }
     fn label(&self, s: Vec<String>) {
-        let stmts = s.iter()
+        let stmts = s.iter() 
             .map(|x| format!(
                 "          <tr><td align=\"center\">{}</td></tr>\n",
                 x

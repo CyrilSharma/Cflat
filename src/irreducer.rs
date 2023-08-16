@@ -1,7 +1,13 @@
 use crate::ir::*;
-pub struct Reducer { count: u32, ret: u32 }
-impl Reducer {
-    pub fn new(nid: u32) -> Self { Self{count: nid+1, ret: nid } }
+use crate::registry::Registry;
+pub struct Reducer<'l> {
+    reg: &'l mut Registry
+}
+impl<'l> Reducer<'l> {
+    pub fn new(registry: &'l mut Registry) -> Self {
+        registry.ret = registry.nids;
+        Self { reg: registry }
+    }
     pub fn reduce(&mut self, stmts: &[Statement]) -> Vec<Statement> {
         return self.seq(stmts);
     }
@@ -133,7 +139,7 @@ impl Reducer {
         let id = self.create_temp();
         v.push(Statement::Move(
             Box::new(Temp(id)),
-            Box::new(Temp(self.ret))
+            Box::new(Temp(self.reg.ret))
         ));
         return (v, Box::new(Temp(id)));
     }
@@ -147,7 +153,7 @@ impl Reducer {
     #[allow(dead_code, unused_variables)]
     fn commute(l: &Expr, r: &Expr) -> bool { todo!() }
     fn create_temp(&mut self) -> u32 {
-        self.count += 1;
-        return self.count - 1;
+        self.reg.nids += 1;
+        return self.reg.nids - 1;
     }
 }

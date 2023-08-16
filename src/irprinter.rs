@@ -1,130 +1,96 @@
 use crate::ir::*;
-pub struct Printer { count: u32 }
+pub struct Printer { tabs: usize }
+/* note that this only works for LIR CFG */
 impl Printer {
-    pub fn new() -> Self { Self{count: 0} }
+    pub fn new() -> Self { Self{tabs: 0} }
     pub fn print(&mut self, stmts: &[Statement]) {
-        println!("digraph IR {{");
         for s in stmts {
-            self.statement(s);
+            println!("{}\n",
+                self.statement(s)
+            );
         }
-        println!("}}");
     }
-    fn statement(&mut self, s: &Statement) {
+    fn statement(&mut self, s: &Statement) -> String {
         use Statement::*;
-        match s {
+        return match s {
             Expr(e) => self.expression(e),
             Move(d, s) => self._move(d, s),
-            Seq(s) => self.seq(s),
-            Jump(j) => self.add_label(&format!("Jump: {:?}", j)),
+            Jump(j) => format!("Jump {:?}", j),
             CJump(c, t, f) => self.cjump(c, *t, *f),
-            Label(l) => self.add_label(&format!("{}", l)),
-            Return(r) => self._return(r)
-        }
+            Label(l) => format!("{}: ", l),
+            Return(r) => self._return(r),
+            Seq(s) => self.seq(s)
+        };
     }
-    fn _move(&mut self, d: &Expr, s: &Expr) {
-        let idx = self.count;
-        self.add_label("Move");
-        self.add_edge(idx, self.count);
-        self.expression(d);
-        self.add_edge(idx, self.count);
-        self.expression(s);
-    }
-    fn seq(&mut self, stmts: &[Statement]) {
-        let idx = self.count;
-        self.add_label("Seq");
+    fn seq(&mut self, stmts: &[Statement]) -> String {
+        self.tabs += 1;
+        let mut res = String::new();
         for s in stmts {
-            self.add_edge(idx, self.count);
-            self.statement(s);
+            res.push_str(&format!("{}{}\n",
+                "\t".repeat(self.tabs),
+                self.statement(s)
+            ));
         }
+        self.tabs -= 1;
+        return res;
     }
-    fn cjump(&mut self, j: &Expr, t: Label, f: Label) {
-        let idx = self.count;
-        self.add_label("Jump");
-        self.add_edge(idx, self.count);
-        self.expression(j);
-
-        self.add_label(&format!("{}", t));
-        self.add_edge(idx, self.count);
-
-        self.add_label(&format!("{}", f));
-        self.add_edge(idx, self.count);
+    fn _move(&mut self, d: &Expr, s: &Expr) -> String {
+        return format!("Move {} {}",
+            self.expression(d), self.expression(s)
+        );
     }
-    fn _return(&mut self, r: &Option<Box<Expr>>) {
-        match *r {
-            None => self.add_label("Return"),
-            Some(ref e) => {
-                let idx = self.count;
-                self.add_label("Return");
-                self.add_edge(idx, self.count);
-                self.expression(&e);
+    fn cjump(&mut self, j: &Expr, t: Label, f: Label) -> String {
+        return format!("CJump {} {} {}",
+            self.expression(j),
+            format!("{:?}", t),
+            format!("{:?}", f),
+        );
+    }
+    fn _return(&mut self, r: &Option<Box<Expr>>) -> String {
+        return format!("Return {}",
+            match r {
+                None => format!(""),
+                Some(e) => format!("{}",
+                    self.expression(e)
+                )
             }
-        }
+        );
     } 
-    fn expression(&mut self, e: &Expr) {
+    fn expression(&mut self, e: &Expr) -> String {
         use Expr::*;
-        match e {
-            Const(p) => self.add_label(&format!("Const ({:?})", p)),
-            Temp(t) => self.add_label(&format!("Temp ({})", t)),
+        return match e {
+            Const(p) => format!("{:?}", p),
+            Temp(t) => format!("T({})", t),
             UnOp(op, e) => self.unary(*op, e),
             BinOp(l, op, r) => self.binary(l, *op, r),
             Mem(e) => self.mem(e),
             Call(l, s) => self.call(*l, s),
-            ESeq(s, e) => self.eseq(s, e),
-            Address(e) => self.address(e)
+            Address(e) => self.address(e),
+            _ => unreachable!()
         }
     }
-    fn unary(&mut self, op: Operator, e: &Expr) {
-        let idx = self.count;
-        self.add_label(&format!("Unary {:?}", op));
-        self.add_edge(idx, self.count);
-        self.expression(e);
+    fn unary(&mut self, op: Operator, e: &Expr) -> String {
+        return format!("{:?} {}", op, self.expression(e));
     }
-    fn binary(&mut self, l: &Expr, op: Operator, r: &Expr) {
-        let idx = self.count;
-        self.add_label(&format!("Binary {:?}", op));
-        self.add_edge(idx, self.count);
-        self.expression(l);
-        self.add_edge(idx, self.count);
-        self.expression(r);
+    fn binary(&mut self, l: &Expr, op: Operator, r: &Expr) -> String {
+        return format!("{:?} {} {}", 
+            op,
+            self.expression(l),
+            self.expression(r)
+        );
     }
-    fn mem(&mut self, m: &Expr) {
-        let idx = self.count;
-        self.add_label("Mem");
-        self.add_edge(idx, self.count);
-        self.expression(m);
+    fn mem(&mut self, m: &Expr) -> String {
+        return format!("Mem({})",
+            self.expression(m)
+        );
     }
-    fn call(&mut self, l: Label, v: &[Expr]) {
-        let idx = self.count;
-        self.add_label("Call");
-        self.add_edge(idx, self.count);
-        self.add_label(&format!("{}", l));
-        for e in v {
-            self.add_edge(idx, self.count);
-            self.expression(e);
-        }
+    fn call(&mut self, l: Label, v: &[Expr]) -> String {
+        return format!("Call(f={}, {})", l,
+            v.iter().map(|e| self.expression(e))
+                .collect::<Vec<String>>().join(", ")
+        );
     }
-    fn eseq(&mut self, s: &Statement, e: &Expr) {
-        let idx = self.count;
-        self.add_label("ESEQ");
-        self.add_edge(idx, self.count);
-        self.statement(s);
-        self.add_edge(idx, self.count);
-        self.expression(e);
-    }
-    fn address(&mut self, e: &Expr) {
-        let idx = self.count;
-        self.add_label("Address");
-        self.add_edge(idx, self.count);
-        self.expression(e);
-    }
-    fn add_edge(&mut self, i: u32, j: u32) {
-        println!("    node{} -> node{};", i, j)
-    }
-    fn add_label(&mut self, s: &str) {
-        println!("{}", &format!(
-            "    node{} [label=\"{}\"];",
-            self.count, s
-        ));
-        self.count += 1;
+    fn address(&mut self, e: &Expr) -> String {
+        return format!("&{}", self.expression(e));
     }
 }
