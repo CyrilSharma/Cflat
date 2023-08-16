@@ -25,14 +25,14 @@ impl Printer {
     fn seq(&mut self, stmts: &[Box<Statement>]) -> String {
         let tabs = "  ".repeat(self.tabs).to_string();
         self.tabs += 1;
-        let mut res = "{\n".to_string();
+        let mut res = "Seq(\n".to_string();
         for s in stmts {
             res.push_str(&format!("{}{},\n",
                 "  ".repeat(self.tabs),
                 self.statement(s)
             ));
         }
-        res.push_str(&(tabs.clone() + "}"));
+        res.push_str(&(tabs.clone() + ")"));
         self.tabs -= 1;
         return res;
     }
@@ -72,7 +72,7 @@ impl Printer {
         }
     }
     fn eseq(&mut self, s: &Statement, e: &Expr) -> String {
-        return format!("{{ {} #{}# }}",
+        return format!("ESeq({}, #{}#)",
             self.statement(s),
             self.expression(e)
         );

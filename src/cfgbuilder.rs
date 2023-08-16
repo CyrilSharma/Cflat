@@ -23,6 +23,7 @@ impl Builder {
         use Statement::*;
         self.create_node();
         for stmt in stmts {
+            let old = self.nid;
             match *stmt {
                 Seq(_)               => unreachable!(),
                 Jump(l)              => self.jump(l),
@@ -31,9 +32,9 @@ impl Builder {
                 Return(_)            => self.link = false,
                 _                    => self.link = true,
             }
-            let ns = &mut self.nodes[self.nid].stmts;
-            if let Label(_) = *stmt { continue; }
-            ns.push(stmt);
+            if let Label(_) = *stmt {} else { 
+                self.nodes[old].stmts.push(stmt);
+            }
         }
         return CFG { 
             nodes: std::mem::take(&mut self.nodes),
@@ -55,10 +56,15 @@ impl Builder {
         self.nid = self.create_node();
     }
     fn label(&mut self, l: Label) {
-        let old = self.nid;
-        self.nid = self.get(l);
         if l == 0 { self.start = Some(self.nid); }
-        if self.link {
+        let old = self.nid;
+        let mut removed = false;
+        if self.nodes[old].stmts.len() == 0 {
+            self.nodes.pop();
+            removed = true;
+        }
+        self.nid = self.get(l);
+        if !removed && self.link {
             self.nodes[old].t = Some(self.nid);
         }
     }
