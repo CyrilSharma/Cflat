@@ -2,7 +2,7 @@ use crate::ir::*;
 pub struct Reducer { count: u32, ret: u32 }
 impl Reducer {
     pub fn new(nid: u32) -> Self { Self{count: nid+1, ret: nid } }
-    pub fn reduce(&mut self, stmts: &Vec<Statement>) -> Vec<Statement> {
+    pub fn reduce(&mut self, stmts: &[Statement]) -> Vec<Statement> {
         return self.seq(stmts);
     }
     fn statement(&mut self, s: &Statement) -> Vec<Statement> {
@@ -67,7 +67,7 @@ impl Reducer {
             _ => unreachable!()
         }
     }
-    fn seq(&mut self, stmts: &Vec<Statement>) -> Vec<Statement> {
+    fn seq(&mut self, stmts: &[Statement]) -> Vec<Statement> {
         let mut v = Vec::<Statement>::new();
         for s in stmts {
             v.extend(self.statement(s));
@@ -113,7 +113,7 @@ impl Reducer {
         );
         return (v, Box::new(e));
     }
-    fn call(&mut self, l: Label, exprs: &Vec<Expr>) -> (Vec<Statement>, Box<Expr>) {
+    fn call(&mut self, l: Label, exprs: &[Expr]) -> (Vec<Statement>, Box<Expr>) {
         use Expr::*;
         let mut temps = Vec::<Expr>::new();
         let mut v = Vec::<Statement>::new();

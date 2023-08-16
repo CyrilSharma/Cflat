@@ -19,7 +19,7 @@ impl CfgBuilder {
             start: None,
         }
     }
-    pub fn build(&mut self, stmts: &Vec<Statement>) -> CFG {
+    pub fn build(&mut self, stmts: &[Statement]) -> CFG {
         use Statement::*;
         self.create_node();
         for stmt in stmts {

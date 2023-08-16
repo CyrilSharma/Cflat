@@ -1,6 +1,6 @@
 use std::collections::{BTreeMap};
 use crate::ir::{self, Statement, Expr, Operator};
-use crate::aa::{AA, Reg};
+use crate::aa::{self, AA, Reg};
 
 type ID = u32;
 type Info = (u32, ID, Vec<AA>);
@@ -12,11 +12,11 @@ pub struct Translator {
 impl Translator {
     pub fn new(cnt: usize) -> Self { 
         Self { 
-            opt: BTreeMap::new(),
+            opt:   BTreeMap::new(),
             count: cnt
         }
     }
-    pub fn translate(&mut self, stmts: &Vec<Statement>) -> Vec<AA> {
+    pub fn translate(&mut self, stmts: &[Statement]) -> Vec<AA> {
         let mut res = Vec::<AA>::new();
         for s in stmts {
             res.extend(self.statement(s));
@@ -26,142 +26,62 @@ impl Translator {
     fn statement(&mut self, s: &Statement) -> Vec<AA> {
         use Statement::*;
         match s {
-            Expr(e)        => {
-                // Weird but lowered IR should only have Calls
-                let ir::Expr::Call(f, args) = **e else { unreachable!(); };
-                self.call(f, &args)
-            },
+            Expr(e)        => self.call(e),
             Move(d, s)     => self._move(d, s),
-            Jump(j)        => self.jump(j),
             CJump(c, t, _) => self.cjump(c, *t),
+            Jump(j)   => vec![AA::B(*j)],
             Label(l)  => vec![AA::Label(*l)],
             Return(r) => vec![AA::Ret],
             _ => unreachable!()
         }
     }
-    fn call(&mut self, e: &Expr) -> &Info {
-        let ir::Expr::Call(f, args) = e else { unreachable!(); };
-        for e in args { self.expression(e); }
-        return todo!();
+    fn call(&mut self, e: &Expr) -> Vec<AA> {
+        use ir::Expr::*;
+        use aa::Reg::*;
+        let Call(f, args) = e else { unreachable!(); };
+        let mut asm = Vec::<AA>::new();
+        let arg_reg = vec![R0, R1, R2, R3, R4, R5, R6, R7];
+        if args.len() > 8 { panic!("Too many arguments!"); }
+        for i in 0..args.len() {
+            let Temp(i) = args[i] else { unreachable!() };
+            asm.push(AA::Mov2(arg_reg[i as usize], Reg::ID(i)));
+        }
+        asm.push(AA::B(*f));
+        return asm;
     }
-    fn _move(&mut self, d: &Expr, s: &Expr) {
+    fn _move(&mut self, d: &Expr, s: &Expr) -> Vec<AA> {
         let mut bc: u32 = u32::MAX;
         let mut basm: Vec<AA> = Vec::new();
         let update = |c: u32, asm: Vec<AA>| {
             if c >= bc { return }
             (bc, basm) = (c, asm);
         };
-        // Writing update(asm.len() as u32, asm) every time seems redundant,
-        // but in the future the cost function may be more complex.
         use Expr::*;
         match (d, s) {
-            (Temp(a), Const(b))  => {
-                let asm = vec![AA::Mov1(Reg::ID(*a), b.bits())];
-                update(asm.len() as u32, asm);
-            },
-            (Temp(a), Temp(b))   => {
-                let asm = vec![AA::Mov2(Reg::ID(*a), Reg::ID(*b))];
-                update(asm.len() as u32, asm);
-            },
-            (Temp(a), Mem(T))    => {
-                if let Temp(i) = **T {
-                    let asm = vec![AA::LDR2(Reg::ID(*a), Reg::ID(i))];
-                    update(asm.len() as u32, asm);
-                } else { 
-                    let (_, temp, tasm) = self.expression(T);
-                    let mut asm = tasm.clone();
-                    asm.push(AA::Mov2(Reg::ID(*a), Reg::ID(*temp)));
-                    update(asm.len() as u32, asm);
-                }
-            },
             (Temp(a), e)    => {
                 let (_, temp, easm) = self.expression(e);
                 let asm = easm.clone();
                 asm.push(AA::Mov2(Reg::ID(*a), Reg::ID(*temp)));
                 update(asm.len() as u32, asm);
-            }
-            (Mem(T), Const(b))   => {
-                if let Temp(i) = **T {
-                    let asm = vec![AA::STR2(Reg::ID(i), b.bits())];
-                    update(asm.len() as u32, asm);
-                } else { 
-                    let (_, temp, tasm) = self.expression(T);
-                    let mut asm = tasm.clone();
-                    asm.push(AA::Mov2(Reg::ID(*temp), b.bits()));
-                    update(asm.len() as u32, asm);
-                };
-            }
-            (Mem(T), Temp(b))    => {
-                let Temp(i) = **T else { unreachable!() };
-                vec![AA::STR2(Reg::ID(i), Reg::ID(*b))]
+                return asm;
             },
-            (Mem(D), Mem(S)) => {
-                let id = self.create_temp();
-                let Temp(r1) = **D else { unreachable!() };
-                let Temp(r2) = **S else { unreachable!() };
-                vec![
-                    AA::LDR2(Reg::ID(id), Reg::ID(r2)),
-                    AA::STR2(Reg::ID(r1), Reg::ID(id)),
-                ]
+            (Mem(T), e)   => {
+                let (_, mtemp, masm) = self.expression(T);
+                let (_, etemp, easm) = self.expression(e);
+                let mut asm = masm.clone();
+                asm.extend(*easm);
+                asm.push(AA::Mov2(Reg::ID(*mtemp), Reg::ID(*etemp)));
+                update(asm.len() as u32, asm);
+                return asm;
             }
+            _ => unreachable!()
         }
-        //---------LHS = TEMP------------
-        case!({ // STORE TEMP <== CONST
-            let (Temp(a), Const(b)) = (d, s) else { break };
-            let asm = vec![AA::Mov1(Reg::ID(*a), b.bits())];
-            update(asm.len() as u32, asm);
-        });
-        case!({ // STORE TEMP <== TEMP
-            let (Temp(a), Temp(b)) = (d, s) else { break };
-            let asm = vec![AA::Mov2(Reg::ID(*a), Reg::ID(*b))];
-            update(asm.len() as u32, asm);
-        });
-        case!({ // LOAD TEMP <== [ REG ]
-            let (Temp(a), Mem(T)) = (d, s) else { break };
-            let Temp(i) = **T else { break };
-            let asm = vec![AA::LDR2(Reg::ID(*a), Reg::ID(i))];
-            update(asm.len() as u32, asm);
-        });
-        case!({ // LOAD TEMP <== [ REG ]
-            let (Temp(a), Mem(T)) = (d, s) else { break };
-            let Temp(i) = **T else { break };
-            let asm = vec![AA::LDR2(Reg::ID(*a), Reg::ID(i))];
-            update(asm.len() as u32, asm);
-        });
-        case!({ // LOAD TEMP <== EXPR -- DEFAULT
-            let Temp(a) = d else { break };
-            let (t, mut asm) = self.expression(s);
-            asm.push(AA::Mov2(Reg::ID(*a), Reg::ID(t)));
-            update(asm.len() as u32, asm);
-        });
-
-        //---------LHS = MEM------------
-        case!({ // STORE [ REG ] <== CONST
-            let (Mem(T), Const(b)) = (d, s);
-            let Temp(reg) = **T else { break };
-            let t = self.temp();
-            let asm = vec![
-                AA::Mov1(Reg::ID(t), b.bits()),
-                AA::STR2(Reg::ID(reg), Reg::ID(t))
-            ];
-            update(asm.len() as u32, asm);
-        });
-        case!({ // STORE [ REG ] <== TEMP
-            let (Mem(T), Temp(b)) = (d, s) else { break };
-            let Temp(i) = **T else { break };
-            let asm = vec![AA::STR2(Reg::ID(i), Reg::ID(*b))];
-            update(asm.len() as u32, asm);
-        });
-        case!({ // STORE [ REG ] <== EXPR
-            let Mem(T) = d else { break };
-            let Temp(i) = **T else { break };
-            let (t, mut asm) = self.expression(s);
-            asm.push(AA::STR2(Reg::ID(i), Reg::ID(t)));
-            update(asm.len() as u32, asm);
-        });
     }
-    fn cjump(&mut self, j: &Expr, t: ir::Label, f: ir::Label) {
-        let idx = self.count;
+    fn cjump(&mut self, j: &Expr, t: ir::Label) -> Vec<AA> {
+        let (_, etemp, easm) = self.expression(j);
+        let mut asm = easm.clone();
+        asm.push(AA::CBNZ(t));
+        return asm;
     }
     fn expression(&mut self, e: &Expr) -> &Info {
         let nid = e.addr();

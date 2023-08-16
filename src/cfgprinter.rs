@@ -89,7 +89,7 @@ impl Printer {
             self.expression(m)
         );
     }
-    fn call(&mut self, l: Label, v: &Vec<Expr>) -> String {
+    fn call(&mut self, l: Label, v: &[Expr]) -> String {
         return format!("Call(f={}, {})", l,
             v.iter().map(|e| self.expression(e))
                 .collect::<Vec<String>>().join(", ")

@@ -11,9 +11,9 @@ pub struct CFG {
 }
 
 impl CFG {
-    fn export(&self, order: &Vec<usize>) -> Vec<Statement> {
+    fn export(&self, order: Vec<usize>) -> Vec<Statement> {
         let mut res = Vec::<Statement>::new();
-        for idx in order.clone() {
+        for idx in order {
             let n = &self.nodes[idx];
             res.push(Statement::Label(idx as u32));
             res.extend(n.stmts.iter()
