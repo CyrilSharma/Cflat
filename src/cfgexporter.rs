@@ -23,13 +23,14 @@ pub fn export(mut cfg: CFG, order: Vec<usize>) -> Vec<Box<Statement>> {
                     use ir::Expr::UnOp;
                     use ir::Operator::Not;
                     let e2 = Box::new(UnOp(Not, e));
-                    return vec![Box::new(CJump(e2, f, t))]
+                    vec![Box::new(CJump(e2, f, t))]
                 } else if n.f == pk {
-                    return vec![Box::new(CJump(e, t, f))]
+                    vec![Box::new(CJump(e, t, f))]
+                } else {
+                    let i = n.f.unwrap() as u32;
+                    let j = Box::new(Jump(i));
+                    vec![Box::new(CJump(e, t, f)), j]
                 }
-                let i = n.f.unwrap() as u32;
-                let j = Box::new(Jump(i));
-                vec![Box::new(CJump(e, t, f)), j]
             },
             Jump(_)   => {
                 let pk = peek();
@@ -38,8 +39,7 @@ pub fn export(mut cfg: CFG, order: Vec<usize>) -> Vec<Box<Statement>> {
                     true  => vec![],
                 }
             },
-            Return(_) => vec![last],
-            _         => unreachable!(),
+            _ => vec![last]
         });
     }
     return res;

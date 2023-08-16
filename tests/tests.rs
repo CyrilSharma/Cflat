@@ -33,14 +33,15 @@ fn visualize() {
         let ir  = Translator::new().translate(&mut ast);
         irprinter::Printer::new().print(&ir);
 
-        let lir = Reducer::new(&mut r).reduce(&ir);
+        let lir = Reducer::new(&mut r).reduce(ir);
         irprinter::Printer::new().print(&lir);
 
         let cfg = Builder::new().build(lir);
         cfgprinter::Printer::new().print(&cfg);
 
-        let fir = export(cfg, (0..cfg.nodes.len()).collect());
-        cfgprinter::Printer::new().print(&fir);
+        let order = (0..cfg.nodes.len()).collect();
+        let fir = export(cfg, order);
+        irprinter::Printer::new().print(&fir);
         println!("\n\n\n\n\n");
         i += 1;
     }

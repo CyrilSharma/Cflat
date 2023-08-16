@@ -3,7 +3,7 @@ pub struct Printer { tabs: usize }
 /* note that this only works for LIR CFG */
 impl Printer {
     pub fn new() -> Self { Self{tabs: 0} }
-    pub fn print(&mut self, stmts: &[Statement]) {
+    pub fn print(&mut self, stmts: &[Box<Statement>]) {
         for s in stmts {
             println!("{}\n",
                 self.statement(s)
@@ -22,15 +22,17 @@ impl Printer {
             Seq(s) => self.seq(s)
         };
     }
-    fn seq(&mut self, stmts: &[Statement]) -> String {
+    fn seq(&mut self, stmts: &[Box<Statement>]) -> String {
+        let tabs = "  ".repeat(self.tabs).to_string();
         self.tabs += 1;
-        let mut res = String::new();
+        let mut res = "{\n".to_string();
         for s in stmts {
-            res.push_str(&format!("{}{}\n",
-                "\t".repeat(self.tabs),
+            res.push_str(&format!("{}{},\n",
+                "  ".repeat(self.tabs),
                 self.statement(s)
             ));
         }
+        res.push_str(&(tabs.clone() + "}"));
         self.tabs -= 1;
         return res;
     }
@@ -66,8 +68,14 @@ impl Printer {
             Mem(e) => self.mem(e),
             Call(l, s) => self.call(*l, s),
             Address(e) => self.address(e),
-            _ => unreachable!()
+            ESeq(s, e) => self.eseq(s, e)
         }
+    }
+    fn eseq(&mut self, s: &Statement, e: &Expr) -> String {
+        return format!("{{ {} #{}# }}",
+            self.statement(s),
+            self.expression(e)
+        );
     }
     fn unary(&mut self, op: Operator, e: &Expr) -> String {
         return format!("{:?} {}", op, self.expression(e));
@@ -84,7 +92,7 @@ impl Printer {
             self.expression(m)
         );
     }
-    fn call(&mut self, l: Label, v: &[Expr]) -> String {
+    fn call(&mut self, l: Label, v: &[Box<Expr>]) -> String {
         return format!("Call(f={}, {})", l,
             v.iter().map(|e| self.expression(e))
                 .collect::<Vec<String>>().join(", ")

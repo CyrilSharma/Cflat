@@ -24,7 +24,7 @@ impl Builder {
         self.create_node();
         for stmt in stmts {
             match *stmt {
-                Expr(_) | Seq(_)     => unreachable!(),
+                Seq(_)               => unreachable!(),
                 Jump(l)              => self.jump(l),
                 CJump(_, l1, l2)     => self.cjump(l1, l2),
                 Label(l)             => self.label(l),
@@ -32,7 +32,8 @@ impl Builder {
                 _                    => self.link = true,
             }
             let ns = &mut self.nodes[self.nid].stmts;
-            if let Label(_) = *stmt { ns.push(stmt); }
+            if let Label(_) = *stmt { continue; }
+            ns.push(stmt);
         }
         return CFG { 
             nodes: std::mem::take(&mut self.nodes),
