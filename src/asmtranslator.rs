@@ -46,7 +46,7 @@ impl Translator {
             let Temp(i) = args[i] else { unreachable!() };
             asm.push(AA::Mov2(arg_reg[i as usize], Reg::ID(i)));
         }
-        asm.push(AA::B(*f));
+        asm.push(AA::BL(*f));
         return asm;
     }
     fn _move(&mut self, d: &Expr, s: &Expr) -> Vec<AA> {
@@ -126,8 +126,26 @@ impl Translator {
             ));
             update(asm.len() as u32, asm);
         });
-        case!({ // MOVN TEMP <== !CONST
+        case!({ // LOAD TEMP <== Neg
             if op != Operator::Neg { break };
+            let (_, temp, mut asm) = self.expression(e);
+            asm.push(AA::Neg(
+                Reg::ID(res),
+                Reg::ID(*temp)
+            ));
+            update(asm.len() as u32, asm);
+        });
+        case!({ // MOV TEMP <== ~CONST
+            if op != Operator::Not { break };
+            let Const(p) = e else { break };
+            asm.push(AA::Mvn2(
+                Reg::ID(res),
+                Reg::Const(p.bits())
+            ));
+            update(asm.len() as u32, asm);
+        });
+        case!({ // MOV TEMP <== ~EXPR
+            if op != Operator::Not { break };
             let (_, temp, mut asm) = self.expression(e);
             asm.push(AA::Mvn2(
                 Reg::ID(res),
@@ -173,14 +191,141 @@ impl Translator {
             }
             update(asm.len() as ID, asm);
         });
-        // TODO ADD SUB OR etc.
+        case!({ // LOAD TEMP <== Expr OP Expr
+            let (_, ltmp, lasm) = self.expression(l);
+            let (_, rtmp, rasm) = self.expression(r);
+            let mut asm = lasm.clone();
+            asm.extend(rasm.clone());
+            asm.extend(match op {
+                Operator::Add => vec![AA::Add2(
+                    Reg::ID(res),
+                    Reg::ID(*ltmp),
+                    Reg::ID(*rtemp),
+                )],
+                Operator::Sub => vec![AA::Sub2(
+                    Reg::ID(res),
+                    Reg::ID(*ltmp),
+                    Reg::ID(*rtemp),
+                )],
+                Operator::Mul => vec![AA::SMulL(
+                    Reg::ID(res),
+                    Reg::ID(*ltmp),
+                    Reg::ID(*rtemp),
+                )],
+                Operator::Div => vec![AA::SDiv(
+                    Reg::ID(res),
+                    Reg::ID(*ltmp),
+                    Reg::ID(*rtemp),
+                )],
+                Operator::And => vec![AA::And2(
+                    Reg::ID(res),
+                    Reg::ID(*ltmp),
+                    Reg::ID(*rtemp),
+                )],
+                Operator::Or => vec![AA::Or2(
+                    Reg::ID(res),
+                    Reg::ID(*ltmp),
+                    Reg::ID(*rtemp),
+                )],
+                Operator::Eq => vec![
+                    AA::CMP2(
+                        Reg::ID(*ltmp),
+                        Reg::ID(*rtemp),
+                    ),
+                    AA::CSET(
+                        Reg::ID(res),
+                        CC::EQ
+                    )
+                ],
+                Operator::Neq => vec![
+                    AA::CMP2(
+                        Reg::ID(*ltmp),
+                        Reg::ID(*rtemp),
+                    ),
+                    AA::CSET(
+                        Reg::ID(res),
+                        CC::NE
+                    )
+                ],
+                Operator::Leq => vec![
+                    AA::CMP2(
+                        Reg::ID(*ltmp),
+                        Reg::ID(*rtemp),
+                    ),
+                    AA::CSET(
+                        Reg::ID(res),
+                        CC::LE
+                    )
+                ],
+                Operator::Geq => vec![
+                    AA::CMP2(
+                        Reg::ID(*ltmp),
+                        Reg::ID(*rtemp),
+                    ),
+                    AA::CSET(
+                        Reg::ID(res),
+                        CC::GE
+                    )
+                ],
+                Operator::Lt => vec![
+                    AA::CMP2(
+                        Reg::ID(*ltmp),
+                        Reg::ID(*rtemp),
+                    ),
+                    AA::CSET(
+                        Reg::ID(res),
+                        CC::LT
+                    )
+                ],
+                Operator::Gt => vec![
+                    AA::CMP2(
+                        Reg::ID(*ltmp),
+                        Reg::ID(*rtemp),
+                    ),
+                    AA::CSET(
+                        Reg::ID(res),
+                        CC::GT
+                    )
+                ],
+            });
+            update(asm.len() as ID, asm);
+        });
         self.opt.insert(nid, (bc, res, basm));
         return self.opt.get(&nid).unwrap();
     }
     fn mem(&mut self, m: &Expr, nid: usize) -> &Info {
-        let idx = self.count;
-        self.expression(m);
-        return todo!();
+        match self.opt.get(&nid) {
+            None => (),
+            Some(s) => return s
+        }
+        let mut bc: u32 = u32::MAX;
+        let mut basm: Vec<AA> = Vec::new();
+        let update = |c: u32, asm: Vec<AA>| {
+            if c >= bc { return }
+            (bc, basm) = (c, asm);
+        };
+        let res = self.create_temp();
+        use Expr::*;
+        case!({ // LOAD TEMP <== Neg-Mul
+            let Const(p) = m else { break };
+            let asm = asm.clone();
+            asm.push(AA::LDR1(
+                Reg::ID(res),
+                Reg::Const(p.bits())
+            ));
+            update(asm.len() as u32, asm);
+        });
+        case!({ // LOAD TEMP <== Neg-Mul
+            let (_, temp, asm) = self.expression(m);
+            let asm = asm.clone();
+            asm.push(AA::LDR2(
+                Reg::ID(res),
+                Reg::ID(temp)
+            ));
+            update(asm.len() as u32, asm);
+        });
+        self.opt.insert(nid, (bc, res, basm));
+        return self.opt.get(&nid).unwrap();
     }
     fn address(&mut self, e: &Expr, nid: usize) -> &Info {
         let idx = self.count;

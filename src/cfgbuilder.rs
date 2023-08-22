@@ -1,5 +1,5 @@
 use std::collections::HashMap;
-use crate::ir::*;
+use crate::ir::{self, *};
 use crate::cfg::*;
 use crate::registry::Registry;
 pub struct Builder<'l> {
@@ -32,25 +32,23 @@ impl<'l> Builder<'l> {
                 Jump(l)              => self.jump(l),
                 CJump(_, l1, l2)     => self.cjump(l1, l2),
                 Label(l)             => self.label(l),
-                // Expr(e)              => self.expr(e),
                 Return(_)            => self.link = false,
-                _                    => self.link = true,
+                _                    =>	self.link = true,
             }
-            if let Label(_) = *stmt {} else { 
+            if !matches!(*stmt, Label(_) | Expr(_)) {
                 self.nodes[old].stmts.push(stmt);
+            } else if matches!(*stmt, Expr(_)) {
+                use ir::Expr::Call;
+                let Expr(e) = *stmt else { unreachable!() };
+                let Call(c, v) = *e else { unreachable!() };
+                let exp = Box::new(Call(self.get(c) as u32, v));
+                let nw 	= Box::new(Expr(exp));
+                self.nodes[old].stmts.push(nw);
             }
         }
         return CFG { 
             nodes: std::mem::take(&mut self.nodes),
             start: self.start.unwrap(),
-        }
-    }
-    fn expr(&mut self, e: Box<Expr>) {
-        match *e {
-            Expr::Call(l, v) => {
-                Box::new(Expr::Call())
-            },
-            _ => unreachable!()
         }
     }
     fn jump(&mut self, l: Label) {

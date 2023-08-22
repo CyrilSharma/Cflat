@@ -26,10 +26,10 @@ pub fn export(mut cfg: CFG, order: Vec<usize>) -> Vec<Box<Statement>> {
                 if n.t == pk {
                     use ir::Expr::UnOp;
                     use ir::Operator::Not;
-                    let e2 = Box::new(UnOp(Not, e));
-                    vec![Box::new(CJump(e2, nf, INVALID))]
+                    let ne = Box::new(UnOp(Not, e));
+                    vec![Box::new(CJump(ne, nf, INVALID))]
                 } else if n.f == pk {
-                    vec![Box::new(CJump(e, nt, INVALID))]
+                    vec![Box::new(CJump(e,  nt, INVALID))]
                 } else {
                     let i = n.f.unwrap() as u32;
                     let j = Box::new(Jump(i));

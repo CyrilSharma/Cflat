@@ -11,6 +11,8 @@ pub enum AA {
     Add2(Reg, Reg, Reg),
     Sub1(Reg, Reg, Const),
     Sub2(Reg, Reg, Reg),
+    Neg1(Reg, Const),           // Xd = -Xs
+    Neg2(Reg, Reg),             // Xd = -Xs
     SMAddL(Reg, Reg, Reg, Reg), // Xd = Xa + (Wn × Wm)
     SMNegL(Reg, Reg, Reg),      // Xd = - (Wn × Wm)
     SMSubL(Reg, Reg, Reg, Reg), // Xd = Xa − (Wn × Wm)
@@ -20,14 +22,15 @@ pub enum AA {
     And2(Reg, Reg, Reg),
     Or1(Reg, Reg, Const),
     Or2(Reg, Reg, Reg),
-    Mvn1(Reg, Const),
-    Mvn2(Reg, Reg),
+    Mvn1(Reg, Const),           // Xd = ~Xs
+    Mvn2(Reg, Reg),             // Xd = ~Xs
     B(Label),
-    BL(Label),
+    BL(Label),                  // R30 = SP
     CBZ(Label),
     CBNZ(Label),
     CMP1(Reg, Const),
     CMP2(Reg, Reg),
+    CSET(Reg, CC),
     LDR1(Reg, Reg, Const),
     LDR2(Reg, Reg),
     STR1(Reg, Reg, Const),
@@ -58,7 +61,7 @@ pub enum Reg {
     RZR,
     // Program Counter
     PC,
-    // Fake Registers
+    // Virtual Registers
     ID(u32)
 }
 
