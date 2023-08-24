@@ -8,7 +8,6 @@ pub fn build(r: &Registry, stmts: Vec<Box<Statement>>) -> CFG {
     let mut cur = nodes.len();
     while let Some(stmt) = iter.next() {
         use Statement::*;
-        dbg!(cur);
         match *stmt {
             Seq(_)               => unreachable!(),
             Jump(l)              => {
