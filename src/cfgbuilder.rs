@@ -8,15 +8,19 @@ pub fn build(r: &Registry, stmts: Vec<Box<Statement>>) -> CFG {
     let mut cur = nodes.len();
     while let Some(stmt) = iter.next() {
         use Statement::*;
+        dbg!(cur);
         match *stmt {
             Seq(_)               => unreachable!(),
             Jump(l)              => {
                 nodes[cur].stmts.push(stmt);
                 nodes[cur].t = Some(l as usize);
                 let Some(pk) = iter.peek() else { continue };
-                if matches!(**pk, Label(_)) { continue };
-                nodes.push(Node::new());
-                cur = nodes.len() - 1;
+                if let Label(l) = **pk {
+                    cur = l as usize;
+                } else {
+                    nodes.push(Node::new());
+                    cur = nodes.len() - 1;
+                }
             },
             CJump(_, l1, l2)     => {
                 nodes[cur].stmts.push(stmt);
@@ -26,19 +30,30 @@ pub fn build(r: &Registry, stmts: Vec<Box<Statement>>) -> CFG {
                 }
                 let Some(pk) = iter.peek() else { continue };
                 if let Label(l) = **pk { 
-                    nodes[cur].f = Some(l as usize);
+                    if l2 == INVALID {
+                        nodes[cur].f = Some(l as usize);
+                    }
+                    cur = l as usize;
                 } else {
-                    nodes[cur].f = Some(nodes.len());
+                    if l2 == INVALID {
+                        nodes[cur].f = Some(nodes.len());
+                    }
                     nodes.push(Node::new());
                     cur = nodes.len() - 1;
                 }
             },
-            Label(l)             => {
+            Label(l) => {
                 cur = l as usize;
                 nodes[cur].stmts.push(stmt);
-            }
+            },
+            Return(_) => nodes[cur].stmts.push(stmt),
             _                    =>	{
                 nodes[cur].stmts.push(stmt);
+                let Some(pk) = iter.peek() else { continue };
+                if let Label(l) = **pk { 
+                    nodes[cur].f = Some(l as usize);
+                    cur = l as usize;
+                }
             },
         }
     }
