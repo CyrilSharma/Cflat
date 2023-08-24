@@ -1,8 +1,8 @@
 float complexFunc1(float x) {
   if (x <= 0) {
-      return x;
+    return x;
   } else {
-      return complexFunc1(x - 1) + x;
+    return complexFunc1(x - 1) + x;
   }
 }
 
@@ -13,7 +13,6 @@ void complexFunc2(int n) {
     } else {
       i -= 2;
     }
-
     if (i == n / 2) {
         break;
     }
@@ -38,11 +37,11 @@ int fibonacci(int num) {
 }
 
 int main() {
-    int x = 5;
-    float result = complexFunc1(1.8);
-    for (int i = 0; i < x; i += 1) {
-      i -= 2;
-    }
-    complexFunc2(9);
-    return 0;
+  int x = 5;
+  float result = complexFunc1(1.8);
+  for (int i = 0; i < x; i += 1) {
+    i -= 2;
+  }
+  complexFunc2(9);
+  return 0;
 }

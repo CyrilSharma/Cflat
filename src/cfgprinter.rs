@@ -7,8 +7,17 @@ impl Printer {
     pub fn print(&mut self, cfg: &CFG) {
         println!("digraph CFG {{");
         println!(r#"  node [shape=box, fontname="Helvetica", fontsize=12]"#);
-        println!("{}", format!(r#"  node{} [label="Start"]"#, cfg.nodes.len()));
-        self.add_edge(cfg.nodes.len() as u32, cfg.start as u32);
+        for i in 0..cfg.starts.len() {
+            let idx = cfg.starts[i];
+            println!("{}", format!(
+                r#"  node{} [label="Start {}"]"#,
+                cfg.nodes.len() + i, idx as u32
+            ));
+            self.add_edge(
+                (cfg.nodes.len() + i) as u32, 
+                idx as u32
+            );
+        }
         for n in &cfg.nodes {
             self.node(n);
             self.count += 1;
@@ -47,8 +56,8 @@ impl Printer {
     fn cjump(&mut self, j: &Expr, t: Label, f: Label) -> String {
         return format!("CJump {} {} {}",
             self.expression(j),
-            format!("{:?}", t),
-            format!("{:?}", f),
+            format!("{}", t),
+            format!("{}", f),
         );
     }
     fn _return(&mut self, r: &Option<Box<Expr>>) -> String {

@@ -5,10 +5,8 @@ pub fn export(mut cfg: CFG, order: Vec<usize>) -> Vec<Box<Statement>> {
     let mut res = Vec::<Box<Statement>>::new();
     for ind in 0..order.len() {
         let idx = order[ind];
-        if ind == 0 { assert!(idx == cfg.start); }
         let n = &mut cfg.nodes[idx];
-        let mut cur = vec![Box::new(Statement::Label(idx as u32))];
-        cur.extend(std::mem::take(&mut n.stmts));
+        let mut cur = std::mem::take(&mut n.stmts);
         let last = cur.pop().unwrap();
         let peek = || { 
             match ind + 1 == order.len() {
@@ -43,7 +41,16 @@ pub fn export(mut cfg: CFG, order: Vec<usize>) -> Vec<Box<Statement>> {
                     true  => vec![],
                 }
             },
-            _ => vec![last]
+            _ => {
+                let pk = peek();
+                if n.f == pk || matches!(n.f, None) {
+                    vec![last]
+                } else {
+                    let nf = n.f.unwrap() as u32;
+                    let j = Box::new(Jump(nf));
+                    vec![last, j]
+                }
+            }
         });
         if cur.len() == 1 { continue; }
         res.extend(cur);

@@ -2,7 +2,7 @@
 use compiler::astanalyzer::Analyzer;
 use compiler::astparser::moduleParser;
 use compiler::astprinter;
-use compiler::cfgbuilder::Builder;
+use compiler::cfgbuilder::build;
 use compiler::cfgprinter;
 use compiler::cfgexporter::export;
 use compiler::irprinter;
@@ -36,13 +36,15 @@ fn visualize() {
         let lir = Reducer::new(&mut r).reduce(ir);
         irprinter::Printer::new().print(&lir);
 
-        let cfg = Builder::new(&mut r).build(lir);
+        let cfg = build(&mut r, lir);
         cfgprinter::Printer::new().print(&cfg);
 
-        let mut order: Vec<usize> = (0..cfg.nodes.len()).collect();
-        order.swap(0, cfg.start);
+        let order: Vec<usize> = (0..cfg.nodes.len()).collect();
         let fir = export(cfg, order);
         irprinter::Printer::new().print(&fir);
+
+        let cfg = build(&mut r, fir);
+        cfgprinter::Printer::new().print(&cfg);
 
         println!("\n\n\n\n\n");
         i += 1;

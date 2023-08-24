@@ -18,6 +18,7 @@ impl<'l> Translator<'l> {
         } 
     }
     pub fn translate(&mut self, m: &mut ast::Module) -> Vec::<Box<ir::Statement>> {
+        self.reg.nfuncs  = m.functions.len() as u32;
         self.reg.nlabels = m.functions.len() as u32; // function ids are their labels.
         let mut res = Vec::<Box<ir::Statement>>::new();
         for f in &m.functions {
