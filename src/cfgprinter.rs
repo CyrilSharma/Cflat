@@ -22,7 +22,7 @@ impl Printer {
             self.node(n);
             self.count += 1;
         }
-        println!("}}");
+        println!("}}\n");
     }
     fn node(&mut self, n: &Node) {
         let strs = n.stmts.iter()

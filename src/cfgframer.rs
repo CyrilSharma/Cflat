@@ -1,14 +1,12 @@
 use crate::ir::*;
 use crate::cfg::*;
 use crate::registry::Registry;
-use std::collections::HashMap;
 
 pub struct Framer<'l> {
     cfg:       &'l CFG,
-    frames:    Vec<HashMap<u32, usize>>,
+    frames:    Vec<usize>,
     addressed: Vec<bool>,
     visited:   Vec<bool>,
-    frame_idx: usize,
     inc:       usize, // End of current frame.
 }
 impl<'l> Framer<'l> {
@@ -17,23 +15,18 @@ impl<'l> Framer<'l> {
             cfg, r.nids as usize
         ).address(); // nvariables.
         let visited = vec![false; r.nlabels as usize]; // r.nblocks, actually
-        let frames = vec![
-            HashMap::<u32, usize>::new();
-            r.nfuncs as usize
-        ];
+        let frames = vec![usize::MAX; r.nids as usize];
         Framer {
             cfg,
             frames,
             addressed,
             visited,
-            frame_idx: 0,
             inc: 0
         }
     }
-    pub fn frame(&mut self) -> Vec<HashMap<u32, usize>>{
+    pub fn frame(&mut self) -> Vec<usize> {
         for ind in &self.cfg.starts {
             self.inc = 0;
-            self.frame_idx = *ind;
             self.frame_func(*ind);
         }
         return std::mem::take(&mut self.frames);
@@ -75,14 +68,11 @@ impl<'l> Framer<'l> {
         match e {
             Const(_) => (),
             Temp(i) => {
-                if self.frames[self.frame_idx].contains_key(&i) { return };
+                if self.frames[*i as usize] != usize::MAX { return };
                 if !self.addressed[*i as usize] { return }
-                println!("HEY");
-                self.frames[self.frame_idx].insert(*i, self.inc);
+                self.frames[*i as usize] = self.inc;
+                // All types are four bytes.
                 self.inc += 4;
-                // This only works because all supported types are four bytes
-                // A better language would have Temps store Types, which could
-                // have varying widths.
             },
             UnOp(_, e) => self.frame_expr(e),
             BinOp(l, _, r) => {

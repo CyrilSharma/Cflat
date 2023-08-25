@@ -1,5 +1,8 @@
+use core::fmt;
+use std::fmt::Display;
+
 pub type Label = u32;
-pub type Const = u32;
+pub type Const = usize;
 // Presume everything costs the same.
 
 #[derive(Clone)]
@@ -38,23 +41,24 @@ pub enum AA {
     Ret
 }
 
-#[derive(Clone)]
+#[derive(Copy, Clone)]
 pub enum Reg {
     // Args && Return Values
-    R0, R1, R2, R3, R4, R5, R6, R7,
+    // R0, R1, R2, R3, R4, R5, R6, R7,
     // Indirect Result
-    R8,
+    // R8,
     // Temporary
-    R9, R10, R11, R12, R13, R14, R15,
+    // R9, R10, R11, R12, R13, R14, R15,
     // ???
-    R18,
+    // R18,
     // Temporary (must be preserved)
-    R19, R20, R21, R22, R23, R24, R25,
-    R26, R27, R28,
+    // R19, R20, R21, R22, R23, R24, R25,
+    // R26, R27, R28,
     // Frame Pointer (must be preserved)
-    R29,
+    // R29,
     // Return Address
-    R30,
+    // R30,
+    R(u32),
     // Stack Pointer
     SP,
     // Zero
@@ -63,6 +67,18 @@ pub enum Reg {
     PC,
     // Virtual Registers
     ID(u32)
+}
+impl Display for Reg {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        use Reg::*;
+        match self {
+            R(i)  => write!(f, "R{}", i),
+            SP    => write!(f, "SP"),
+            RZR   => write!(f, "RZR"),
+            PC    => write!(f, "PC"),
+            ID(i) => write!(f, "ID({})", i),
+        }
+    }
 }
 
 #[derive(Clone)]
@@ -73,4 +89,17 @@ pub enum CC {
     LT,
     GT,
     LE
+}
+impl Display for CC {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        use CC::*;
+        match self {
+            EQ => write!(f, "EQ"),
+            NE => write!(f, "NE"),
+            GE => write!(f, "GE"),
+            LT => write!(f, "LT"),
+            GT => write!(f, "GT"),
+            LE => write!(f, "LE"),
+        }
+    }
 }

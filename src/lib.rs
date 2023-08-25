@@ -1,5 +1,6 @@
 pub mod asm;
-// pub mod asmtranslator;
+pub mod asmprinter;
+pub mod asmtranslator;
 pub mod ast;
 pub mod astanalyzer;
 pub mod astparser;

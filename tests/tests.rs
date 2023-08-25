@@ -1,4 +1,6 @@
 #[allow(unused_imports)]
+use compiler::asmtranslator;
+use compiler::asmprinter;
 use compiler::astanalyzer::Analyzer;
 use compiler::astparser::moduleParser;
 use compiler::astprinter;
@@ -7,7 +9,7 @@ use compiler::cfgframer::Framer;
 use compiler::cfgprinter;
 use compiler::cfgexporter::export;
 use compiler::irprinter;
-use compiler::irtranslator::Translator;
+use compiler::irtranslator;
 use compiler::irreducer::Reducer;
 use compiler::registry::Registry;
 
@@ -31,7 +33,7 @@ fn visualize() {
         Analyzer::new(&mut r).analyze(&mut ast);
         astprinter::Printer::new().print(&ast);
 
-        let ir  = Translator::new(&mut r).translate(&mut ast);
+        let ir  = irtranslator::Translator::new(&mut r).translate(&mut ast);
         irprinter::Printer::new().print(&ir);
 
         let lir = Reducer::new(&mut r).reduce(ir);
@@ -40,20 +42,22 @@ fn visualize() {
         let cfg = build(&mut r, lir);
         cfgprinter::Printer::new().print(&cfg);
 
+        println!("Frames - ");
         let frames = Framer::new(&mut r, &cfg).frame();
-        for i in 0..frames.len() {
-            println!("{} -", i);
-            for (key, value) in &frames[i] {
-                println!("  {}: {}", key, value);
-            }
+        for (id, loc) in frames.iter().enumerate() {
+            if *loc == usize::MAX { continue };
+            println!("  {id}: {loc}");
         }
+        println!("");
 
         let order: Vec<usize> = (0..cfg.nodes.len()).collect();
         let fir = export(cfg, order);
         //irprinter::Printer::new().print(&fir);
-
         //let cfg = build(&mut r, fir);
         //cfgprinter::Printer::new().print(&cfg);
+
+        let asm = asmtranslator::Translator::new(&r, frames).translate(fir);
+        asmprinter::Printer::new().print(&asm);
         println!("\n\n\n\n\n");
         i += 1;
     }

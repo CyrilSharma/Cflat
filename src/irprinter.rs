@@ -9,6 +9,7 @@ impl Printer {
                 self.statement(s)
             );
         }
+        println!("");
     }
     fn statement(&mut self, s: &Statement) -> String {
         use Statement::*;
