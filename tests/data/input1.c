@@ -1,5 +1,6 @@
 void updateValue(int* ptr, int newValue) {
   *ptr = newValue;
+  return;
 }
 
 int main() {

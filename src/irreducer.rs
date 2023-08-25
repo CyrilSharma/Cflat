@@ -91,9 +91,13 @@ impl<'l> Reducer<'l> {
         use Expr::*;
         match *e {
             Const(_) | Temp(_) => return (Vec::new(), e),
-            Mem(e1) | Address(e1) => {
+            Mem(e1) => {
                 let (v, e2) = self.expression(e1);
                 return (v, Box::new(Mem(e2)))
+            },
+            Address(e1) => {
+                let (v, e2) = self.expression(e1);
+                return (v, Box::new(Address(e2)))
             },
             UnOp(op, e) => return self.unary(op, e),
             BinOp(l, op, r) => return self.binary(l, op, r),

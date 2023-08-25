@@ -105,7 +105,7 @@ impl Printer {
         );
     }
     fn address(&mut self, e: &Expr) -> String {
-        return format!("&{}", self.expression(e));
+        return format!("Addr({})", self.expression(e));
     }
     fn add_edge(&mut self, i: u32, j: u32) {
         println!("    node{} -> node{};", i, j)

@@ -5,16 +5,17 @@ use std::collections::HashMap;
 
 pub struct Framer<'l> {
     cfg:       &'l CFG,
-    addressed: Vec<bool>,
     frames:    Vec<HashMap<u32, usize>>,
-    f:         usize, // Index of current frame.
+    addressed: Vec<bool>,
+    visited:   Vec<bool>,
     inc:       usize, // End of current frame.
 }
 impl<'l> Framer<'l> {
     pub fn new(r: &mut Registry, cfg: &'l CFG) -> Self {
         let addressed = Address::new(
-            cfg, r.nlabels as usize
-        ).address();
+            cfg, r.nids as usize
+        ).address(); // nvariables.
+        let visited = vec![false; r.nlabels as usize]; // r.nblocks, actually
         let frames = vec![
             HashMap::<u32, usize>::new();
             r.nfuncs as usize
@@ -23,22 +24,32 @@ impl<'l> Framer<'l> {
             cfg,
             frames,
             addressed,
-            f: 0,
+            visited,
             inc: 0
         }
     }
-    pub fn frame(&mut self, r: &mut Registry) -> Vec<HashMap<u32, usize>>{
+    pub fn frame(&mut self) -> Vec<HashMap<u32, usize>>{
         for ind in &self.cfg.starts {
             self.inc = 0;
-            self.f = *ind as usize;
-            self.frame_func(&self.cfg.nodes[*ind]);
+            self.frame_func(*ind);
         }
         return std::mem::take(&mut self.frames);
     }
-    fn frame_func(&mut self, n: &Node) {
-        for stmt in &n.stmts { self.frame_stmt(&stmt);             }
-        if let Some(l) = n.t { self.frame_func(&self.cfg.nodes[l]) }
-        if let Some(r) = n.t { self.frame_func(&self.cfg.nodes[r]) }
+    fn frame_func(&mut self, i: usize) {
+        if self.visited[i] { return }
+        self.visited[i] = true;
+        let n = &self.cfg.nodes[i];
+        for stmt in &n.stmts {
+            self.frame_stmt(&stmt);
+        }
+        let old = self.inc;
+        if let Some(l) = n.t {
+            self.frame_func(l)
+        }
+        self.inc = old;
+        if let Some(r) = n.t {
+            self.frame_func(r)
+        }
     }
     fn frame_stmt(&mut self, s: &Statement) {
         use Statement::*;
@@ -61,11 +72,13 @@ impl<'l> Framer<'l> {
         match e {
             Const(_) => (),
             Temp(i) => {
+                if self.frames[self.f].contains_key(&i) { return };
                 if !self.addressed[*i as usize] { return }
                 self.frames[self.f].insert(*i, self.inc);
-                // All types are four bytes
-                // A better language would have Temps also store Types.
                 self.inc += 4;
+                // This only works because all supported types are four bytes
+                // A better language would have Temps store Types, which could
+                // have varying widths.
             },
             UnOp(_, e) => self.frame_expr(e),
             BinOp(l, _, r) => {
