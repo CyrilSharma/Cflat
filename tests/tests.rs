@@ -3,6 +3,7 @@ use compiler::astanalyzer::Analyzer;
 use compiler::astparser::moduleParser;
 use compiler::astprinter;
 use compiler::cfgbuilder::build;
+use compiler::cfgframer::Framer;
 use compiler::cfgprinter;
 use compiler::cfgexporter::export;
 use compiler::irprinter;
@@ -18,7 +19,6 @@ fn visualize() {
     let mut i = 0;
     let dir = "tests/data";
     while Path::new(&format!("{dir}/input{i}.c")).exists() {
-        if i > 1 { break };
         let filepath = &format!("{dir}/input{i}.c");
         let input = fs::read_to_string(filepath).expect("File not found!");
 
@@ -27,7 +27,7 @@ fn visualize() {
 
         let mut ast = moduleParser::new().parse(&input).expect("Parse Error!");
         astprinter::Printer::new().print(&ast);
-        
+
         Analyzer::new(&mut r).analyze(&mut ast);
         astprinter::Printer::new().print(&ast);
 
@@ -40,13 +40,20 @@ fn visualize() {
         let cfg = build(&mut r, lir);
         cfgprinter::Printer::new().print(&cfg);
 
+        let frames = Framer::new(&mut r, &cfg).frame();
+        for i in 0..frames.len() {
+            println!("{} -", i);
+            for (key, value) in &frames[i] {
+                println!("  {}: {}", key, value);
+            }
+        }
+
         let order: Vec<usize> = (0..cfg.nodes.len()).collect();
         let fir = export(cfg, order);
-        irprinter::Printer::new().print(&fir);
+        //irprinter::Printer::new().print(&fir);
 
-        let cfg = build(&mut r, fir);
-        cfgprinter::Printer::new().print(&cfg);
-
+        //let cfg = build(&mut r, fir);
+        //cfgprinter::Printer::new().print(&cfg);
         println!("\n\n\n\n\n");
         i += 1;
     }

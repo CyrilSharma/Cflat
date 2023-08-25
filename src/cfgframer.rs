@@ -8,6 +8,7 @@ pub struct Framer<'l> {
     frames:    Vec<HashMap<u32, usize>>,
     addressed: Vec<bool>,
     visited:   Vec<bool>,
+    frame_idx: usize,
     inc:       usize, // End of current frame.
 }
 impl<'l> Framer<'l> {
@@ -25,12 +26,14 @@ impl<'l> Framer<'l> {
             frames,
             addressed,
             visited,
+            frame_idx: 0,
             inc: 0
         }
     }
     pub fn frame(&mut self) -> Vec<HashMap<u32, usize>>{
         for ind in &self.cfg.starts {
             self.inc = 0;
+            self.frame_idx = *ind;
             self.frame_func(*ind);
         }
         return std::mem::take(&mut self.frames);
@@ -72,9 +75,10 @@ impl<'l> Framer<'l> {
         match e {
             Const(_) => (),
             Temp(i) => {
-                if self.frames[self.f].contains_key(&i) { return };
+                if self.frames[self.frame_idx].contains_key(&i) { return };
                 if !self.addressed[*i as usize] { return }
-                self.frames[self.f].insert(*i, self.inc);
+                println!("HEY");
+                self.frames[self.frame_idx].insert(*i, self.inc);
                 self.inc += 4;
                 // This only works because all supported types are four bytes
                 // A better language would have Temps store Types, which could
