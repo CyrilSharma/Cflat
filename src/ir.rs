@@ -13,7 +13,7 @@ pub enum Expr {
 }
 impl Expr {
     pub fn addr(&self) -> usize {
-        unsafe { mem::transmute(&self) }
+        unsafe { mem::transmute(self) }
     }
 }
 
@@ -29,7 +29,7 @@ pub enum Statement {
 }
 impl Statement {
     pub fn addr(&self) -> usize {
-        unsafe { mem::transmute(&self) }
+        unsafe { mem::transmute(self) }
     }
 }
 

@@ -58,7 +58,7 @@ pub enum Reg {
     // R29,
     // Return Address
     // R30,
-    R(u32),
+    R(u8),
     // Stack Pointer
     SP,
     // Zero

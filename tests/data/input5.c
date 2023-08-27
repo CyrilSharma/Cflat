@@ -6,4 +6,5 @@ int main() {
   *z = 0;
   int *w = &x;
   *w = 3;
+  return 0;
 }

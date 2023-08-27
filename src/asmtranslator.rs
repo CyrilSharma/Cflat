@@ -17,7 +17,7 @@ struct Info {
 impl Info {
     pub fn new(reg: u32) -> Self {
         Info {
-            cost: 0,
+            cost: u32::MAX,
             temp: reg,
             asm:  Vec::new()
         }
@@ -90,7 +90,12 @@ impl Translator {
         use Expr::*;
         match (d, s) {
             (Temp(a), e)    => {
+                println!("LTemp: {a}");
+                if let Const(b) = e {
+                    println!("Rconst: {:?}", b);
+                }
                 let Info { cost: _, temp, mut asm } = self.expression(e);
+                //println!("asm.len = {}", asm.len());
                 asm.push(AA::Mov2(Reg::ID(*a), Reg::ID(temp)));
                 return asm;
             },
@@ -115,22 +120,35 @@ impl Translator {
     }
     fn expression(&mut self, e: &Expr) -> Info {
         let nid = e.addr();
+        println!("Before");
+        if let Const(b) = e {
+            println!("B - Rconst: {:?}", b);
+        }
+        println!("Addr: {nid}");
         match self.opt.get(&nid) {
             None => (),
             Some(s) => return s.clone()
         }
+        println!("After");
         use Expr::*;
-        match e {
-            UnOp(op, e)        => self.unary(*op, e, nid),
-            BinOp(l, op, r)    => self.binary(l, *op, r, nid),
-            Mem(m)             => self.mem(m, nid),
-            Address(e)         => self.address(e, nid),
-            Const(c)           => self._const(c.bits()),
+        let ans = match e {
+            UnOp(op, e)        => self.unary(*op, e,),
+            BinOp(l, op, r)    => self.binary(l, *op, r),
+            Mem(m)             => self.mem(m),
+            Address(e)         => self.address(e),
+            Const(c)           => {
+                println!("{:?}", c);
+                self._const(c)
+            }
             Temp(i)            => self._temp(*i),
             _ => unreachable!()
-        }
+        };
+        self.opt.insert(nid, ans.clone());
+        return ans;
     }
-    fn _const(&mut self, c: usize) -> Info {
+    fn _const(&mut self, p: &ir::Primitive) -> Info {
+        println!("p: {:?}", p);
+        let c = p.bits();
         let res = self.create_temp();
         let mut ans = Info::new(res);
         let asm = vec![AA::Mov1(Reg::ID(res), c)];
@@ -144,11 +162,7 @@ impl Translator {
         ans.update(asm.len() as u32, asm);
         return ans;
     }
-    fn unary(&mut self, op: Operator, e: &Expr, nid: usize) -> Info {
-        match self.opt.get(&nid) {
-            None => (),
-            Some(s) => return s.clone()
-        }
+    fn unary(&mut self, op: Operator, e: &Expr) -> Info {
         let res = self.create_temp();
         let mut ans = Info::new(res);
         use Expr::*;
@@ -195,14 +209,9 @@ impl Translator {
             ));
             ans.update(asm.len() as u32, asm);
         });
-        self.opt.insert(nid, ans.clone());
         return ans;
     }
-    fn binary(&mut self, l: &Expr, op: Operator, r: &Expr, nid: usize) -> Info {
-        match self.opt.get(&nid) {
-            None => (),
-            Some(s) => return s.clone()
-        }
+    fn binary(&mut self, l: &Expr, op: Operator, r: &Expr) -> Info {
         let res = self.create_temp();
         let mut ans = Info::new(res);
         use Expr::*;
@@ -328,14 +337,9 @@ impl Translator {
             });
             ans.update(asm.len() as ID, asm);
         });
-        self.opt.insert(nid, ans.clone());
         return ans;
     }
-    fn mem(&mut self, m: &Expr, nid: usize) -> Info {
-        match self.opt.get(&nid) {
-            None => (),
-            Some(s) => return s.clone()
-        }
+    fn mem(&mut self, m: &Expr) -> Info {
         let res = self.create_temp();
         let mut ans = Info::new(res);
         // use Expr::*;
@@ -356,14 +360,9 @@ impl Translator {
             ));
             ans.update(asm.len() as u32, asm);
         });
-        self.opt.insert(nid, ans.clone());
         return ans;
     }
-    fn address(&mut self, e: &Expr, nid: usize) -> Info {
-        match self.opt.get(&nid) {
-            None => (),
-            Some(s) => return s.clone()
-        }
+    fn address(&mut self, e: &Expr) -> Info {
         use Expr::*;
         let res = self.create_temp();
         let mut ans = Info::new(res);
@@ -378,7 +377,6 @@ impl Translator {
             Mem(e) => return self.expression(e),
             _ => unreachable!()
         }
-        self.opt.insert(nid, ans.clone());
         return ans;
     }
     fn create_temp(&mut self) -> ID {
