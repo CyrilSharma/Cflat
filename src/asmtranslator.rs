@@ -66,7 +66,8 @@ impl Translator {
         match r { 
             None => return vec![AA::Ret],
             Some(e) => {
-                let Info { mut asm, .. } = self.expression(e);
+                let Info { mut asm, temp, .. } = self.expression(e);
+                asm.push(AA::Mov2(Reg::R(0), Reg::ID(temp)));
                 asm.push(AA::Ret);
                 return asm;
             }
@@ -90,10 +91,6 @@ impl Translator {
         use Expr::*;
         match (d, s) {
             (Temp(a), e)    => {
-                println!("LTemp: {a}");
-                if let Const(b) = e {
-                    println!("Rconst: {:?}", b);
-                }
                 let Info { cost: _, temp, mut asm } = self.expression(e);
                 //println!("asm.len = {}", asm.len());
                 asm.push(AA::Mov2(Reg::ID(*a), Reg::ID(temp)));
@@ -120,26 +117,17 @@ impl Translator {
     }
     fn expression(&mut self, e: &Expr) -> Info {
         let nid = e.addr();
-        println!("Before");
-        if let Const(b) = e {
-            println!("B - Rconst: {:?}", b);
-        }
-        println!("Addr: {nid}");
         match self.opt.get(&nid) {
             None => (),
             Some(s) => return s.clone()
         }
-        println!("After");
         use Expr::*;
         let ans = match e {
             UnOp(op, e)        => self.unary(*op, e,),
             BinOp(l, op, r)    => self.binary(l, *op, r),
             Mem(m)             => self.mem(m),
             Address(e)         => self.address(e),
-            Const(c)           => {
-                println!("{:?}", c);
-                self._const(c)
-            }
+            Const(c)           => self._const(c),
             Temp(i)            => self._temp(*i),
             _ => unreachable!()
         };
@@ -147,7 +135,6 @@ impl Translator {
         return ans;
     }
     fn _const(&mut self, p: &ir::Primitive) -> Info {
-        println!("p: {:?}", p);
         let c = p.bits();
         let res = self.create_temp();
         let mut ans = Info::new(res);

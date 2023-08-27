@@ -8,6 +8,7 @@ void performMutations(int *x) {
 
   // Mutation 3: Subtract 3
   *x = *x - 3;
+  return;
 }
 
 int main() {

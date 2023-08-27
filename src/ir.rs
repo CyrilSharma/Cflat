@@ -41,10 +41,10 @@ pub enum Primitive {
 impl Primitive {
     pub fn bits(&self) -> usize {
         use Primitive::*;
-        return match self {
-            Int(i)   => unsafe { mem::transmute(i) },
-            Float(f) => unsafe { mem::transmute(f) },
-        }
+        return unsafe { match self {
+            Int(i)   => *i as usize,
+            Float(f) => mem::transmute::<f32, u32>(*f) as usize,
+        }}
     }
 }
 

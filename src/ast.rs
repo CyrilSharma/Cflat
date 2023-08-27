@@ -199,6 +199,14 @@ impl Kind {
             prim: Float,
         }
     }
+    pub fn size(&self) -> u8 {
+        if self.indir != 0 { return 8 }
+        match self.prim {
+            Void => unreachable!(),
+            Int   => 4,
+            Float => 4
+        }
+    }
 }
 impl fmt::Display for Kind {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
