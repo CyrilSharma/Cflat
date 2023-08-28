@@ -44,6 +44,7 @@ impl CFG {
                     } else {
                         nodes[b as usize].f = Some(nodes.len());
                     }
+                    nodes[b as usize].t = None;
                 },
                 CBZ(b) | CBNZ(b) => {
                     nodes[cur].t = Some(b as usize);
