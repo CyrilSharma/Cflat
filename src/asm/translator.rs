@@ -1,6 +1,6 @@
 use std::collections::BTreeMap;
-use crate::ir::{self, Statement, Expr, Operator};
-use crate::asm::{self, AA, Reg, CC};
+use crate::ir::ir::{self, Statement, Expr, Operator};
+use super::asm::{self, AA, Reg, CC};
 use crate::registry::Registry;
 
 type ID = u32;
@@ -166,7 +166,11 @@ impl Translator {
         let res = self.create_temp();
         let mut ans = Info::new(res);
         let r = if i == self.retid { Reg::R(0) } else { Reg::ID(i) };
-        let asm = vec![AA::Mov2(Reg::ID(res), r)];
+        let mut asm = vec![AA::Mov2(Reg::ID(res), r)];
+        // If the variable exists it must be stored on the stack.
+        /* if self.frames[i as usize] != usize::MAX {
+            asm.push(AA::STR1(r, Reg::SP, self.frames[i as usize]));
+        } */
         ans.update(asm.len() as u32, asm);
         return ans;
     }

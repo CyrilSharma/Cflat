@@ -1,4 +1,4 @@
-use crate::ir::Statement;
+use super::ir::Statement;
 
 // A node with this index will be treated specially.
 pub const INVALID: u32 = 1e9 as u32;

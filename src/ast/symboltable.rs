@@ -1,5 +1,5 @@
 use std::collections::HashMap;
-use crate::ast::*;
+use super::ast::*;
 pub trait Symbol {}
 #[derive(Debug)]
 pub struct VSymbol { 

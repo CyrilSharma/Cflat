@@ -2,7 +2,7 @@
 // https://www.lysator.liu.se/c/ANSI-C-grammar-y.html
 // https://github.com/ranveeraggarwal/simple-c-like-compiler/blob/master/parser/grammar
 use std::str::FromStr;
-use crate::ast::*;
+use super::ast::*;
 grammar;
 
 //--------MODULE------------

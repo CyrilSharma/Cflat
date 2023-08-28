@@ -1,6 +1,6 @@
-use crate::ast::*;
+use super::ast::*;
 use crate::registry::Registry;
-use crate::symboltable::{SymbolTable, VSymbol, FSymbol};
+use super::symboltable::{SymbolTable, VSymbol, FSymbol};
 pub struct Analyzer<'l> {
     fname: String,
     vsym: SymbolTable<VSymbol>,

@@ -1,6 +1,5 @@
-use crate::ast;
-use crate::ast::FunctionDeclaration;
-use crate::ir::{self, Operator};
+use crate::ast::ast::{self, FunctionDeclaration};
+use super::ir::{self, Operator};
 use crate::registry::Registry;
 
 pub struct Translator<'l> {

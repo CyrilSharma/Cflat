@@ -1,5 +1,5 @@
-use crate::ir::*;
-use crate::cfg::*;
+use super::ir::*;
+use super::cfg::*;
 use crate::registry::Registry;
 pub fn build(r: &Registry, stmts: Vec<Box<Statement>>) -> CFG {
     let mut nodes  = vec![Node::new(); r.nlabels as usize];

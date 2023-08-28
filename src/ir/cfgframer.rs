@@ -1,5 +1,5 @@
-use crate::ir::*;
-use crate::cfg::*;
+use super::ir::*;
+use super::cfg::*;
 use crate::registry::Registry;
 
 pub struct Framer<'l> {

@@ -1,4 +1,4 @@
-use crate::ir::*;
+use super::ir::*;
 pub struct Printer { tabs: usize }
 /* note that this only works for LIR CFG */
 impl Printer {

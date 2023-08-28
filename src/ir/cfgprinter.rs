@@ -1,5 +1,5 @@
-use crate::ir::*;
-use crate::cfg::*;
+use super::ir::*;
+use super::cfg::*;
 pub struct Printer { count: u32 }
 /* note that this only works for LIR CFG */
 impl Printer {

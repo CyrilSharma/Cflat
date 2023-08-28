@@ -1,4 +1,4 @@
-use crate::ast::*;
+use super::ast::*;
 pub struct Printer { count: u32 }
 impl Printer {
     pub fn new() -> Self { Self{count: 0} }

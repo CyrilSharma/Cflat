@@ -1,5 +1,5 @@
-use crate::ir::{self, *};
-use crate::cfg::CFG;
+use super::ir::{self, *};
+use super::cfg::CFG;
 const INVALID: u32 = 1e9 as u32;
 pub fn export(mut cfg: CFG, order: Vec<usize>) -> Vec<Box<Statement>> {
     let mut res = Vec::<Box<Statement>>::new();

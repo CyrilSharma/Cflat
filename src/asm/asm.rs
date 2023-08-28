@@ -5,7 +5,7 @@ pub type Label = u32;
 pub type Const = usize;
 // Presume everything costs the same.
 
-#[derive(Clone)]
+#[derive(Copy, Clone)]
 pub enum AA {
     Label(Label),
     Mov1(Reg, Const),
@@ -81,7 +81,7 @@ impl Display for Reg {
     }
 }
 
-#[derive(Clone)]
+#[derive(Copy, Clone)]
 pub enum CC {
     EQ,
     NE,

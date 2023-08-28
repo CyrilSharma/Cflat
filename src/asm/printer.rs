@@ -1,4 +1,4 @@
-use crate::asm::*;
+use super::asm::*;
 pub struct Printer;
 impl Printer {
     pub fn new() -> Self { Self {} }

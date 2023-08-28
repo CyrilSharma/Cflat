@@ -1,4 +1,4 @@
-use crate::ir::*;
+use super::ir::*;
 use crate::registry::Registry;
 pub struct Reducer<'l> {
     reg: &'l mut Registry
