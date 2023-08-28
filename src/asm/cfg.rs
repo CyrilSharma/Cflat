@@ -1,6 +1,6 @@
 use super::asm::*;
 use crate::registry::Registry;
-use std::mem::{self, MaybeUninit};
+use std::mem::MaybeUninit;
 
 #[derive(Clone)]
 pub struct Node {
@@ -14,8 +14,11 @@ pub struct CFG {
     pub start:  usize
 }
 
+
 impl CFG {
+    #[allow(invalid_value)]
     pub fn build(r: &Registry, stmts: Vec<AA>) -> CFG {
+        // Alternative is Option<AA>, but it's only optional at build time...
         let mut nodes: Vec<Node> = unsafe {
             vec![
                 MaybeUninit::uninit().assume_init();
