@@ -30,7 +30,10 @@ impl<'l> Translator<'l> {
         return res;
     }
     fn function_declaration(&mut self, f: &FunctionDeclaration) -> Option<Box<ir::Statement>> {
-        let mut ret = vec![Box::new(ir::Statement::Label(f.id))];
+        let ids: Vec<ir::ID> = f.params.iter().map(|p| p.id).collect();
+        let mut ret = vec![Box::new(
+            ir::Statement::Function(f.id, ids)
+        )];
         match self.statement(&f.stmt) {
             None => return None,
             Some(s) => ret.push(s)

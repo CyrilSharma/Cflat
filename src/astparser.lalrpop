@@ -33,7 +33,8 @@ parameter: Parameter = {
     <k: type_specifier> <i: identifier> => {
         Parameter {
             kind: k,
-            name: i
+            name: i,
+            id:   0
         }
     }
 };

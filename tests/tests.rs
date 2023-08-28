@@ -39,9 +39,9 @@ fn visualize() {
         ir2:    false,
         ir2cfg: false,
         ir3:    false,
-        ir3cfg: true,
+        ir3cfg: false,
         frames: false,
-        asm1:   false,
+        asm1:   true,
     };
     while Path::new(&format!("{dir}/input{i}.c")).exists() {
         let filepath = &format!("{dir}/input{i}.c");

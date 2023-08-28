@@ -38,8 +38,8 @@ impl<'l> Analyzer<'l> {
     }
     fn function_declaration(&mut self, f: &mut FunctionDeclaration) {
         self.vsym.scope_in();
-        for p in &f.params {
-            self.vsym.insert(&p.name, p.kind);
+        for p in &mut f.params {
+            p.id = self.vsym.insert(&p.name, p.kind);
         }
         self.fname = f.name.clone();
         self.statement(&mut f.stmt);

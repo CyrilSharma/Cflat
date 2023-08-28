@@ -1,5 +1,5 @@
 // auto-generated: "lalrpop 0.20.0"
-// sha3: feb4448105c4a0aefee6384e51d1fb5a901354ca90acf4bb6c8246a791b952b1
+// sha3: e55d03e94ef699ad46cd41e74961a1bf296fd41e2cb456c5907c52ec433b61b3
 use std::str::FromStr;
 use crate::ast::*;
 #[allow(unused_extern_crates)]
@@ -4568,7 +4568,8 @@ fn __action4<
     {
         Parameter {
             kind: k,
-            name: i
+            name: i,
+            id:   0
         }
     }
 }

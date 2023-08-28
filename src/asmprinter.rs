@@ -10,7 +10,7 @@ impl Printer {
     fn instruction(&mut self, ins: &AA) {
         use AA::*;
         match ins {
-            Label(l)           => println!("{}: ", l),
+            Label(l)           => println!("l{}: ", l),
             Mov1(d, s)         => println!("mov {}, {}", d, s),
             Mov2(d, s)         => println!("mov {}, {}", d, s),
             Add1(d, l, r)      => println!("add {}, {}, {}", d, l, r),
@@ -30,10 +30,10 @@ impl Printer {
             Or2(d, l, r)       => println!("or {}, {}, {}", d, l, r),
             Mvn1(d, s)         => println!("mvn {}, {}", d, s),
             Mvn2(d, s)         => println!("mvn {}, {}", d, s),
-            B(l)               => println!("b {}", l),
-            BL(l)              => println!("bl {}", l),
-            CBZ(l)             => println!("cbz {}", l),
-            CBNZ(l)            => println!("cbnz {}", l),
+            B(l)               => println!("b l{}", l),
+            BL(l)              => println!("bl l{}", l),
+            CBZ(l)             => println!("cbz l{}", l),
+            CBNZ(l)            => println!("cbnz l{}", l),
             CMP1(d, s)         => println!("cmp {}, {}", d, s),
             CMP2(d, s)         => println!("cmp {}, {}", d, s),
             CSET(d, s)         => println!("cset {}, {}", d, s),

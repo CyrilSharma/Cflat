@@ -1,9 +1,10 @@
 use std::mem;
+pub type ID = u32;
 pub type Label = u32;
 #[derive(Clone)]
 pub enum Expr {
     Const(Primitive),
-    Temp(u32), /* ID */
+    Temp(ID),
     UnOp(Operator, Box<Expr>),
     BinOp(Box<Expr>, Operator, Box<Expr>),
     Mem(Box<Expr>),
@@ -25,6 +26,7 @@ pub enum Statement {
     Jump(Label),
     CJump(Box<Expr>, Label, Label),
     Label(Label),
+    Function(Label, Vec<ID>),
     Return(Option<Box<Expr>>)
 }
 impl Statement {

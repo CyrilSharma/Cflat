@@ -41,7 +41,7 @@ pub fn build(r: &Registry, stmts: Vec<Box<Statement>>) -> CFG {
                     cur = nodes.len() - 1;
                 }
             },
-            Label(l) => {
+            Label(l) | Function(l, _) => {
                 cur = l as usize;
                 nodes[cur].stmts.push(stmt);
             },

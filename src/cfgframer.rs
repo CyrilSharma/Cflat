@@ -59,6 +59,11 @@ impl<'l> Framer<'l> {
                 self.frame_expr(e);
             },
             CJump(e, _, _) => self.frame_expr(e),
+            Function(_, v) => {
+                for i in v { 
+                    self.frame_temp(*i as usize)
+                }
+            },
             Jump(_) | Label(_) => (),
             Seq(_) => unreachable!()
         }
@@ -67,13 +72,7 @@ impl<'l> Framer<'l> {
         use Expr::*;
         match e {
             Const(_) => (),
-            Temp(i) => {
-                if self.frames[*i as usize] != usize::MAX { return };
-                if !self.addressed[*i as usize] { return }
-                self.frames[*i as usize] = self.inc;
-                // All types are four bytes.
-                self.inc += 4;
-            },
+            Temp(i) => self.frame_temp(*i as usize),
             UnOp(_, e) => self.frame_expr(e),
             BinOp(l, _, r) => {
                 self.frame_expr(l);
@@ -86,6 +85,13 @@ impl<'l> Framer<'l> {
             Address(e) => self.frame_expr(e),
             ESeq(_, _) => unreachable!()
         }
+    }
+    fn frame_temp(&mut self, i: usize) {
+        if self.frames[i as usize] != usize::MAX { return };
+        if !self.addressed[i as usize] { return }
+        self.frames[i as usize] = self.inc;
+        // All types are four bytes.
+        self.inc += 4;
     }
 }
 
@@ -123,7 +129,7 @@ impl<'l> Address<'l> {
                 self.address_expr(e);
             },
             CJump(e, _, _) => self.address_expr(e),
-            Jump(_) | Label(_) => (),
+            Jump(_) | Label(_) | Function(_, _) => (),
             Seq(_) => unreachable!()
         }
     }

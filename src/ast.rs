@@ -19,6 +19,7 @@ pub struct FunctionDeclaration {
 pub struct Parameter {
     pub kind: Kind,
     pub name: String,
+    pub id:   u32
 }
 
 //--------Statements------------

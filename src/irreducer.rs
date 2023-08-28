@@ -22,7 +22,7 @@ impl<'l> Reducer<'l> {
                 s1.push(Box::new(CJump(e1, t, f)));
                 return s1;
             },
-            Jump(_) | Label(_) => return vec![s],
+            Jump(_) | Label(_) | Function(_, _)=> return vec![s],
             Return(r)  => match r {
                 None => return vec![Box::new(Return(None))],
                 Some(e) => {

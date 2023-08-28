@@ -32,7 +32,8 @@ impl Info {
 pub struct Translator { 
     opt:    BTreeMap<usize, Info>,
     frames: Vec<usize>,
-    count:  usize
+    count:  usize,
+    retid:  u32
 }
 
 impl Translator {
@@ -40,7 +41,8 @@ impl Translator {
         Self { 
             opt:    BTreeMap::new(),
             frames: flist,
-            count:  reg.nids as usize
+            count:  reg.nids as usize,
+            retid:  reg.ret
         }
     }
     pub fn translate(&mut self, stmts: Vec<Box<Statement>>) -> Vec<AA> {
@@ -57,10 +59,28 @@ impl Translator {
             Move(d, s)     => self._move(d, s),
             CJump(c, t, _) => self.cjump(c, *t),
             Return(r)      => self._return(r),
+            Function(f, v) => self.function(*f, v),
             Jump(j)        => vec![AA::B(*j)],
             Label(l)       => vec![AA::Label(*l)],
             _ => unreachable!()
         }
+    }
+    fn function(&mut self, f: u32, v: &Vec<u32>) -> Vec<AA> {
+        // Set up frame.
+        let mut asm = vec![
+            AA::Label(f),
+            // THIS IS WRONG (change usize -> isize )
+            AA::STR1(Reg::R(29), Reg::SP, /* - */16),
+            AA::Sub1(Reg::SP, Reg::SP, /* - */16)
+        ];
+        for (i, t) in v.iter().enumerate() {
+            if i >= 8 { panic!("Unimplemented!") }
+            asm.push(AA::Mov2(
+                Reg::ID(*t),
+                Reg::R(i as u8)
+            ));
+        }
+        return asm;
     }
     fn _return(&mut self, r: &Option<Box<Expr>>) -> Vec<AA> {
         match r { 
@@ -90,23 +110,23 @@ impl Translator {
     fn _move(&mut self, d: &Expr, s: &Expr) -> Vec<AA> {
         use Expr::*;
         match (d, s) {
-            (Temp(a), e)    => {
-                let Info { cost: _, temp, mut asm } = self.expression(e);
-                //println!("asm.len = {}", asm.len());
-                asm.push(AA::Mov2(Reg::ID(*a), Reg::ID(temp)));
-                return asm;
-            },
             (Mem(t), e)   => {
                 let Info { temp: mtemp, asm: masm, .. } = self.expression(t);
                 let Info { temp: etemp, asm: easm, .. } = self.expression(e);
                 let mut asm = masm;
                 asm.extend(easm);
-                asm.push(AA::Mov2(
+                asm.push(AA::STR2(
                     Reg::ID(mtemp),
                     Reg::ID(etemp)
                 ));
                 return asm;
-            }
+            },
+            (Temp(a), e)    => {
+                let Info { cost: _, temp, mut asm } = self.expression(e);
+                let r = if *a == self.retid { Reg::R(0) } else { Reg::ID(*a) };
+                asm.push(AA::Mov2(r, Reg::ID(temp)));
+                return asm;
+            },
             _ => unreachable!()
         }
     }
@@ -145,7 +165,8 @@ impl Translator {
     fn _temp(&mut self, i: u32) -> Info {
         let res = self.create_temp();
         let mut ans = Info::new(res);
-        let asm = vec![AA::Mov2(Reg::ID(res), Reg::ID(i))];
+        let r = if i == self.retid { Reg::R(0) } else { Reg::ID(i) };
+        let asm = vec![AA::Mov2(Reg::ID(res), r)];
         ans.update(asm.len() as u32, asm);
         return ans;
     }
