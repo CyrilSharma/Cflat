@@ -166,7 +166,7 @@ impl Translator {
         let res = self.create_temp();
         let mut ans = Info::new(res);
         let r = if i == self.retid { Reg::R(0) } else { Reg::ID(i) };
-        let mut asm = vec![AA::Mov2(Reg::ID(res), r)];
+        let asm = vec![AA::Mov2(Reg::ID(res), r)];
         // If the variable exists it must be stored on the stack.
         /* if self.frames[i as usize] != usize::MAX {
             asm.push(AA::STR1(r, Reg::SP, self.frames[i as usize]));

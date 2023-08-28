@@ -40,6 +40,47 @@ pub enum AA {
     STR2(Reg, Reg),
     Ret
 }
+impl Display for AA {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        use AA::*;
+        let res = match self {
+            Label(l)           => format!("l{}: ", l),
+            Mov1(d, s)         => format!("mov {}, #{}", d, s),
+            Mov2(d, s)         => format!("mov {}, {}", d, s),
+            Add1(d, l, r)      => format!("add {}, {}, #{}", d, l, r),
+            Add2(d, l, r)      => format!("add {}, {}, {}", d, l, r),
+            Sub1(d, l, r)      => format!("sub {}, {}, #{}", d, l, r),
+            Sub2(d, l, r)      => format!("sub {}, {}, {}", d, l, r),
+            Neg1(d, s)         => format!("neg {}, #{}", d, s),
+            Neg2(d, s)         => format!("neg {}, {}", d, s),
+            SMAddL(d, l, m, r) => format!("smaddl {}, {}, {}, {}", d, l, m, r),
+            SMNegL(d, l, r)    => format!("smnegl {}, {}, {}", d, l, r),
+            SMSubL(d, l, m, r) => format!("smsubl {}, {}, {}, {}", d, l, m, r),
+            SMulL(d, l, r)     => format!("smull {}, {}, {}", d, l, r),
+            SDiv(d, l, r)      => format!("sdiv {}, {}, {}", d, l, r),
+            And1(d, l, r)      => format!("and {}, {}, #{}", d, l, r),
+            And2(d, l, r)      => format!("and {}, {}, {}", d, l, r),
+            Or1(d, l, r)       => format!("or {}, {}, #{}", d, l, r),
+            Or2(d, l, r)       => format!("or {}, {}, {}", d, l, r),
+            Mvn1(d, s)         => format!("mvn {}, #{}", d, s),
+            Mvn2(d, s)         => format!("mvn {}, {}", d, s),
+            B(l)               => format!("b l{}", l),
+            BL(l)              => format!("bl l{}", l),
+            CBZ(l)             => format!("cbz l{}", l),
+            CBNZ(l)            => format!("cbnz l{}", l),
+            CMP1(d, s)         => format!("cmp {}, #{}", d, s),
+            CMP2(d, s)         => format!("cmp {}, {}", d, s),
+            CSET(d, s)         => format!("cset {}, {}", d, s),
+            LDR1(d, l, r)      => format!("ldr {}, [{}, #{}]", d, l, r),
+            LDR2(d, s)         => format!("ldr {}, [{}]", d, s),
+            STR1(d, l, r)      => format!("str {}, [{}, #{}]", d, l, r),
+            STR2(d, s)         => format!("str {}, [{}]", d, s),
+            Ret                => format!("ret"),
+        };
+        write!(f, "{res}")
+    }
+}
+
 
 #[derive(Copy, Clone)]
 pub enum Reg {

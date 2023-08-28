@@ -1,72 +1,67 @@
 use super::asm::*;
 use crate::registry::Registry;
+use std::mem::{self, MaybeUninit};
 
 #[derive(Clone)]
 pub struct Node {
     // AA is so small it's cheaper to just copy it.
-    pub asm: Vec<AA>,
-    pub t: Option<usize>,
-    pub f: Option<usize>
-}
-impl Node {
-    pub fn new() -> Self {
-        Node { 
-            asm: Vec::new(), 
-            t: None, f: None
-        }
-    }
+    pub asm: AA,
+    pub t:   Option<usize>,
+    pub f:   Option<usize>
 }
 pub struct CFG { 
     pub nodes:  Vec<Node>,
-    pub starts: Vec<usize>
+    pub start:  usize
 }
 
-pub fn build(r: &Registry, stmts: Vec<AA>) -> CFG {
-    let mut nodes  = vec![Node::new(); r.nlabels as usize];
-    let starts = (0..(r.nfuncs as usize)).collect();
-    let mut iter = stmts.into_iter().peekable();
-    let mut cur = nodes.len();
-    while let Some(stmt) = iter.next() {
-        use AA::*;
-        match stmt {
-            Label(b) => {
-                cur = b as usize;
-                nodes[cur].stmts.push(stmt);
-            },
-            B(b) | BL(b) => {
-                nodes[cur].asm.push(stmt);
-                nodes[cur].t = Some(b as usize);
-                let Some(pk) = iter.peek() else { continue };
-                if let Label(l) = *pk {
-                    cur = l as usize;
-                } else {
-                    nodes.push(Node::new());
-                    cur = nodes.len() - 1;
+impl CFG {
+    pub fn build(r: &Registry, stmts: Vec<AA>) -> CFG {
+        let mut nodes: Vec<Node> = unsafe {
+            vec![
+                MaybeUninit::uninit().assume_init();
+                r.nlabels as usize
+            ]
+        };
+        let mut iter = stmts.into_iter().peekable();
+        let mut cur = nodes.len();
+        while let Some(stmt) = iter.next() {
+            use AA::*;
+            // If we're not at a Label, make a new node.
+            if !matches!(stmt, Label(_)) {
+                nodes.push(Node { asm: stmt, t: None, f: None });
+                cur = nodes.len() - 1;
+            }
+            match stmt {
+                B(b)     => nodes[cur].t = Some(b as usize),
+                Label(b) => {
+                    nodes[b as usize].asm = stmt;
+                    let Some(pk) = iter.peek() else { continue };
+                    if let Label(l) = *pk { 
+                        nodes[b as usize].f = Some(l as usize);
+                    } else {
+                        nodes[b as usize].f = Some(nodes.len());
+                    }
+                },
+                CBZ(b) | CBNZ(b) => {
+                    nodes[cur].t = Some(b as usize);
+                    let Some(pk) = iter.peek() else { continue };
+                    if let Label(l) = *pk { 
+                        nodes[cur].f = Some(l as usize);
+                    } else {
+                        nodes[cur].f = Some(nodes.len());
+                    }
+                },
+                Ret => (),
+                _ => {
+                    let Some(pk) = iter.peek() else { continue };
+                    if let Label(l) = *pk { 
+                        nodes[cur].f = Some(l as usize);
+                    } else {
+                        nodes[cur].f = Some(nodes.len());
+                    }
                 }
-            },
-            CBZ(b) | CBNZ(b) => {
-                nodes[cur].asm.push(stmt);
-                nodes[cur].t = Some(b as usize);
-                let Some(pk) = iter.peek() else { continue };
-                if let Label(l) = *pk { 
-                    nodes[cur].f = Some(l as usize);
-                    cur = l as usize;
-                } else {
-                    nodes[cur].f = Some(nodes.len());
-                    nodes.push(Node::new());
-                    cur = nodes.len() - 1;
-                }
-            },
-            Ret => nodes[cur].asm.push(stmt),
-            _ => {
-                nodes[cur].asm.push(stmt);
-                let Some(pk) = iter.peek() else { continue };
-                if let Label(l) = *pk { 
-                    nodes[cur].f = Some(l as usize);
-                    cur = l as usize;
-                }
-            },
+            }
         }
+        return CFG { nodes, start: 0 }
     }
-    return CFG { nodes, starts }
 }
