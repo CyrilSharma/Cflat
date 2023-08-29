@@ -23,14 +23,10 @@ impl Liveness {
             }
             let asm = cfg.asm[idx];
             let (d, u) = Self::statement(asm);
-            lin[idx].extend(u.clone());
-            has[idx] = HashSet::from_iter(
-                u.iter().cloned()
-            );
             defs[idx] = HashSet::from_iter(
                 d.iter().cloned()
             );
-            queue.push_back((idx, vec![]));
+            queue.push_back((idx, u));
         }
         while let Some((idx, delta)) = queue.pop_front() {
             let mut new_delta: Vec<Reg> = Vec::new();
