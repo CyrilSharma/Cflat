@@ -11,14 +11,31 @@ impl Printer {
             println!("{}", ins);
         }
     }
-    pub fn print_live(&mut self, ins: &[AA], live: &[Vec<Reg>]) {
-        for (idx, i) in ins.iter().enumerate() {
-            let rlist = live[idx].iter()
-                .map(|x| format!("{x}"))
-                .collect::<Vec<String>>()
-                .join(", ");
-            if matches!(i, AA::Label(_)) { println!() }
-            println!("{:<40} | {}", format!("{}", i), rlist);
+    pub fn print_live(&mut self, instructions: &[AA], live: &[Vec<Reg>]) {
+        for (ins_idx, ins) in instructions.iter().enumerate() {
+            let mut ind = 0;
+            let mut rlists: Vec<String> = Vec::new();
+            while ind < live[ins_idx].len() {
+                let mut s = String::new();
+                while ind < live[ins_idx].len() {
+                    let add = format!(
+                        "{:<8}",
+                        format!("{}", live[ins_idx][ind])
+                    );
+                    if s.len() + add.len() > 40 { break }
+                    s += &add;
+                    ind += 1;
+                }
+                rlists.push(s);
+                ind += 1;
+            }
+            if matches!(ins, AA::Label(_)) { println!() }
+            print!("{:<40}", format!("{}", ins));
+            if rlists.len() == 0 { println!() }
+            for (j, s) in rlists.iter().enumerate() {
+                if j == 0 { println!(" | {}", s); } 
+                else { println!("{:<40} * {}", "", s); }
+            }
         }
     }
 }

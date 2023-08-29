@@ -23,9 +23,7 @@ impl Liveness {
             }
             let asm = cfg.asm[idx];
             let (d, u) = Self::statement(asm);
-            defs[idx] = HashSet::from_iter(
-                d.iter().cloned()
-            );
+            defs[idx] = HashSet::from_iter(d.into_iter());
             queue.push_back((idx, u));
         }
         while let Some((idx, delta)) = queue.pop_front() {
