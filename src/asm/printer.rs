@@ -19,7 +19,7 @@ impl Printer {
                 let mut s = String::new();
                 while ind < live[ins_idx].len() {
                     let add = format!(
-                        "{:<8}",
+                        "{:<10}",
                         format!("{}", live[ins_idx][ind])
                     );
                     if s.len() + add.len() > 40 { break }

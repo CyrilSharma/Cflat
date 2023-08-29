@@ -11,25 +11,32 @@ impl Liveness {
         let mut defs: Vec<HashSet<Reg>> = vec![
             HashSet::new(); cfg.nodes.len()
         ];
+        let mut used: Vec<HashSet<Reg>> = vec![
+            HashSet::new(); cfg.nodes.len()
+        ];
         let mut queue: VecDeque<(usize, Vec<Reg>)> = VecDeque::new();
         for i in 0..cfg.nodes.len() {
             let node = &cfg.nodes[i];
             let idx = node.idx;
             if let Some(t) = node.t {
-                pred[t].push(idx);
+                let tidx = cfg.nodes[t].idx;
+                pred[tidx].push(idx);
             }
             if let Some(f) = node.f {
-                pred[f].push(idx);
+                let fidx = cfg.nodes[f].idx;
+                pred[fidx].push(idx);
             }
             let asm = cfg.asm[idx];
             let (d, u) = Self::statement(asm);
             defs[idx] = HashSet::from_iter(d.into_iter());
+            used[idx] = HashSet::from_iter(u.clone());
             queue.push_back((idx, u));
         }
         while let Some((idx, delta)) = queue.pop_front() {
             let mut new_delta: Vec<Reg> = Vec::new();
             for change in delta {
-                if defs[idx].contains(&change) {
+                if !used[idx].contains(&change) &&
+                    defs[idx].contains(&change) {
                     continue;
                 }
                 if has[idx].contains(&change) {
