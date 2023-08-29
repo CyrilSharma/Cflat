@@ -14,7 +14,6 @@ pub struct CFG<'l> {
 }
 
 impl<'l> CFG<'l> {
-    #[allow(invalid_value)]
     pub fn build(r: &Registry, stmts: &'l Vec<AA>) -> CFG<'l> {
         let mut nodes: Vec<Node> = vec![
             Node { idx: usize::MAX, t: None, f: None};
@@ -33,36 +32,21 @@ impl<'l> CFG<'l> {
                 cur = nodes.len() - 1;
             }
             match *stmt {
-                B(b)     => nodes[cur].t = Some(b as usize),
+                B(b)             => nodes[cur].t = Some(b as usize),
+                BL(b)            => nodes[cur].t = Some(b as usize),
+                CBZ(b) | CBNZ(b) => nodes[cur].t = Some(b as usize),
                 Label(b) => {
-                    nodes[b as usize].idx = idx - 1;
-                    marked[idx - 1] = true;
-                    let Some(pk) = iter.peek() else { continue };
-                    if let Label(l) = *pk { 
-                        nodes[b as usize].f = Some(*l as usize);
-                    } else {
-                        nodes[b as usize].f = Some(nodes.len());
-                    }
-                    nodes[b as usize].t = None;
+                    cur = b as usize;
+                    nodes[cur].idx = idx - 1;
                 },
-                CBZ(b) | CBNZ(b) => {
-                    nodes[cur].t = Some(b as usize);
-                    let Some(pk) = iter.peek() else { continue };
-                    if let Label(l) = *pk { 
-                        nodes[cur].f = Some(*l as usize);
-                    } else {
-                        nodes[cur].f = Some(nodes.len());
-                    }
-                },
-                Ret => (),
-                _ => {
-                    let Some(pk) = iter.peek() else { continue };
-                    if let Label(l) = *pk { 
-                        nodes[cur].f = Some(*l as usize);
-                    } else {
-                        nodes[cur].f = Some(nodes.len());
-                    }
-                }
+                _ => ()
+            }
+            if matches!(stmt, B(_) | Ret) { continue }
+            let Some(pk) = iter.peek() else { continue };
+            if let Label(l) = *pk { 
+                nodes[cur].f = Some(*l as usize);
+            } else {
+                nodes[cur].f = Some(nodes.len());
             }
         }
         return CFG { asm: stmts, nodes, start: 0 }

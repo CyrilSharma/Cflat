@@ -1,5 +1,5 @@
 use core::fmt;
-use std::fmt::Display;
+use std::{fmt::Display, ops::{Index, IndexMut}};
 
 pub type Label = u32;
 pub type Const = usize;
@@ -118,6 +118,34 @@ impl Display for Reg {
             RZR   => write!(f, "RZR"),
             PC    => write!(f, "PC"),
             ID(i) => write!(f, "ID({})", i),
+        }
+    }
+}
+impl<T> Index<Reg> for Vec<T> {
+    type Output = T;
+    fn index(&self, index: Reg) -> &Self::Output {
+        use Reg::*;
+        // Only 30 other registers.
+        let mx = 30 as usize;
+        match index {
+            R(i)  => &self[i as usize],
+            SP    => &self[mx + 1],
+            RZR   => &self[mx + 2],
+            PC    => &self[mx + 3],
+            ID(i) => &self[mx + 4 + i as usize]
+        }
+    }
+}
+impl<T> IndexMut<Reg> for Vec<T> {
+    fn index_mut(&mut self, index: Reg) -> &mut Self::Output {
+        use Reg::*;
+        let mx = 30 as usize;
+        match index {
+            R(i)  => &mut self[i as usize],
+            SP    => &mut self[mx + 1],
+            RZR   => &mut self[mx + 2],
+            PC    => &mut self[mx + 3],
+            ID(i) => &mut self[mx + 4 + i as usize]
         }
     }
 }
