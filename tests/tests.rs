@@ -6,6 +6,7 @@ use compiler::registry::Registry;
 use asm::translator::Translator as AsmTranslator;
 use asm::cfg::CFG               as AsmCfg;
 use asm::cfgprinter::Printer    as AsmCfgPrinter;
+use asm::liveness::Liveness     as AsmLiveness;
 use asm::printer::Printer       as AsmPrinter;
 use ast::analyzer::Analyzer     as AstAnalyzer;
 use ast::printer::Printer       as AstPrinter;
@@ -29,7 +30,8 @@ struct PrintConfig {
     ir3cfg:  bool,
     frames:  bool,
     asm1:    bool,
-    asm1cfg: bool
+    asm1cfg: bool,
+    live:    bool
 }
 
 #[test]
@@ -46,7 +48,8 @@ fn visualize() {
         ir3cfg:  false,
         frames:  false,
         asm1:    false,
-        asm1cfg: true
+        asm1cfg: false,
+        live:    true
     };
     while Path::new(&format!("{dir}/input{i}.c")).exists() {
         let filepath = &format!("{dir}/input{i}.c");
@@ -87,6 +90,7 @@ fn visualize() {
         let order: Vec<usize> = (0..cfg.nodes.len()).collect();
         let fir = IrCfgExport(cfg, order);
         if p.ir3 { IrPrinter::new().print(&fir); }
+
         if p.ir3cfg {
             let cfg = IrCfgBuild(&mut r, fir.clone());
             ir::cfgprinter::Printer::new().print(&cfg);
@@ -94,9 +98,15 @@ fn visualize() {
 
         let asm = AsmTranslator::new(&r, frames).translate(fir);
         if p.asm1 { AsmPrinter::new().print(&asm); }
+        
         let cfg = AsmCfg::build(&mut r, asm);
         if p.asm1cfg { AsmCfgPrinter::new().print(&cfg) }
+
+        let live = AsmLiveness::compute(&cfg);
+        let asm = cfg.export();
+        if p.live { AsmPrinter::new().print_live(&asm, &live); }
         println!("\n\n\n\n\n");
+
         i += 1;
     }
 }

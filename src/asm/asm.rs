@@ -82,7 +82,7 @@ impl Display for AA {
 }
 
 
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, PartialEq, Eq, Hash)]
 pub enum Reg {
     // Args && Return Values
     // R0, R1, R2, R3, R4, R5, R6, R7,

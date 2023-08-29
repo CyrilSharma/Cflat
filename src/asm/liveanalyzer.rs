@@ -1,4 +1,0 @@
-struct LiveAnalyzer {}
-impl LiveAnalyzer {
-    
-}

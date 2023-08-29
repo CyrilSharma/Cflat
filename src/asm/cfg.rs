@@ -10,10 +10,10 @@ pub struct Node {
     pub f:   Option<usize>
 }
 pub struct CFG { 
+    pub order:  Vec<usize>,
     pub nodes:  Vec<Node>,
     pub start:  usize
 }
-
 
 impl CFG {
     #[allow(invalid_value)]
@@ -25,6 +25,7 @@ impl CFG {
                 r.nlabels as usize
             ]
         };
+        let mut order: Vec<usize> = Vec::new();
         let mut iter = stmts.into_iter().peekable();
         let mut cur = nodes.len();
         while let Some(stmt) = iter.next() {
@@ -33,10 +34,12 @@ impl CFG {
             if !matches!(stmt, Label(_)) {
                 nodes.push(Node { asm: stmt, t: None, f: None });
                 cur = nodes.len() - 1;
+                order.push(cur);
             }
             match stmt {
                 B(b)     => nodes[cur].t = Some(b as usize),
                 Label(b) => {
+                    order.push(b as usize);
                     nodes[b as usize].asm = stmt;
                     let Some(pk) = iter.peek() else { continue };
                     if let Label(l) = *pk { 
@@ -66,6 +69,14 @@ impl CFG {
                 }
             }
         }
-        return CFG { nodes, start: 0 }
+        assert!(order.len() == nodes.len());
+        return CFG { order, nodes, start: 0 }
+    }
+    pub fn export(self) -> Vec<AA> {
+        let mut res: Vec<AA> = Vec::new();
+        for idx in self.order.clone() {
+            res.push(self.nodes[idx].asm);
+        }
+        return res;
     }
 }
