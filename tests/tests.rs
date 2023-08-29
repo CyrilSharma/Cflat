@@ -99,11 +99,10 @@ fn visualize() {
         let asm = AsmTranslator::new(&r, frames).translate(fir);
         if p.asm1 { AsmPrinter::new().print(&asm); }
         
-        let cfg = AsmCfg::build(&mut r, asm);
+        let cfg = AsmCfg::build(&mut r, &asm);
         if p.asm1cfg { AsmCfgPrinter::new().print(&cfg) }
 
         let live = AsmLiveness::compute(&cfg);
-        let asm = cfg.export();
         if p.live { AsmPrinter::new().print_live(&asm, &live); }
         println!("\n\n\n\n\n");
 

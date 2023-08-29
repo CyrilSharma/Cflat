@@ -5,20 +5,32 @@ use std::collections::{VecDeque, HashSet};
 pub struct Liveness;
 impl Liveness {
     pub fn compute(cfg: &CFG) -> Vec<Vec<Reg>> {
-        let mut lin = vec![Vec::new(); cfg.nodes.len()];
-        let mut has = vec![HashSet::new(); cfg.nodes.len()];
+        let mut pred = vec![Vec::new(); cfg.nodes.len()];
+        let mut lin  = vec![Vec::new(); cfg.nodes.len()];
+        let mut has  = vec![HashSet::new(); cfg.nodes.len()];
         let mut defs: Vec<HashSet<Reg>> = vec![
             HashSet::new(); cfg.nodes.len()
         ];
         let mut queue: VecDeque<(usize, Vec<Reg>)> = VecDeque::new();
         for i in 0..cfg.nodes.len() {
-            queue.push_back((i, vec![]));
             let node = &cfg.nodes[i];
-            let (d, u) = Self::statement(node.asm);
-            lin[i].extend(u);
-            defs[i] = HashSet::from_iter(
+            let idx = node.idx;
+            if let Some(t) = node.t {
+                pred[t].push(idx);
+            }
+            if let Some(f) = node.f {
+                pred[f].push(idx);
+            }
+            let asm = cfg.asm[idx];
+            let (d, u) = Self::statement(asm);
+            lin[idx].extend(u.clone());
+            has[idx] = HashSet::from_iter(
+                u.iter().cloned()
+            );
+            defs[idx] = HashSet::from_iter(
                 d.iter().cloned()
             );
+            queue.push_back((idx, vec![]));
         }
         while let Some((idx, delta)) = queue.pop_front() {
             let mut new_delta: Vec<Reg> = Vec::new();
@@ -32,10 +44,14 @@ impl Liveness {
                 has[idx].insert(change);
                 lin[idx].push(change);
                 new_delta.push(change);
-                println!("I HAPPENNED");
             }
             if new_delta.len() == 0 { continue }
-            queue.push_back((idx, new_delta));
+            for p in &pred[idx] {
+                queue.push_back((
+                    *p,
+                    new_delta.clone()
+                ));
+            }
         }
         return lin;
     }

@@ -16,19 +16,17 @@ impl Printer {
             idx as u32
         );
         for n in &cfg.nodes {
-            self.node(n);
+            let asm = cfg.asm[n.idx];
+            self.label(format!("{}", asm));
+            if let Some(e) = n.t { 
+                self.add_edge(self.count, e as u32) 
+            }
+            if let Some(e) = n.f { 
+                self.add_edge(self.count, e as u32) 
+            }
             self.count += 1;
         }
         println!("}}\n");
-    }
-    fn node(&mut self, n: &Node) {
-        self.label(format!("{}", n.asm));
-        if let Some(e) = n.t { 
-            self.add_edge(self.count, e as u32) 
-        }
-        if let Some(e) = n.f { 
-            self.add_edge(self.count, e as u32) 
-        }
     }
     fn add_edge(&mut self, i: u32, j: u32) {
         println!("    node{} -> node{};", i, j)
