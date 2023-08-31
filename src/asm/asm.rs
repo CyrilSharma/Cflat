@@ -1,5 +1,5 @@
 use core::fmt;
-use std::{fmt::Display, ops::{Index, IndexMut}};
+use std::{fmt::Display, ops::{Index, IndexMut}, cmp::Ordering};
 
 pub type Label = u32;
 pub type Const = usize;
@@ -109,6 +109,30 @@ pub enum Reg {
     // Virtual Registers
     ID(u32)
 }
+impl Reg {
+    pub fn index(&self) -> usize {
+        use Reg::*;
+        // Only 30 other registers.
+        let mx = 30 as usize;
+        match self {
+            R(i)  => *i as usize,
+            SP    => mx + 1,
+            RZR   => mx + 2,
+            PC    => mx + 3,
+            ID(i) => mx + 4 + *i as usize
+        }
+    }
+}
+impl Ord for Reg {
+    fn cmp(&self, other: &Self) -> Ordering {
+        self.index().cmp(&other.index())
+    }
+}
+impl PartialOrd for Reg {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(self.cmp(other))
+    }
+}
 impl Display for Reg {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         use Reg::*;
@@ -118,34 +142,6 @@ impl Display for Reg {
             RZR   => write!(f, "RZR"),
             PC    => write!(f, "PC"),
             ID(i) => write!(f, "ID({})", i),
-        }
-    }
-}
-impl<T> Index<Reg> for Vec<T> {
-    type Output = T;
-    fn index(&self, index: Reg) -> &Self::Output {
-        use Reg::*;
-        // Only 30 other registers.
-        let mx = 30 as usize;
-        match index {
-            R(i)  => &self[i as usize],
-            SP    => &self[mx + 1],
-            RZR   => &self[mx + 2],
-            PC    => &self[mx + 3],
-            ID(i) => &self[mx + 4 + i as usize]
-        }
-    }
-}
-impl<T> IndexMut<Reg> for Vec<T> {
-    fn index_mut(&mut self, index: Reg) -> &mut Self::Output {
-        use Reg::*;
-        let mx = 30 as usize;
-        match index {
-            R(i)  => &mut self[i as usize],
-            SP    => &mut self[mx + 1],
-            RZR   => &mut self[mx + 2],
-            PC    => &mut self[mx + 3],
-            ID(i) => &mut self[mx + 4 + i as usize]
         }
     }
 }

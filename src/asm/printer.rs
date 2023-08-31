@@ -1,8 +1,7 @@
 use super::asm::*;
 pub struct Printer;
 impl Printer {
-    pub fn new() -> Self { Self {} }
-    pub fn print(&mut self, instructions: &[AA]) {
+    pub fn print(instructions: &[AA]) {
         for ins in instructions {
             if matches!(ins, AA::Label(_)) {
                 println!("\n{}", ins);
@@ -11,7 +10,7 @@ impl Printer {
             println!("{}", ins);
         }
     }
-    pub fn print_live(&mut self, instructions: &[AA], live: &[Vec<Reg>]) {
+    pub fn print_live(instructions: &[AA], live: &[Vec<Reg>]) {
         for (ins_idx, ins) in instructions.iter().enumerate() {
             let mut ind = 0;
             let mut rlists: Vec<String> = Vec::new();

@@ -54,7 +54,6 @@ fn visualize() {
     while Path::new(&format!("{dir}/input{i}.c")).exists() {
         let filepath = &format!("{dir}/input{i}.c");
         let input = fs::read_to_string(filepath).expect("File not found!");
-
         println!("{}", &format!("FILE: {filepath}"));
         let mut r = Registry::new();
 
@@ -97,13 +96,18 @@ fn visualize() {
         }
 
         let asm = AsmTranslator::new(&r, frames).translate(fir);
-        if p.asm1 { AsmPrinter::new().print(&asm); }
+        if p.asm1 { AsmPrinter::print(&asm); }
         
         let cfg = AsmCfg::build(&mut r, &asm);
-        if p.asm1cfg { AsmCfgPrinter::new().print(&cfg) }
+        if p.asm1cfg { AsmCfgPrinter::print(&cfg); }
 
-        let live = AsmLiveness::compute(&cfg);
-        if p.live { AsmPrinter::new().print_live(&asm, &live); }
+        let live = AsmLiveness::new(&cfg);
+        if p.live {
+            AsmPrinter::print_live(
+                &asm, 
+                &live.lin
+            );
+        }
         println!("\n\n\n\n\n");
 
         i += 1;

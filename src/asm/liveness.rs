@@ -2,12 +2,19 @@
 use super::cfg::CFG;
 use super::asm::{AA, Reg};
 use std::collections::{VecDeque, HashSet};
-pub struct Liveness;
+pub struct Liveness {
+    pub lin:   Vec<Vec<Reg>>,
+    pred:      Vec<Vec<usize>>,
+    has:       Vec<HashSet<Reg>>,
+    defs:      Vec<HashSet<Reg>>,
+    used:      Vec<HashSet<Reg>>,
+    queue:     VecDeque<(usize, Vec<Reg>)>
+}
 impl Liveness {
-    pub fn compute(cfg: &CFG) -> Vec<Vec<Reg>> {
+    pub fn new(cfg: &CFG) -> Self {
         let mut pred = vec![Vec::new(); cfg.nodes.len()];
-        let mut lin  = vec![Vec::new(); cfg.nodes.len()];
-        let mut has  = vec![HashSet::new(); cfg.nodes.len()];
+        let lin = vec![Vec::new(); cfg.nodes.len()];
+        let has = vec![HashSet::new(); cfg.nodes.len()];
         let mut defs: Vec<HashSet<Reg>> = vec![
             HashSet::new(); cfg.nodes.len()
         ];
@@ -32,29 +39,44 @@ impl Liveness {
             used[idx] = HashSet::from_iter(u.clone());
             queue.push_back((idx, u));
         }
-        while let Some((idx, delta)) = queue.pop_front() {
+        let mut ans = Self {
+            lin,
+            pred,
+            has,
+            defs,
+            used,
+            queue
+        };
+        ans.solve();
+        return ans;
+    }
+
+    // When you understand what to update...
+    pub fn update(&mut self) {}
+
+    fn solve(&mut self) {
+        while let Some((idx, delta)) = self.queue.pop_front() {
             let mut new_delta: Vec<Reg> = Vec::new();
             for change in delta {
-                if !used[idx].contains(&change) &&
-                    defs[idx].contains(&change) {
+                if !self.used[idx].contains(&change) &&
+                    self.defs[idx].contains(&change) {
                     continue;
                 }
-                if has[idx].contains(&change) {
+                if self.has[idx].contains(&change) {
                     continue;
                 }
-                has[idx].insert(change);
-                lin[idx].push(change);
+                self.has[idx].insert(change);
+                self.lin[idx].push(change);
                 new_delta.push(change);
             }
             if new_delta.len() == 0 { continue }
-            for p in &pred[idx] {
-                queue.push_back((
+            for p in &self.pred[idx] {
+                self.queue.push_back((
                     *p,
                     new_delta.clone()
                 ));
             }
         }
-        return lin;
     }
     // Def, Use
     #[allow(unused_variables)]

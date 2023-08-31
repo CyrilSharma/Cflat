@@ -23,864 +23,698 @@ test visualize ... ok
 successes:
 
 ---- visualize stdout ----
+FILE: tests/data/input0.c
+
+l0:                                      | SP        
+str R29, [SP, #16]                       | SP        
+sub SP, SP, #16                          | SP        R29       
+mov ID(39), #5                           | SP        R29       
+mov ID(16), ID(39)                       | ID(39)    SP        R29       
+mov ID(40), #3                           | ID(16)    SP        R29       
+mov ID(17), ID(40)                       | ID(40)    ID(16)    SP        R29       
+mov ID(41), ID(16)                       | ID(16)    ID(17)    SP        R29       
+mov ID(30), ID(41)                       | ID(41)    ID(17)    SP        R29       
+mov ID(42), ID(17)                       | ID(17)    ID(30)    SP        R29       
+mov ID(31), ID(42)                       | ID(42)    ID(30)    SP        ID(17)    
+mov R0, ID(30)                           | ID(30)    ID(31)    SP        ID(17)    
+mov R1, ID(31)                           | ID(31)    R0        SP        ID(17)    
+bl l1                                    | R0        SP        R1        ID(17)    
+mov ID(43), R0                           | R0        SP        ID(17)    R29       
+mov ID(32), ID(43)                       | ID(43)    SP        ID(17)    R29       
+mov ID(44), ID(32)                       | ID(32)    SP        ID(17)    R29       
+mov ID(18), ID(44)                       | ID(44)    SP        ID(17)    R29       
+mov ID(45), #1075838976                  | SP        ID(17)    R29       
+mov ID(19), ID(45)                       | ID(45)    SP        ID(17)    R29       
+mov ID(46), #1067869798                  | ID(19)    SP        ID(17)    R29       
+mov ID(20), ID(46)                       | ID(46)    ID(19)    SP        ID(17)    
+mov ID(47), ID(19)                       | ID(19)    ID(20)    SP        ID(17)    
+mov ID(33), ID(47)                       | ID(47)    ID(20)    SP        ID(17)    
+mov ID(48), ID(20)                       | ID(20)    ID(33)    SP        ID(17)    
+mov ID(34), ID(48)                       | ID(48)    ID(33)    SP        ID(17)    
+mov R0, ID(33)                           | ID(33)    ID(34)    SP        ID(17)    
+mov R1, ID(34)                           | ID(34)    R0        SP        ID(17)    
+bl l7                                    | R0        SP        R1        ID(17)    
+mov ID(49), R0                           | R0        ID(17)    R29       
+mov ID(35), ID(49)                       | ID(49)    ID(17)    R29       
+mov ID(50), ID(35)                       | ID(35)    ID(17)    R29       
+mov ID(21), ID(50)                       | ID(50)    ID(17)    R29       
+mov ID(51), #0                           | ID(17)    R29       
+mov ID(16), ID(51)                       | ID(51)    ID(17)    R29       
+b l9                                     | ID(16)    ID(17)    R29       
+
+l1:                                      | SP        R0        R1        
+str R29, [SP, #16]                       | SP        R0        R1        
+sub SP, SP, #16                          | SP        R0        R1        R29       
+mov ID(0), R0                            | R0        R1        R29       
+mov ID(1), R1                            | R1        ID(0)     R29       
+mov ID(52), ID(0)                        | ID(0)     ID(1)     R29       
+mov R0, ID(52)                           | ID(52)    ID(1)     R29       
+mov ID(54), R0                           | R0        ID(1)     R29       
+mov ID(55), ID(1)                        | ID(1)     ID(54)    R29       
+add ID(53), ID(54), ID(55)               | ID(54)    ID(55)    R29       
+mov R0, ID(53)                           | ID(53)    R29       
+ret                                      | R29       
+
+l2:                                      | SP        R0        R1        
+str R29, [SP, #16]                       | SP        R0        R1        
+sub SP, SP, #16                          | SP        R0        R1        R29       
+mov ID(2), R0                            | R0        R1        R29       
+mov ID(3), R1                            | R1        ID(2)     R29       
+mov ID(56), ID(2)                        | ID(2)     ID(3)     R29       
+mov ID(23), ID(56)                       | ID(56)    ID(3)     R29       
+mov ID(58), ID(23)                       | ID(23)    ID(3)     R29       
+mov ID(59), ID(3)                        | ID(3)     ID(58)    R29       
+sub ID(57), ID(58), ID(59)               | ID(58)    ID(59)    R29       
+mov R0, ID(57)                           | ID(57)    R29       
+ret                                      | R29       
+
+l3:                                      | SP        R0        R1        
+str R29, [SP, #16]                       | SP        R0        R1        
+sub SP, SP, #16                          | SP        R0        R1        R29       
+mov ID(4), R0                            | R0        R1        R29       
+mov ID(5), R1                            | R1        ID(4)     R29       
+mov ID(60), ID(4)                        | ID(4)     ID(5)     R29       
+mov ID(24), ID(60)                       | ID(60)    ID(5)     R29       
+mov ID(62), ID(24)                       | ID(24)    ID(5)     R29       
+mov ID(63), ID(5)                        | ID(5)     ID(62)    R29       
+smull ID(61), ID(62), ID(63)             | ID(62)    ID(63)    R29       
+mov R0, ID(61)                           | ID(61)    R29       
+ret                                      | R29       
+
+l4:                                      | SP        R0        R1        
+str R29, [SP, #16]                       | SP        R0        R1        
+sub SP, SP, #16                          | SP        R0        R1        R29       
+mov ID(6), R0                            | R0        R1        R29       
+mov ID(7), R1                            | R1        ID(6)     R29       
+mov ID(64), ID(6)                        | ID(6)     ID(7)     R29       
+mov ID(25), ID(64)                       | ID(64)    ID(7)     R29       
+mov ID(66), ID(25)                       | ID(25)    ID(7)     R29       
+mov ID(67), ID(7)                        | ID(7)     ID(66)    R29       
+sdiv ID(65), ID(66), ID(67)              | ID(66)    ID(67)    R29       
+mov R0, ID(65)                           | ID(65)    R29       
+ret                                      | R29       
+
+l5:                                      | SP        R0        R1        
+str R29, [SP, #16]                       | SP        R0        R1        
+sub SP, SP, #16                          | SP        R0        R1        R29       
+mov ID(8), R0                            | R0        R1        R29       
+mov ID(9), R1                            | R1        ID(8)     R29       
+mov ID(68), ID(8)                        | ID(8)     ID(9)     R29       
+mov ID(26), ID(68)                       | ID(68)    ID(9)     R29       
+mov ID(70), ID(26)                       | ID(26)    ID(9)     R29       
+mov ID(71), ID(9)                        | ID(9)     ID(70)    R29       
+add ID(69), ID(70), ID(71)               | ID(70)    ID(71)    R29       
+mov R0, ID(69)                           | ID(69)    R29       
+ret                                      | R29       
+
+l6:                                      | SP        R0        R1        
+str R29, [SP, #16]                       | SP        R0        R1        
+sub SP, SP, #16                          | SP        R0        R1        R29       
+mov ID(10), R0                           | R0        R1        R29       
+mov ID(11), R1                           | R1        ID(10)    R29       
+mov ID(72), ID(10)                       | ID(10)    ID(11)    R29       
+mov ID(27), ID(72)                       | ID(72)    ID(11)    R29       
+mov ID(74), ID(27)                       | ID(27)    ID(11)    R29       
+mov ID(75), ID(11)                       | ID(11)    ID(74)    R29       
+sub ID(73), ID(74), ID(75)               | ID(74)    ID(75)    R29       
+mov R0, ID(73)                           | ID(73)    R29       
+ret                                      | R29       
+
+l7:                                      | SP        R0        R1        
+str R29, [SP, #16]                       | SP        R0        R1        
+sub SP, SP, #16                          | SP        R0        R1        R29       
+mov ID(12), R0                           | R0        R1        R29       
+mov ID(13), R1                           | R1        ID(12)    R29       
+mov ID(76), ID(12)                       | ID(12)    ID(13)    R29       
+mov ID(28), ID(76)                       | ID(76)    ID(13)    R29       
+mov ID(78), ID(28)                       | ID(28)    ID(13)    R29       
+mov ID(79), ID(13)                       | ID(13)    ID(78)    R29       
+smull ID(77), ID(78), ID(79)             | ID(78)    ID(79)    R29       
+mov R0, ID(77)                           | ID(77)    R29       
+ret                                      | R29       
+
+l8:                                      | SP        R0        R1        
+str R29, [SP, #16]                       | SP        R0        R1        
+sub SP, SP, #16                          | SP        R0        R1        R29       
+mov ID(14), R0                           | R0        R1        R29       
+mov ID(15), R1                           | R1        ID(14)    R29       
+mov ID(80), ID(14)                       | ID(14)    ID(15)    R29       
+mov ID(29), ID(80)                       | ID(80)    ID(15)    R29       
+mov ID(82), ID(29)                       | ID(29)    ID(15)    R29       
+mov ID(83), ID(15)                       | ID(15)    ID(82)    R29       
+sdiv ID(81), ID(82), ID(83)              | ID(82)    ID(83)    R29       
+mov R0, ID(81)                           | ID(81)    R29       
+ret                                      | R29       
+
+l9:                                      | ID(16)    ID(17)    R29       
+mov ID(84), ID(16)                       | ID(16)    ID(17)    R29       
+mov ID(36), ID(84)                       | ID(84)    ID(17)    R29       ID(16)    
+mov ID(87), ID(36)                       | ID(36)    ID(17)    R29       ID(16)    
+mov ID(88), #5                           | ID(17)    R29       ID(16)    
+cmp ID(87), ID(88)                       | ID(88)    ID(17)    R29       ID(16)    
+cset ID(86), LT                          | ID(17)    R29       ID(16)    
+mvn ID(85), ID(86)                       | ID(86)    ID(17)    R29       ID(16)    
+cbnz l11                                 | ID(17)    R29       ID(16)    
+
+l10:                                     | ID(17)    ID(16)    R29       
+mov ID(89), ID(17)                       | ID(17)    ID(16)    R29       
+mov ID(37), ID(89)                       | ID(89)    ID(16)    R29       
+mov ID(91), ID(37)                       | ID(37)    ID(16)    R29       
+mov ID(92), #1                           | ID(91)    ID(16)    R29       
+add ID(90), ID(91), ID(92)               | ID(91)    ID(92)    ID(16)    R29       
+mov ID(17), ID(90)                       | ID(90)    ID(16)    R29       
+mov ID(93), ID(16)                       | ID(16)    ID(17)    R29       
+mov ID(38), ID(93)                       | ID(93)    ID(17)    R29       
+mov ID(95), ID(38)                       | ID(38)    ID(17)    R29       
+mov ID(96), #1                           | ID(95)    ID(17)    R29       
+add ID(94), ID(95), ID(96)               | ID(95)    ID(96)    ID(17)    R29       
+mov ID(16), ID(94)                       | ID(94)    ID(17)    R29       
+b l9                                     | ID(16)    ID(17)    R29       
+
+l11:                                     | R29       
+mov ID(97), #0                           | R29       
+mov R0, ID(97)                           | ID(97)    R29       
+ret                                      | R29       
+
+
+
+
+
+
+FILE: tests/data/input1.c
+
+l0:                                      | SP        
+str R29, [SP, #16]                       | SP        
+sub SP, SP, #16                          | SP        R29       
+mov ID(8), #10                           | R29       SP        
+mov ID(2), ID(8)                         | ID(8)     R29       SP        
+ldr ID(9), [R29, #0]                     | R29       SP        
+mov ID(3), ID(9)                         | ID(9)     SP        R29       
+mov ID(10), ID(3)                        | ID(3)     SP        R29       
+mov ID(5), ID(10)                        | ID(10)    SP        R29       
+mov ID(11), #20                          | ID(5)     SP        R29       
+mov ID(6), ID(11)                        | ID(11)    ID(5)     SP        R29       
+mov R0, ID(5)                            | ID(5)     ID(6)     SP        R29       
+mov R1, ID(6)                            | ID(6)     R0        SP        R29       
+bl l1                                    | R0        SP        R29       R1        
+mov ID(12), R0                           | R0        R29       
+mov ID(7), ID(12)                        | ID(12)    R29       
+mov ID(13), #0                           | R29       
+mov R0, ID(13)                           | ID(13)    R29       
+ret                                      | R29       
+
+l1:                                      | SP        R0        R1        
+str R29, [SP, #16]                       | SP        R0        R1        
+sub SP, SP, #16                          | SP        R0        R1        R29       
+mov ID(0), R0                            | R0        R1        R29       
+mov ID(1), R1                            | R1        ID(0)     R29       
+mov ID(15), ID(0)                        | ID(0)     ID(1)     R29       
+ldr ID(14), [ID(15)]                     | ID(15)    ID(1)     R29       
+mov R0, ID(14)                           | ID(14)    ID(1)     R29       
+mov ID(16), ID(1)                        | ID(1)     R29       
+mov R0, ID(16)                           | ID(16)    R29       
+ret                                      | R29       
+
+
+
+
+
+
+FILE: tests/data/input2.c
+
+l0:                                      | SP        
+str R29, [SP, #16]                       | SP        
+sub SP, SP, #16                          | SP        R29       
+mov ID(14), #5                           | R29       SP        
+mov ID(1), ID(14)                        | ID(14)    R29       SP        
+ldr ID(15), [R29, #0]                    | R29       SP        ID(1)     
+mov ID(9), ID(15)                        | ID(15)    SP        ID(1)     R29       
+mov R0, ID(9)                            | ID(9)     SP        ID(1)     R29       
+bl l1                                    | R0        SP        ID(1)     R29       
+mov ID(16), R0                           | R0        ID(1)     R29       
+mov ID(10), ID(16)                       | ID(16)    ID(1)     R29       
+mov ID(17), ID(1)                        | ID(1)     R29       
+mov ID(11), ID(17)                       | ID(17)    R29       
+mov ID(19), ID(11)                       | ID(11)    R29       
+mov ID(20), #2                           | ID(19)    R29       
+add ID(18), ID(19), ID(20)               | ID(19)    ID(20)    R29       
+mov ID(1), ID(18)                        | ID(18)    R29       
+mov ID(21), ID(1)                        | ID(1)     R29       
+mov ID(2), ID(21)                        | ID(21)    ID(1)     R29       
+mov ID(22), ID(2)                        | ID(2)     ID(1)     R29       
+mov ID(12), ID(22)                       | ID(22)    ID(2)     ID(1)     R29       
+mov ID(24), ID(12)                       | ID(12)    ID(2)     ID(1)     R29       
+mov ID(25), ID(2)                        | ID(2)     ID(24)    ID(1)     R29       
+add ID(23), ID(24), ID(25)               | ID(24)    ID(25)    ID(1)     R29       
+mov ID(2), ID(23)                        | ID(23)    ID(1)     R29       
+mov ID(26), ID(1)                        | ID(1)     ID(2)     R29       
+mov ID(13), ID(26)                       | ID(26)    ID(2)     R29       
+mov ID(28), ID(13)                       | ID(13)    ID(2)     R29       
+mov ID(29), ID(2)                        | ID(2)     ID(28)    R29       
+sub ID(27), ID(28), ID(29)               | ID(28)    ID(29)    R29       
+mov ID(1), ID(27)                        | ID(27)    R29       
+mov ID(30), #0                           | R29       
+mov R0, ID(30)                           | ID(30)    R29       
+ret                                      | R29       
+
+l1:                                      | SP        R0        
+str R29, [SP, #16]                       | SP        R0        
+sub SP, SP, #16                          | SP        R0        R29       
+mov ID(0), R0                            | R0        R29       
+mov ID(32), ID(0)                        | ID(0)     R29       
+ldr ID(31), [ID(32)]                     | ID(32)    ID(0)     R29       
+mov R0, ID(31)                           | ID(31)    ID(0)     R29       
+mov ID(34), ID(0)                        | ID(0)     R29       
+ldr ID(33), [ID(34)]                     | ID(34)    ID(0)     R29       
+mov ID(4), ID(33)                        | ID(33)    ID(0)     R29       
+mov ID(36), ID(4)                        | ID(4)     ID(0)     R29       
+mov ID(37), #1                           | ID(36)    ID(0)     R29       
+add ID(35), ID(36), ID(37)               | ID(36)    ID(37)    ID(0)     R29       
+mov R0, ID(35)                           | ID(35)    ID(0)     R29       
+mov ID(39), ID(0)                        | ID(0)     R29       
+ldr ID(38), [ID(39)]                     | ID(39)    ID(0)     R29       
+mov ID(5), ID(38)                        | ID(38)    ID(0)     R29       
+mov ID(41), ID(0)                        | ID(0)     R29       
+ldr ID(40), [ID(41)]                     | ID(41)    ID(0)     R29       
+mov ID(6), ID(40)                        | ID(40)    ID(0)     R29       
+mov ID(43), ID(6)                        | ID(6)     ID(0)     R29       
+mov ID(44), #2                           | ID(43)    ID(0)     R29       
+smull ID(42), ID(43), ID(44)             | ID(43)    ID(44)    ID(0)     R29       
+mov ID(5), ID(42)                        | ID(42)    ID(0)     R29       
+mov ID(46), ID(0)                        | ID(0)     R29       
+ldr ID(45), [ID(46)]                     | ID(46)    ID(0)     R29       
+mov ID(7), ID(45)                        | ID(45)    ID(0)     R29       
+mov ID(48), ID(0)                        | ID(0)     R29       
+ldr ID(47), [ID(48)]                     | ID(48)    R29       
+mov ID(8), ID(47)                        | ID(47)    R29       
+mov ID(50), ID(8)                        | ID(8)     R29       
+mov ID(51), #3                           | ID(50)    R29       
+sub ID(49), ID(50), ID(51)               | ID(50)    ID(51)    R29       
+mov ID(7), ID(49)                        | ID(49)    R29       
+ret                                      | R29       
+
+
+
+
+
+
+FILE: tests/data/input3.c
+
+l0:                                      | SP        
+str R29, [SP, #16]                       | SP        
+sub SP, SP, #16                          | SP        R29       
+mov ID(21), #5                           | SP        R29       
+mov ID(4), ID(21)                        | ID(21)    SP        R29       
+mov ID(22), #3                           | ID(4)     SP        R29       
+mov ID(5), ID(22)                        | ID(22)    ID(4)     SP        R29       
+mov ID(23), ID(4)                        | ID(4)     ID(5)     SP        R29       
+mov ID(13), ID(23)                       | ID(23)    ID(5)     SP        R29       
+mov ID(24), ID(5)                        | ID(5)     ID(13)    SP        R29       
+mov ID(14), ID(24)                       | ID(24)    ID(13)    SP        R29       
+mov R0, ID(13)                           | ID(13)    ID(14)    SP        R29       
+mov R1, ID(14)                           | ID(14)    R0        SP        R29       
+bl l1                                    | R0        SP        R1        R29       
+mov ID(25), R0                           | R0        SP        R29       
+mov ID(15), ID(25)                       | ID(25)    SP        R29       
+mov ID(26), ID(15)                       | ID(15)    SP        R29       
+mov ID(6), ID(26)                        | ID(26)    SP        R29       
+mov ID(27), #1075838976                  | SP        R29       
+mov ID(7), ID(27)                        | ID(27)    SP        R29       
+mov ID(28), #0                           | ID(7)     SP        R29       
+mov ID(8), ID(28)                        | ID(28)    ID(7)     SP        R29       
+mov ID(29), ID(7)                        | ID(7)     ID(8)     SP        R29       
+mov ID(16), ID(29)                       | ID(29)    ID(8)     SP        R29       
+mov ID(30), ID(8)                        | ID(8)     ID(16)    SP        R29       
+mov ID(17), ID(30)                       | ID(30)    ID(16)    SP        ID(8)     
+mov R0, ID(16)                           | ID(16)    ID(17)    SP        ID(8)     
+mov R1, ID(17)                           | ID(17)    R0        SP        ID(8)     
+bl l2                                    | R0        SP        R1        ID(8)     
+mov ID(31), R0                           | R0        ID(8)     R29       
+mov ID(18), ID(31)                       | ID(31)    ID(8)     R29       
+mov ID(32), ID(18)                       | ID(18)    ID(8)     R29       
+mov ID(9), ID(32)                        | ID(32)    ID(8)     R29       
+mov ID(33), ID(9)                        | ID(9)     ID(8)     R29       
+mov ID(19), ID(33)                       | ID(33)    ID(8)     R29       
+mov ID(35), ID(19)                       | ID(19)    ID(8)     R29       
+mov ID(36), #0                           | ID(8)     R29       
+cmp ID(35), ID(36)                       | ID(36)    ID(8)     R29       
+cset ID(34), GE                          | ID(8)     R29       
+cbnz l5                                  | ID(8)     R29       
+b l6                                     | R29       
+
+l1:                                      | SP        R0        R1        
+str R29, [SP, #16]                       | SP        R0        R1        
+sub SP, SP, #16                          | SP        R0        R1        R29       
+mov ID(0), R0                            | R0        R1        R29       
+mov ID(1), R1                            | R1        ID(0)     R29       
+mov ID(37), ID(0)                        | ID(0)     ID(1)     R29       
+mov R0, ID(37)                           | ID(37)    ID(1)     R29       
+mov ID(39), R0                           | R0        ID(1)     R29       
+mov ID(40), ID(1)                        | ID(1)     ID(39)    R29       
+add ID(38), ID(39), ID(40)               | ID(39)    ID(40)    R29       
+mov R0, ID(38)                           | ID(38)    R29       
+ret                                      | R29       
+
+l2:                                      | SP        R0        R1        
+str R29, [SP, #16]                       | SP        R0        R1        
+sub SP, SP, #16                          | SP        R0        R1        R29       
+mov ID(2), R0                            | R0        R1        R29       
+mov ID(3), R1                            | R1        ID(2)     R29       
+mov ID(41), ID(3)                        | ID(3)     ID(2)     R29       
+mov ID(11), ID(41)                       | ID(41)    ID(2)     R29       ID(3)     
+mov ID(44), ID(11)                       | ID(11)    ID(2)     R29       ID(3)     
+mov ID(45), #0                           | ID(2)     R29       ID(3)     
+cmp ID(44), ID(45)                       | ID(45)    ID(2)     R29       ID(3)     
+cset ID(43), EQ                          | ID(2)     R29       ID(3)     
+mvn ID(42), ID(43)                       | ID(43)    ID(2)     R29       ID(3)     
+cbnz l4                                  | ID(2)     R29       ID(3)     
+
+l3:                                      | R29       
+mov ID(46), #3212836864                  | R29       
+mov R0, ID(46)                           | ID(46)    R29       
+ret                                      | R29       
+
+l4:                                      | ID(2)     ID(3)     R29       
+mov ID(47), ID(2)                        | ID(2)     ID(3)     R29       
+mov ID(12), ID(47)                       | ID(47)    ID(3)     R29       
+mov ID(49), ID(12)                       | ID(12)    ID(3)     R29       
+mov ID(50), ID(3)                        | ID(3)     ID(49)    R29       
+sdiv ID(48), ID(49), ID(50)              | ID(49)    ID(50)    R29       
+mov R0, ID(48)                           | ID(48)    R29       
+ret                                      | R29       
+
+l5:                                      | ID(8)     R29       
+mov ID(51), ID(8)                        | ID(8)     R29       
+mov ID(20), ID(51)                       | ID(51)    R29       
+mov ID(53), ID(20)                       | ID(20)    R29       
+mov ID(54), #1073741824                  | ID(53)    R29       
+add ID(52), ID(53), ID(54)               | ID(53)    ID(54)    R29       
+mov ID(8), ID(52)                        | ID(52)    R29       
+
+l6:                                      | R29       
+mov ID(55), #0                           | R29       
+mov R0, ID(55)                           | ID(55)    R29       
+ret                                      | R29       
+
+
+
+
+
+
 FILE: tests/data/input4.c
 
-l0:                                      | R0      ID(55)  
-str R29, [SP, #16]                       | SP      ID(67)  ID(77)  ID(78)  ID(1)   
-                                         * ID(64)  ID(13)  ID(81)  ID(2)   ID(18)  
-sub SP, SP, #16                          | SP      ID(50)  ID(46)  ID(0)   ID(59)  
-                                         * R0      ID(4)   ID(63)  ID(64)  ID(62)  
-                                         * ID(81)  ID(2)   ID(86)  ID(18)  ID(98)  
-                                         * ID(106) ID(107) ID(25)  ID(22)  ID(119) 
-                                         * ID(125) ID(126) ID(129) ID(130) ID(5)   
-                                         * ID(38)  ID(139) ID(39)  ID(143) ID(52)  
-                                         * ID(75)  ID(87)  ID(93)  ID(35)  ID(70)  
-                                         * ID(102) ID(26)  ID(112) 
-mov ID(42), #5                           | SP      ID(11)  
-mov ID(5), ID(42)                        | ID(42)  ID(61)  ID(76)  SP      ID(84)  
-                                         * ID(9)   ID(91)  ID(2)   ID(15)  ID(83)  
-                                         * ID(36)  ID(108) ID(51)  ID(3)   ID(27)  
-                                         * ID(59)  ID(65)  ID(122) R0      ID(33)  
-                                         * ID(63)  ID(64)  ID(62)  ID(37)  ID(13)  
-                                         * ID(86)  ID(136) ID(98)  ID(20)  ID(137) 
-                                         * ID(107) ID(141) ID(22)  ID(119) ID(120) 
-                                         * ID(126) ID(129) ID(130) ID(133) ID(38)  
-                                         * ID(39)  ID(143) ID(52)  ID(12)  ID(75)  
-                                         * ID(93)  ID(35)  ID(70)  ID(19)  ID(26)  
-mov ID(43), #1072064102                  | SP      ID(9)   ID(2)   ID(15)  ID(83)  
-                                         * ID(51)  ID(27)  
-mov ID(35), ID(43)                       | ID(43)  SP      ID(9)   ID(2)   ID(15)  
-                                         * ID(36)  ID(51)  ID(27)  
-mov R0, ID(35)                           | ID(35)  SP      ID(70)  ID(19)  ID(2)   
-                                         * ID(26)  ID(112) ID(52)  ID(12)  ID(75)  
-                                         * ID(93)  
-bl l1                                    | SP      R0      ID(63)  ID(64)  ID(13)  
-                                         * ID(2)   ID(18)  ID(98)  
-mov ID(44), R0                           | R0      ID(4)   ID(62)  ID(86)  ID(20)  
-                                         * ID(107) ID(25)  ID(22)  ID(119) ID(120) 
-                                         * ID(126) ID(129) ID(130) ID(7)   ID(5)   
-                                         * ID(38)  ID(139) ID(39)  ID(143) ID(52)  
-                                         * ID(75)  ID(2)   ID(87)  ID(93)  ID(35)  
-                                         * ID(70)  ID(19)  ID(102) ID(26)  ID(112) 
-mov ID(36), ID(44)                       | ID(44)  ID(56)  ID(10)  ID(74)  ID(17)  
-                                         * ID(97)  ID(3)   ID(105) ID(110) ID(111) 
-                                         * ID(117) ID(118) ID(121) ID(123) ID(124) 
-                                         * ID(128) ID(131) ID(135) ID(0)   ID(47)  
-                                         * ID(60)  ID(68)  ID(69)  ID(14)  ID(82)  
-                                         * ID(2)   ID(90)  ID(45)  ID(104) ID(35)  
-                                         * ID(72)  ID(70)  ID(100) ID(19)  ID(102) 
-                                         * ID(112) ID(52)  ID(34)  ID(12)  ID(75)  
-                                         * ID(93)  
-mov ID(45), ID(36)                       | ID(36)  ID(51)  ID(27)  
-mov ID(6), ID(45)                        | ID(45)  ID(35)  SP      ID(70)  ID(19)  
-                                         * ID(102) ID(26)  ID(112) ID(52)  ID(12)  
-                                         * ID(87)  ID(93)  
-mov ID(46), #0                           | R0      ID(72)  ID(95)  ID(100) ID(101) 
-                                         * ID(24)  ID(109) ID(115) ID(116) ID(28)  
-                                         * ID(30)  ID(31)  ID(32)  ID(34)  
-mov ID(7), ID(46)                        | ID(46)  SP      ID(59)  ID(65)  R0      
-                                         * ID(63)  ID(64)  ID(62)  ID(13)  ID(81)  
-                                         * ID(86)  ID(18)  ID(98)  ID(20)  ID(106) 
-                                         * ID(25)  ID(22)  ID(119) ID(120) ID(125) 
-                                         * ID(129) ID(130) ID(5)   ID(133) ID(38)  
-                                         * ID(39)  ID(143) ID(52)  ID(12)  ID(75)  
-                                         * ID(93)  ID(35)  ID(70)  ID(19)  ID(102) 
-                                         * ID(112) 
-b l19                                    | R0      ID(52)  ID(12)  ID(75)  ID(2)   
-                                         * ID(93)  ID(35)  SP      ID(70)  ID(19)  
-                                         * ID(26)  ID(112) 
+l0:                                      | SP        
+str R29, [SP, #16]                       | SP        
+sub SP, SP, #16                          | SP        R29       
+mov ID(42), #5                           | SP        R29       
+mov ID(5), ID(42)                        | ID(42)    SP        R29       
+mov ID(43), #1072064102                  | SP        ID(5)     R29       
+mov ID(35), ID(43)                       | ID(43)    SP        ID(5)     R29       
+mov R0, ID(35)                           | ID(35)    SP        ID(5)     R29       
+bl l1                                    | R0        SP        ID(5)     R29       
+mov ID(44), R0                           | R0        ID(5)     SP        R29       
+mov ID(36), ID(44)                       | ID(44)    ID(5)     SP        R29       
+mov ID(45), ID(36)                       | ID(36)    ID(5)     SP        R29       
+mov ID(6), ID(45)                        | ID(45)    ID(5)     SP        R29       
+mov ID(46), #0                           | ID(5)     SP        R29       
+mov ID(7), ID(46)                        | ID(46)    ID(5)     SP        R29       
+b l19                                    | ID(7)     ID(5)     SP        R29       
 
-l1:                                      | SP      ID(11)  
-str R29, [SP, #16]                       | SP      R0      ID(66)  ID(2)   ID(88)  
-                                         * ID(99)  
-sub SP, SP, #16                          | SP      ID(3)   
-mov ID(0), R0                            | R0      ID(52)  ID(12)  ID(75)  ID(2)   
-                                         * ID(93)  ID(35)  SP      ID(70)  ID(19)  
-                                         * ID(26)  ID(112) 
-mov ID(47), ID(0)                        | ID(0)   ID(21)  ID(14)  ID(82)  ID(2)   
-                                         * ID(35)  SP      R0      ID(72)  ID(70)  
-                                         * ID(100) ID(101) ID(19)  ID(103) ID(24)  
-                                         * ID(109) ID(115) ID(26)  ID(116) ID(112) 
-                                         * ID(29)  ID(30)  ID(31)  ID(52)  ID(32)  
-                                         * ID(12)  ID(75)  ID(87)  ID(93)  
-mov R0, ID(47)                           | ID(47)  ID(60)  ID(68)  ID(69)  ID(16)  
-                                         * ID(104) 
-mov ID(49), R0                           | R0      ID(55)  
-mov ID(50), #0                           | ID(67)  ID(77)  ID(78)  ID(1)   SP      
-                                         * ID(64)  ID(13)  ID(81)  ID(2)   ID(18)  
-cmp ID(49), ID(50)                       | ID(50)  ID(46)  ID(0)   SP      ID(59)  
-                                         * R0      ID(4)   ID(63)  ID(64)  ID(62)  
-                                         * ID(81)  ID(2)   ID(86)  ID(18)  ID(98)  
-                                         * ID(106) ID(107) ID(25)  ID(22)  ID(119) 
-                                         * ID(125) ID(126) ID(129) ID(130) ID(5)   
-                                         * ID(38)  ID(139) ID(39)  ID(143) ID(52)  
-                                         * ID(75)  ID(87)  ID(93)  ID(35)  ID(70)  
-                                         * ID(102) ID(26)  ID(112) 
-cset ID(48), LE                          | SP      ID(11)  
-cbnz l5                                  | ID(61)  ID(76)  SP      ID(84)  ID(85)  
-                                         * ID(91)  ID(2)   ID(15)  ID(83)  ID(23)  
-                                         * ID(108) ID(51)  ID(3)   ID(27)  ID(46)  
-                                         * ID(65)  ID(122) R0      ID(33)  ID(4)   
-                                         * ID(64)  ID(62)  ID(37)  ID(13)  ID(81)  
-                                         * ID(136) ID(98)  ID(20)  ID(137) ID(140) 
-                                         * ID(141) ID(22)  ID(119) ID(120) ID(125) 
-                                         * ID(129) ID(130) ID(5)   ID(133) ID(38)  
-                                         * ID(39)  ID(143) ID(52)  ID(12)  ID(75)  
-                                         * ID(93)  ID(35)  ID(70)  ID(19)  ID(26)  
-b l6                                     | ID(43)  SP      ID(9)   ID(2)   ID(15)  
-                                         * ID(36)  ID(51)  ID(27)  
+l1:                                      | SP        R0        
+str R29, [SP, #16]                       | SP        R0        
+sub SP, SP, #16                          | SP        R0        R29       
+mov ID(0), R0                            | R0        R29       SP        
+mov ID(47), ID(0)                        | ID(0)     R29       SP        
+mov R0, ID(47)                           | ID(47)    ID(0)     R29       SP        
+mov ID(49), R0                           | R0        ID(0)     R29       SP        
+mov ID(50), #0                           | ID(0)     R29       SP        
+cmp ID(49), ID(50)                       | ID(50)    ID(0)     R29       SP        
+cset ID(48), LE                          | ID(0)     R29       SP        
+cbnz l5                                  | ID(0)     R29       SP        
+b l6                                     | ID(0)     SP        R29       
 
-l2:                                      | SP      ID(9)   ID(2)   ID(15)  ID(83)  
-                                         * ID(51)  ID(27)  
-str R29, [SP, #16]                       | SP      ID(70)  ID(19)  ID(2)   ID(102) 
-                                         * ID(112) ID(52)  ID(12)  ID(75)  ID(87)  
-                                         * ID(35)  
-sub SP, SP, #16                          | SP      R0      ID(63)  ID(64)  ID(13)  
-                                         * ID(2)   ID(18)  ID(98)  
-mov ID(1), R0                            | R0      ID(4)   ID(62)  ID(86)  ID(20)  
-                                         * ID(107) ID(25)  ID(22)  ID(119) ID(120) 
-                                         * ID(126) ID(129) ID(130) ID(7)   ID(5)   
-                                         * ID(38)  ID(139) ID(39)  ID(143) ID(52)  
-                                         * ID(75)  ID(2)   ID(87)  ID(93)  ID(35)  
-                                         * ID(70)  ID(19)  ID(102) ID(26)  ID(112) 
-mov ID(51), #1                           | ID(56)  ID(10)  ID(74)  ID(44)  ID(17)  
-                                         * ID(97)  ID(3)   ID(105) ID(110) ID(111) 
-                                         * ID(117) ID(118) ID(121) ID(123) ID(124) 
-                                         * ID(128) ID(131) ID(135) ID(0)   ID(47)  
-                                         * ID(60)  ID(68)  ID(69)  ID(14)  ID(82)  
-                                         * ID(2)   ID(90)  ID(45)  ID(104) ID(35)  
-                                         * ID(72)  ID(70)  ID(100) ID(19)  ID(102) 
-                                         * ID(112) ID(52)  ID(34)  ID(12)  ID(75)  
-                                         * ID(93)  
-mov ID(2), ID(51)                        | ID(51)  ID(27)  ID(36)  
-b l7                                     | ID(35)  SP      ID(70)  ID(19)  ID(2)   
-                                         * ID(26)  ID(112) ID(52)  ID(12)  ID(75)  
-                                         * ID(93)  
+l2:                                      | SP        R0        
+str R29, [SP, #16]                       | SP        R0        
+sub SP, SP, #16                          | SP        R0        R29       
+mov ID(1), R0                            | R0        R29       
+mov ID(51), #1                           | ID(1)     R29       
+mov ID(2), ID(51)                        | ID(51)    ID(1)     R29       
+b l7                                     | ID(2)     ID(1)     R29       
 
-l3:                                      | R0      ID(72)  ID(95)  ID(100) ID(101) 
-                                         * ID(24)  ID(109) ID(115) ID(116) ID(28)  
-                                         * ID(30)  ID(31)  ID(32)  ID(34)  
-str R29, [SP, #16]                       | SP      ID(59)  ID(65)  R0      ID(4)   
-                                         * ID(64)  ID(62)  ID(13)  ID(81)  ID(2)   
-                                         * ID(18)  ID(98)  ID(20)  ID(106) ID(107) 
-                                         * ID(22)  ID(119) ID(120) ID(125) ID(126) 
-                                         * ID(130) ID(7)   ID(5)   ID(133) ID(38)  
-                                         * ID(39)  ID(143) ID(52)  ID(12)  ID(75)  
-                                         * ID(93)  ID(35)  ID(70)  ID(19)  ID(102) 
-                                         * ID(112) 
-sub SP, SP, #16                          | SP      ID(11)  
-mov ID(3), R0                            | R0      SP      ID(66)  ID(2)   ID(88)  
-                                         * ID(99)  
-mov ID(52), ID(3)                        | ID(3)   SP      
-mov ID(21), ID(52)                       | ID(52)  ID(12)  ID(75)  ID(2)   ID(87)  
-                                         * ID(35)  SP      ID(70)  ID(19)  ID(102) 
-                                         * ID(112) 
-mov ID(54), ID(21)                       | ID(21)  ID(0)   ID(14)  ID(82)  ID(2)   
-                                         * ID(35)  SP      R0      ID(72)  ID(70)  
-                                         * ID(100) ID(101) ID(19)  ID(103) ID(24)  
-                                         * ID(109) ID(115) ID(26)  ID(116) ID(112) 
-                                         * ID(29)  ID(30)  ID(31)  ID(52)  ID(32)  
-                                         * ID(12)  ID(75)  ID(87)  ID(93)  
-mov ID(55), #0                           | ID(60)  ID(68)  ID(69)  ID(16)  ID(90)  
-cmp ID(54), ID(55)                       | ID(55)  
-cset ID(53), EQ                          | ID(67)  ID(77)  ID(78)  ID(1)   SP      
-                                         * ID(64)  ID(13)  ID(81)  ID(2)   ID(18)  
-cbnz l14                                 | ID(46)  ID(0)   SP      ID(59)  ID(65)  
-                                         * ID(4)   ID(63)  ID(64)  ID(62)  ID(13)  
-                                         * ID(2)   ID(86)  ID(18)  ID(98)  ID(20)  
-                                         * ID(107) ID(25)  ID(22)  ID(119) ID(120) 
-                                         * ID(126) ID(129) ID(130) ID(5)   ID(133) 
-                                         * ID(139) ID(39)  ID(143) ID(52)  ID(12)  
-                                         * ID(87)  ID(93)  ID(35)  ID(70)  ID(19)  
-                                         * ID(26)  ID(112) 
-b l16                                    | SP      ID(11)  
+l3:                                      | SP        R0        
+str R29, [SP, #16]                       | SP        R0        
+sub SP, SP, #16                          | SP        R0        R29       
+mov ID(3), R0                            | R0        R29       SP        
+mov ID(52), ID(3)                        | ID(3)     R29       SP        
+mov ID(21), ID(52)                       | ID(52)    ID(3)     R29       SP        
+mov ID(54), ID(21)                       | ID(21)    ID(3)     R29       SP        
+mov ID(55), #0                           | ID(3)     R29       SP        
+cmp ID(54), ID(55)                       | ID(55)    ID(3)     R29       SP        
+cset ID(53), EQ                          | ID(3)     R29       SP        
+cbnz l14                                 | ID(3)     R29       SP        
+b l16                                    | ID(3)     R29       SP        
 
-l4:                                      | ID(61)  ID(76)  ID(84)  ID(85)  ID(91)  
-                                         * ID(108) ID(3)   ID(46)  SP      ID(59)  
-                                         * ID(122) R0      ID(33)  ID(4)   ID(63)  
-                                         * ID(62)  ID(37)  ID(13)  ID(81)  ID(2)   
-                                         * ID(136) ID(98)  ID(20)  ID(137) ID(140) 
-                                         * ID(141) ID(22)  ID(119) ID(120) ID(125) 
-                                         * ID(129) ID(130) ID(5)   ID(133) ID(38)  
-                                         * ID(39)  ID(143) ID(52)  ID(12)  ID(75)  
-                                         * ID(93)  ID(35)  ID(70)  ID(19)  ID(26)  
-str R29, [SP, #16]                       | SP      ID(9)   ID(2)   ID(15)  ID(83)  
-                                         * ID(51)  ID(27)  
-sub SP, SP, #16                          | SP      ID(70)  ID(19)  ID(2)   ID(102) 
-                                         * ID(112) ID(52)  ID(12)  ID(75)  ID(87)  
-                                         * ID(35)  
-mov ID(4), R0                            | R0      ID(63)  ID(64)  ID(13)  ID(81)  
-                                         * ID(18)  ID(98)  
-mov ID(56), ID(4)                        | ID(4)   ID(62)  ID(1)   ID(86)  ID(20)  
-                                         * ID(107) ID(25)  ID(22)  ID(119) ID(120) 
-                                         * ID(125) ID(126) ID(129) ID(130) ID(7)   
-                                         * ID(133) ID(38)  ID(139) ID(39)  ID(143) 
-                                         * ID(12)  ID(75)  ID(2)   ID(87)  ID(93)  
-                                         * SP      ID(70)  ID(19)  ID(102) ID(26)  
-mov ID(27), ID(56)                       | ID(56)  ID(10)  ID(74)  ID(44)  ID(17)  
-                                         * ID(97)  ID(3)   ID(105) ID(110) ID(111) 
-                                         * ID(117) ID(118) ID(121) ID(123) ID(124) 
-                                         * ID(128) ID(131) ID(135) ID(0)   ID(47)  
-                                         * ID(60)  ID(68)  ID(69)  ID(14)  ID(82)  
-                                         * ID(2)   ID(90)  ID(45)  ID(104) ID(35)  
-                                         * ID(72)  ID(70)  ID(100) ID(19)  ID(102) 
-                                         * ID(112) ID(52)  ID(34)  ID(12)  ID(75)  
-                                         * ID(93)  
-mov ID(58), ID(27)                       | ID(27)  ID(36)  ID(51)  
-mov ID(59), #1                           | R0      ID(72)  ID(95)  ID(100) ID(101) 
-                                         * ID(24)  ID(109) ID(115) ID(116) ID(28)  
-                                         * ID(30)  ID(31)  ID(32)  ID(34)  
-cmp ID(58), ID(59)                       | ID(59)  ID(65)  R0      SP      ID(4)   
-                                         * ID(64)  ID(62)  ID(13)  ID(81)  ID(2)   
-                                         * ID(18)  ID(98)  ID(20)  ID(106) ID(107) 
-                                         * ID(22)  ID(119) ID(120) ID(125) ID(126) 
-                                         * ID(130) ID(7)   ID(5)   ID(133) ID(38)  
-                                         * ID(39)  ID(143) ID(52)  ID(12)  ID(75)  
-                                         * ID(93)  ID(35)  ID(70)  ID(19)  ID(102) 
-                                         * ID(112) 
-cset ID(57), LE                          | ID(11)  
-cbnz l17                                 | SP      ID(66)  R0      ID(2)   ID(88)  
-                                         * ID(99)  ID(3)   
-b l18                                    | SP      ID(3)   
+l4:                                      | SP        R0        
+str R29, [SP, #16]                       | SP        R0        
+sub SP, SP, #16                          | SP        R0        R29       
+mov ID(4), R0                            | R0        R29       SP        
+mov ID(56), ID(4)                        | ID(4)     R29       SP        
+mov ID(27), ID(56)                       | ID(56)    ID(4)     R29       SP        
+mov ID(58), ID(27)                       | ID(27)    ID(4)     R29       SP        
+mov ID(59), #1                           | ID(4)     R29       SP        
+cmp ID(58), ID(59)                       | ID(59)    ID(4)     R29       SP        
+cset ID(57), LE                          | ID(4)     R29       SP        
+cbnz l17                                 | ID(4)     R29       SP        
+b l18                                    | ID(4)     SP        R29       
 
-l5:                                      | ID(12)  ID(75)  ID(2)   ID(87)  ID(93)  
-                                         * SP      ID(70)  ID(19)  ID(102) ID(26)  
-                                         * ID(52)  
-mov ID(60), ID(0)                        | ID(0)   ID(14)  ID(82)  ID(2)   ID(45)  
-                                         * SP      R0      ID(72)  ID(70)  ID(95)  
-                                         * ID(101) ID(19)  ID(103) ID(24)  ID(102) 
-                                         * ID(115) ID(26)  ID(116) ID(112) ID(28)  
-                                         * ID(30)  ID(31)  ID(52)  ID(32)  ID(34)  
-                                         * ID(75)  ID(87)  ID(93)  
-mov R0, ID(60)                           | ID(60)  ID(68)  ID(69)  ID(16)  ID(90)  
-ret                                     
+l5:                                      | ID(0)     R29       
+mov ID(60), ID(0)                        | ID(0)     R29       
+mov R0, ID(60)                           | ID(60)    R29       
+ret                                      | R29       
 
-l6:                                      | ID(67)  ID(77)  ID(78)  ID(1)   SP      
-                                         * ID(64)  ID(13)  ID(81)  ID(2)   ID(18)  
-mov ID(61), ID(0)                        | ID(0)   
-mov ID(9), ID(61)                        | ID(61)  ID(76)  ID(84)  ID(85)  ID(91)  
-                                         * ID(108) ID(3)   ID(46)  SP      ID(59)  
-                                         * ID(122) R0      ID(33)  ID(4)   ID(63)  
-                                         * ID(62)  ID(37)  ID(13)  ID(81)  ID(2)   
-                                         * ID(136) ID(98)  ID(20)  ID(137) ID(140) 
-                                         * ID(141) ID(22)  ID(119) ID(120) ID(125) 
-                                         * ID(129) ID(130) ID(5)   ID(133) ID(38)  
-                                         * ID(39)  ID(143) ID(52)  ID(12)  ID(75)  
-                                         * ID(93)  ID(35)  ID(70)  ID(19)  ID(26)  
-mov ID(63), ID(9)                        | ID(9)   ID(2)   ID(15)  ID(83)  ID(36)  
-                                         * ID(27)  
-mov ID(64), #1                           | ID(70)  ID(19)  ID(2)   ID(102) ID(26)  
-                                         * ID(52)  ID(12)  ID(75)  ID(87)  ID(93)  
-                                         * SP      
-sub ID(62), ID(63), ID(64)               | ID(63)  ID(64)  ID(13)  ID(81)  ID(2)   
-                                         * ID(98)  
-mov ID(10), ID(62)                       | ID(62)  ID(1)   ID(86)  ID(20)  ID(106) 
-                                         * ID(25)  ID(22)  ID(4)   ID(119) ID(120) 
-                                         * ID(125) ID(126) ID(129) ID(130) ID(7)   
-                                         * ID(133) ID(38)  ID(139) ID(39)  ID(143) 
-                                         * ID(12)  ID(75)  ID(2)   ID(87)  ID(93)  
-                                         * SP      ID(70)  ID(19)  ID(102) ID(26)  
-mov R0, ID(10)                           | ID(10)  ID(74)  ID(44)  ID(17)  ID(96)  
-                                         * ID(56)  ID(3)   ID(105) ID(110) ID(111) 
-                                         * ID(117) ID(118) ID(121) ID(123) ID(124) 
-                                         * ID(128) ID(131) ID(135) ID(0)   ID(47)  
-                                         * ID(60)  ID(68)  ID(69)  ID(14)  ID(82)  
-                                         * ID(2)   ID(90)  ID(45)  ID(104) ID(35)  
-                                         * ID(72)  ID(70)  ID(100) ID(19)  ID(102) 
-                                         * ID(112) ID(52)  ID(34)  ID(12)  ID(75)  
-                                         * ID(93)  
-bl l1                                    | ID(36)  ID(51)  ID(27)  
-mov ID(65), R0                           | R0      ID(72)  ID(95)  ID(100) ID(101) 
-                                         * ID(24)  ID(109) ID(115) ID(116) ID(28)  
-                                         * ID(30)  ID(31)  ID(32)  ID(34)  
-mov ID(11), ID(65)                       | ID(65)  R0      SP      ID(4)   ID(63)  
-                                         * ID(62)  ID(13)  ID(81)  ID(2)   ID(86)  
-                                         * ID(98)  ID(20)  ID(106) ID(107) ID(25)  
-                                         * ID(119) ID(120) ID(125) ID(126) ID(129) 
-                                         * ID(7)   ID(5)   ID(133) ID(38)  ID(139) 
-                                         * ID(143) ID(52)  ID(12)  ID(75)  ID(87)  
-                                         * ID(35)  ID(70)  ID(19)  ID(102) ID(26)  
-mov ID(66), ID(11)                       | ID(11)  
-mov ID(12), ID(66)                       | ID(66)  ID(2)   ID(88)  ID(89)  ID(99)  
-mov ID(68), ID(12)                       | ID(12)  ID(75)  ID(2)   ID(87)  ID(93)  
-                                         * SP      ID(70)  ID(19)  ID(102) ID(26)  
-                                         * ID(52)  
-mov ID(69), ID(0)                        | ID(0)   ID(14)  ID(82)  ID(2)   ID(45)  
-                                         * SP      R0      ID(72)  ID(70)  ID(95)  
-                                         * ID(101) ID(19)  ID(103) ID(24)  ID(102) 
-                                         * ID(115) ID(26)  ID(116) ID(112) ID(28)  
-                                         * ID(30)  ID(31)  ID(52)  ID(32)  ID(34)  
-                                         * ID(75)  ID(87)  ID(93)  
-add ID(67), ID(68), ID(69)               | ID(68)  ID(69)  ID(16)  ID(90)  ID(104) 
-mov R0, ID(67)                           | ID(67)  ID(77)  ID(78)  ID(1)   SP      
-                                         * ID(64)  ID(13)  ID(81)  ID(2)   ID(18)  
-ret                                     
+l6:                                      | ID(0)     SP        R29       
+mov ID(61), ID(0)                        | ID(0)     SP        R29       
+mov ID(9), ID(61)                        | ID(61)    SP        ID(0)     R29       
+mov ID(63), ID(9)                        | ID(9)     SP        ID(0)     R29       
+mov ID(64), #1                           | ID(63)    SP        ID(0)     R29       
+sub ID(62), ID(63), ID(64)               | ID(63)    ID(64)    SP        ID(0)     
+mov ID(10), ID(62)                       | ID(62)    SP        ID(0)     R29       
+mov R0, ID(10)                           | ID(10)    SP        ID(0)     R29       
+bl l1                                    | R0        SP        ID(0)     R29       
+mov ID(65), R0                           | R0        ID(0)     R29       
+mov ID(11), ID(65)                       | ID(65)    ID(0)     R29       
+mov ID(66), ID(11)                       | ID(11)    ID(0)     R29       
+mov ID(12), ID(66)                       | ID(66)    ID(0)     R29       
+mov ID(68), ID(12)                       | ID(12)    ID(0)     R29       
+mov ID(69), ID(0)                        | ID(0)     ID(68)    R29       
+add ID(67), ID(68), ID(69)               | ID(68)    ID(69)    R29       
+mov R0, ID(67)                           | ID(67)    R29       
+ret                                      | R29       
 
-l7:                                      | ID(76)  ID(84)  ID(85)  ID(91)  ID(23)  
-                                         * ID(3)   ID(46)  SP      ID(59)  ID(65)  
-                                         * R0      ID(33)  ID(4)   ID(63)  ID(64)  
-                                         * ID(37)  ID(13)  ID(81)  ID(2)   ID(86)  
-                                         * ID(98)  ID(20)  ID(137) ID(140) ID(107) 
-                                         * ID(22)  ID(119) ID(120) ID(125) ID(126) 
-                                         * ID(130) ID(5)   ID(133) ID(38)  ID(139) 
-                                         * ID(143) ID(52)  ID(12)  ID(75)  ID(87)  
-                                         * ID(35)  ID(70)  ID(19)  ID(26)  
-mov ID(70), ID(2)                        | ID(2)   ID(15)  ID(83)  ID(36)  ID(51)  
-mov ID(13), ID(70)                       | ID(70)  ID(19)  ID(2)   ID(102) ID(26)  
-                                         * ID(52)  ID(12)  ID(75)  ID(87)  ID(93)  
-                                         * SP      
-mov ID(73), ID(13)                       | ID(13)  ID(81)  ID(2)   ID(18)  ID(98)  
-mov ID(74), ID(1)                        | ID(1)   ID(86)  ID(20)  ID(106) ID(107) 
-                                         * ID(22)  ID(4)   ID(119) ID(120) R0      
-                                         * ID(126) ID(129) ID(130) ID(7)   ID(5)   
-                                         * ID(38)  ID(139) ID(39)  ID(143) ID(52)  
-                                         * ID(75)  ID(2)   ID(87)  ID(93)  ID(35)  
-                                         * ID(70)  ID(19)  ID(102) ID(26)  ID(112) 
-cmp ID(73), ID(74)                       | ID(74)  ID(44)  ID(17)  ID(96)  ID(97)  
-                                         * ID(10)  ID(3)   ID(105) ID(110) ID(111) 
-                                         * ID(117) ID(118) ID(121) ID(123) ID(124) 
-                                         * ID(128) ID(131) ID(135) ID(0)   ID(47)  
-                                         * ID(60)  ID(68)  ID(69)  ID(14)  ID(82)  
-                                         * ID(2)   ID(90)  ID(45)  ID(104) ID(35)  
-                                         * ID(72)  ID(70)  ID(100) ID(19)  ID(102) 
-                                         * ID(112) ID(52)  ID(34)  ID(12)  ID(75)  
-                                         * ID(93)  
-cset ID(72), LE                          | ID(36)  ID(51)  ID(27)  
-mvn ID(71), ID(72)                       | ID(72)  ID(95)  ID(100) ID(101) ID(103) 
-                                         * ID(109) ID(115) ID(116) ID(28)  ID(29)  
-                                         * ID(31)  ID(32)  ID(34)  
-cbnz l9                                  | R0      SP      ID(4)   ID(63)  ID(64)  
-                                         * ID(13)  ID(81)  ID(2)   ID(86)  ID(18)  
-                                         * ID(20)  ID(106) ID(107) ID(25)  ID(22)  
-                                         * ID(120) ID(125) ID(126) ID(129) ID(130) 
-                                         * ID(5)   ID(133) ID(38)  ID(139) ID(39)  
-                                         * ID(52)  ID(12)  ID(75)  ID(87)  ID(93)  
-                                         * ID(70)  ID(19)  ID(102) ID(26)  ID(112) 
+l7:                                      | ID(2)     ID(1)     R29       
+mov ID(70), ID(2)                        | ID(2)     ID(1)     R29       
+mov ID(13), ID(70)                       | ID(70)    ID(1)     ID(2)     R29       
+mov ID(73), ID(13)                       | ID(13)    ID(1)     ID(2)     R29       
+mov ID(74), ID(1)                        | ID(1)     ID(2)     R29       
+cmp ID(73), ID(74)                       | ID(74)    ID(2)     R29       ID(1)     
+cset ID(72), LE                          | ID(2)     R29       ID(1)     
+mvn ID(71), ID(72)                       | ID(72)    ID(2)     R29       ID(1)     
+cbnz l9                                  | ID(2)     R29       ID(1)     
 
-l8:                                     
-mov ID(75), ID(2)                        | ID(2)   ID(88)  ID(89)  ID(99)  ID(3)   
-mov ID(14), ID(75)                       | ID(75)  ID(2)   ID(87)  ID(93)  ID(35)  
-                                         * ID(70)  ID(19)  ID(102) ID(26)  ID(112) 
-                                         * ID(12)  
-mov ID(77), ID(14)                       | ID(14)  ID(82)  ID(2)   ID(45)  ID(35)  
-                                         * R0      ID(72)  ID(70)  ID(95)  ID(100) 
-                                         * ID(19)  ID(103) ID(24)  ID(102) ID(109) 
-                                         * ID(26)  ID(116) ID(112) ID(28)  ID(29)  
-                                         * ID(31)  ID(52)  ID(32)  ID(34)  ID(12)  
-                                         * ID(87)  ID(93)  
-mov ID(78), #2                           | ID(16)  ID(90)  ID(104) R0      
-sdiv ID(76), ID(77), ID(78)              | ID(77)  ID(78)  ID(1)   SP      R0      
-                                         * ID(64)  ID(13)  ID(81)  ID(2)   ID(18)  
-mov ID(15), ID(76)                       | ID(76)  ID(84)  ID(85)  ID(91)  ID(23)  
-                                         * ID(3)   ID(46)  SP      ID(59)  ID(65)  
-                                         * R0      ID(33)  ID(4)   ID(63)  ID(64)  
-                                         * ID(37)  ID(13)  ID(81)  ID(2)   ID(86)  
-                                         * ID(98)  ID(20)  ID(137) ID(140) ID(107) 
-                                         * ID(22)  ID(119) ID(120) ID(125) ID(126) 
-                                         * ID(130) ID(5)   ID(133) ID(38)  ID(139) 
-                                         * ID(143) ID(52)  ID(12)  ID(75)  ID(87)  
-                                         * ID(35)  ID(70)  ID(19)  ID(26)  
-mov ID(80), ID(15)                       | ID(15)  ID(83)  ID(36)  ID(51)  ID(27)  
-mov ID(81), #0                           | ID(19)  ID(2)   ID(102) ID(26)  ID(112) 
-                                         * ID(12)  ID(75)  ID(87)  ID(93)  ID(35)  
-                                         * ID(70)  
-cmp ID(80), ID(81)                       | ID(81)  ID(2)   ID(18)  ID(98)  
-cset ID(79), EQ                          | ID(86)  ID(20)  ID(106) ID(107) ID(25)  
-                                         * ID(4)   ID(119) ID(120) R0      ID(125) 
-                                         * ID(129) ID(130) ID(7)   ID(5)   ID(133) 
-                                         * ID(139) ID(39)  ID(143) ID(52)  ID(12)  
-                                         * ID(2)   ID(87)  ID(93)  ID(35)  SP      
-                                         * ID(19)  ID(102) ID(26)  ID(112) 
-cbnz l10                                 | ID(44)  ID(17)  ID(96)  ID(97)  ID(56)  
-                                         * ID(3)   ID(74)  ID(105) ID(110) ID(111) 
-                                         * ID(117) ID(118) ID(121) ID(123) ID(124) 
-                                         * ID(128) ID(131) ID(135) ID(0)   ID(47)  
-                                         * ID(60)  ID(68)  ID(69)  ID(14)  ID(82)  
-                                         * ID(2)   ID(90)  ID(45)  ID(104) ID(35)  
-                                         * ID(72)  ID(70)  ID(100) ID(19)  ID(102) 
-                                         * ID(112) ID(52)  ID(34)  ID(12)  ID(75)  
-                                         * ID(93)  
-b l11                                    | ID(36)  ID(51)  ID(27)  
+l8:                                      | ID(2)     ID(1)     R29       
+mov ID(75), ID(2)                        | ID(2)     ID(1)     R29       
+mov ID(14), ID(75)                       | ID(75)    ID(2)     ID(1)     R29       
+mov ID(77), ID(14)                       | ID(14)    ID(2)     ID(1)     R29       
+mov ID(78), #2                           | ID(77)    ID(2)     ID(1)     R29       
+sdiv ID(76), ID(77), ID(78)              | ID(77)    ID(78)    ID(2)     ID(1)     
+mov ID(15), ID(76)                       | ID(76)    ID(2)     ID(1)     R29       
+mov ID(80), ID(15)                       | ID(15)    ID(2)     ID(1)     R29       
+mov ID(81), #0                           | ID(2)     ID(1)     R29       
+cmp ID(80), ID(81)                       | ID(81)    ID(2)     ID(1)     R29       
+cset ID(79), EQ                          | ID(2)     ID(1)     R29       
+cbnz l10                                 | ID(2)     ID(1)     R29       
+b l11                                    | ID(2)     ID(1)     R29       
 
-l9:                                      | ID(95)  ID(100) ID(101) ID(103) ID(24)  
-                                         * ID(115) ID(116) ID(28)  ID(29)  ID(30)  
-                                         * ID(32)  ID(34)  
-ret                                     
+l9:                                      | R29       
+ret                                      | R29       
 
-l10:                                     | ID(88)  ID(89)  ID(99)  ID(3)   
-mov ID(82), ID(2)                        | ID(2)   ID(87)  ID(93)  ID(35)  SP      
-                                         * ID(19)  ID(102) ID(26)  ID(112) ID(52)  
-                                         * ID(75)  
-mov ID(16), ID(82)                       | ID(82)  ID(2)   ID(45)  ID(35)  SP      
-                                         * ID(72)  ID(70)  ID(95)  ID(100) ID(101) 
-                                         * ID(103) ID(24)  ID(102) ID(109) ID(115) 
-                                         * ID(116) ID(112) ID(28)  ID(29)  ID(30)  
-                                         * ID(52)  ID(32)  ID(34)  ID(12)  ID(75)  
-                                         * ID(93)  
-mov ID(84), ID(16)                       | ID(16)  ID(90)  ID(104) R0      
-mov ID(85), #1                           | ID(1)   SP      R0      ID(63)  ID(64)  
-                                         * ID(81)  ID(2)   ID(18)  ID(98)  
-add ID(83), ID(84), ID(85)               | ID(84)  ID(85)  ID(91)  ID(23)  ID(108) 
-                                         * ID(46)  SP      ID(59)  ID(65)  ID(122) 
-                                         * ID(33)  ID(4)   ID(63)  ID(64)  ID(62)  
-                                         * ID(13)  ID(81)  ID(2)   ID(86)  ID(136) 
-                                         * ID(20)  ID(137) ID(140) ID(107) ID(141) 
-                                         * ID(119) ID(120) ID(125) ID(126) ID(129) 
-                                         * ID(5)   ID(133) ID(38)  ID(139) ID(39)  
-                                         * ID(52)  ID(12)  ID(75)  ID(87)  ID(93)  
-                                         * ID(70)  ID(19)  ID(26)  
-mov ID(2), ID(83)                        | ID(83)  ID(36)  ID(51)  ID(27)  
+l10:                                     | ID(2)     ID(1)     R29       
+mov ID(82), ID(2)                        | ID(2)     ID(1)     R29       
+mov ID(16), ID(82)                       | ID(82)    ID(1)     R29       
+mov ID(84), ID(16)                       | ID(16)    ID(1)     R29       
+mov ID(85), #1                           | ID(84)    ID(1)     R29       
+add ID(83), ID(84), ID(85)               | ID(84)    ID(85)    ID(1)     R29       
+mov ID(2), ID(83)                        | ID(83)    ID(1)     R29       
 
-l11:                                     | ID(19)  ID(2)   ID(102) ID(26)  ID(112) 
-                                         * ID(12)  ID(75)  ID(87)  ID(93)  ID(35)  
-                                         * ID(70)  
-mov ID(86), ID(2)                        | ID(2)   ID(18)  ID(98)  
-mov ID(17), ID(86)                       | ID(86)  ID(20)  ID(106) ID(107) ID(25)  
-                                         * ID(4)   ID(119) ID(120) R0      ID(125) 
-                                         * ID(129) ID(130) ID(7)   ID(5)   ID(133) 
-                                         * ID(139) ID(39)  ID(143) ID(52)  ID(12)  
-                                         * ID(2)   ID(87)  ID(93)  ID(35)  SP      
-                                         * ID(19)  ID(102) ID(26)  ID(112) 
-mov ID(88), ID(17)                       | ID(17)  ID(96)  ID(97)  ID(3)   ID(105) 
-                                         * ID(111) ID(4)   ID(117) ID(118) ID(121) 
-                                         * ID(124) ID(127) ID(128) ID(131) ID(135) 
-                                         * ID(47)  ID(21)  ID(60)  ID(68)  ID(69)  
-                                         * ID(82)  ID(16)  ID(2)   ID(90)  ID(45)  
-                                         * ID(35)  SP      ID(72)  ID(70)  ID(100) 
-                                         * ID(102) ID(26)  ID(112) ID(52)  ID(34)  
-                                         * ID(75)  ID(87)  ID(93)  
-mov ID(89), #2                           | ID(95)  ID(100) ID(101) ID(103) ID(24)  
-                                         * ID(115) ID(116) ID(28)  ID(29)  ID(30)  
-                                         * ID(32)  ID(34)  
-sub ID(87), ID(88), ID(89)               | ID(88)  ID(89)  ID(99)  ID(3)   
-mov ID(2), ID(87)                        | ID(87)  ID(93)  ID(35)  SP      ID(70)  
-                                         * ID(102) ID(26)  ID(112) ID(52)  ID(12)  
-mov ID(90), ID(2)                        | ID(2)   ID(45)  ID(35)  SP      R0      
-                                         * ID(70)  ID(95)  ID(100) ID(101) ID(19)  
-                                         * ID(24)  ID(102) ID(109) ID(115) ID(26)  
-                                         * ID(112) ID(28)  ID(29)  ID(30)  ID(31)  
-                                         * ID(32)  ID(34)  ID(12)  ID(75)  ID(87)  
-mov ID(19), ID(90)                       | ID(90)  ID(104) R0      
-mov ID(91), ID(1)                        | ID(1)   SP      R0      ID(63)  ID(64)  
-                                         * ID(81)  ID(2)   ID(18)  ID(98)  
-mov ID(18), ID(91)                       | ID(91)  ID(23)  ID(108) ID(3)   ID(46)  
-                                         * ID(59)  ID(65)  ID(122) R0      ID(33)  
-                                         * ID(63)  ID(64)  ID(62)  ID(37)  ID(13)  
-                                         * ID(2)   ID(86)  ID(136) ID(98)  ID(20)  
-                                         * ID(140) ID(107) ID(141) ID(22)  ID(119) 
-                                         * ID(125) ID(126) ID(129) ID(130) ID(5)   
-                                         * ID(38)  ID(139) ID(39)  ID(143) ID(52)  
-                                         * ID(75)  ID(87)  ID(93)  ID(35)  ID(70)  
-                                         * ID(26)  
-mov ID(94), ID(19)                       | ID(19)  ID(2)   ID(102) ID(26)  ID(112) 
-                                         * ID(12)  ID(75)  ID(87)  ID(93)  ID(35)  
-                                         * ID(70)  
-mov ID(96), ID(18)                       | ID(18)  ID(98)  
-mov ID(97), #2                           | ID(20)  ID(106) ID(107) ID(25)  ID(22)  
-                                         * ID(119) ID(120) R0      ID(125) ID(126) 
-                                         * ID(130) ID(7)   ID(5)   ID(133) ID(38)  
-                                         * ID(39)  ID(143) ID(52)  ID(12)  ID(75)  
-                                         * ID(87)  ID(93)  ID(35)  SP      ID(70)  
-                                         * ID(102) ID(26)  ID(112) 
-sdiv ID(95), ID(96), ID(97)              | ID(96)  ID(97)  ID(3)   ID(105) ID(110) 
-                                         * ID(4)   ID(117) ID(118) ID(121) ID(123) 
-                                         * ID(127) ID(128) ID(131) ID(135) ID(0)   
-                                         * ID(21)  ID(60)  ID(68)  ID(69)  ID(14)  
-                                         * ID(16)  ID(2)   ID(90)  ID(45)  ID(104) 
-                                         * SP      ID(72)  ID(70)  ID(100) ID(19)  
-                                         * ID(26)  ID(112) ID(52)  ID(34)  ID(12)  
-                                         * ID(87)  ID(93)  
-cmp ID(94), ID(95)                       | ID(95)  ID(100) ID(101) ID(103) ID(24)  
-                                         * ID(115) ID(116) ID(28)  ID(29)  ID(30)  
-                                         * ID(32)  ID(34)  
-cset ID(93), EQ                          | ID(99)  ID(3)   
-mvn ID(92), ID(93)                       | ID(93)  ID(35)  SP      ID(70)  ID(19)  
-                                         * ID(102) ID(26)  ID(112) ID(52)  ID(12)  
-                                         * ID(87)  
-cbnz l13                                 | ID(45)  ID(35)  SP      R0      ID(72)  
-                                         * ID(95)  ID(100) ID(101) ID(19)  ID(103) 
-                                         * ID(24)  ID(102) ID(109) ID(115) ID(26)  
-                                         * ID(112) ID(28)  ID(29)  ID(30)  ID(31)  
-                                         * ID(32)  ID(34)  ID(12)  ID(75)  ID(87)  
+l11:                                     | ID(2)     ID(1)     R29       
+mov ID(86), ID(2)                        | ID(2)     ID(1)     R29       
+mov ID(17), ID(86)                       | ID(86)    ID(1)     R29       
+mov ID(88), ID(17)                       | ID(17)    ID(1)     R29       
+mov ID(89), #2                           | ID(88)    ID(1)     R29       
+sub ID(87), ID(88), ID(89)               | ID(88)    ID(89)    ID(1)     R29       
+mov ID(2), ID(87)                        | ID(87)    ID(1)     R29       
+mov ID(90), ID(2)                        | ID(2)     ID(1)     R29       
+mov ID(19), ID(90)                       | ID(90)    ID(1)     ID(2)     R29       
+mov ID(91), ID(1)                        | ID(1)     ID(19)    ID(2)     R29       
+mov ID(18), ID(91)                       | ID(91)    ID(19)    ID(2)     ID(1)     
+mov ID(94), ID(19)                       | ID(19)    ID(18)    ID(2)     ID(1)     
+mov ID(96), ID(18)                       | ID(18)    ID(2)     ID(1)     R29       
+mov ID(97), #2                           | ID(96)    ID(2)     ID(1)     R29       
+sdiv ID(95), ID(96), ID(97)              | ID(96)    ID(97)    ID(2)     ID(1)     
+cmp ID(94), ID(95)                       | ID(95)    ID(2)     ID(1)     R29       
+cset ID(93), EQ                          | ID(2)     ID(1)     R29       
+mvn ID(92), ID(93)                       | ID(93)    ID(2)     ID(1)     R29       
+cbnz l13                                 | ID(2)     ID(1)     R29       
 
-l12:                                     | ID(104) R0      
-b l8                                     | SP      R0      ID(63)  ID(64)  ID(13)  
-                                         * ID(2)   ID(18)  ID(98)  
+l12:                                     | ID(2)     ID(1)     R29       
+b l8                                     | ID(2)     ID(1)     R29       
 
-l13:                                     | ID(23)  ID(108) ID(3)   ID(46)  SP      
-                                         * ID(65)  ID(122) R0      ID(33)  ID(4)   
-                                         * ID(64)  ID(62)  ID(37)  ID(13)  ID(81)  
-                                         * ID(86)  ID(136) ID(18)  ID(98)  ID(20)  
-                                         * ID(140) ID(107) ID(141) ID(22)  ID(119) 
-                                         * ID(125) ID(126) ID(129) ID(130) ID(5)   
-                                         * ID(38)  ID(139) ID(39)  ID(143) ID(52)  
-                                         * ID(75)  ID(87)  ID(93)  ID(35)  ID(70)  
-                                         * ID(26)  
-mov ID(98), ID(2)                        | ID(2)   ID(102) ID(26)  ID(112) ID(52)  
-                                         * ID(75)  ID(87)  ID(93)  ID(35)  SP      
-                                         * ID(19)  
-mov ID(20), ID(98)                       | ID(98)  
-mov ID(100), ID(20)                      | ID(20)  ID(106) ID(107) ID(25)  ID(22)  
-                                         * ID(119) ID(120) R0      ID(125) ID(126) 
-                                         * ID(130) ID(7)   ID(5)   ID(133) ID(38)  
-                                         * ID(39)  ID(143) ID(52)  ID(12)  ID(75)  
-                                         * ID(87)  ID(93)  ID(35)  SP      ID(70)  
-                                         * ID(102) ID(26)  ID(112) 
-mov ID(101), #1                          | ID(3)   ID(105) ID(110) ID(111) ID(4)   
-                                         * ID(118) ID(121) ID(123) ID(124) ID(127) 
-                                         * ID(131) ID(135) ID(0)   ID(47)  ID(21)  
-                                         * ID(68)  ID(69)  ID(14)  ID(82)  ID(16)  
-                                         * ID(90)  ID(45)  ID(104) ID(35)  SP      
-                                         * ID(70)  ID(95)  ID(100) ID(19)  ID(102) 
-                                         * ID(112) ID(52)  ID(34)  ID(12)  ID(75)  
-                                         * ID(93)  
-add ID(99), ID(100), ID(101)             | ID(100) ID(101) ID(103) ID(24)  ID(109) 
-                                         * ID(116) ID(28)  ID(29)  ID(30)  ID(31)  
-                                         * ID(34)  
-mov ID(2), ID(99)                        | ID(99)  ID(3)   
-b l7                                     | ID(35)  SP      ID(70)  ID(19)  ID(2)   
-                                         * ID(26)  ID(112) ID(52)  ID(12)  ID(75)  
-                                         * ID(93)  
+l13:                                     | ID(2)     ID(1)     R29       
+mov ID(98), ID(2)                        | ID(2)     ID(1)     R29       
+mov ID(20), ID(98)                       | ID(98)    ID(1)     R29       
+mov ID(100), ID(20)                      | ID(20)    ID(1)     R29       
+mov ID(101), #1                          | ID(100)   ID(1)     R29       
+add ID(99), ID(100), ID(101)             | ID(100)   ID(101)   ID(1)     R29       
+mov ID(2), ID(99)                        | ID(99)    ID(1)     R29       
+b l7                                     | ID(2)     ID(1)     R29       
 
-l14:                                     | ID(104) R0      
-mov ID(102), #1                          | ID(23)  ID(108) ID(3)   ID(46)  SP      
-                                         * ID(65)  ID(122) R0      ID(33)  ID(4)   
-                                         * ID(64)  ID(62)  ID(37)  ID(13)  ID(81)  
-                                         * ID(86)  ID(136) ID(18)  ID(98)  ID(20)  
-                                         * ID(140) ID(107) ID(141) ID(22)  ID(119) 
-                                         * ID(125) ID(126) ID(129) ID(130) ID(5)   
-                                         * ID(38)  ID(139) ID(39)  ID(143) ID(52)  
-                                         * ID(75)  ID(87)  ID(93)  ID(35)  ID(70)  
-                                         * ID(26)  
-mov R0, ID(102)                          | ID(102) ID(26)  ID(112) ID(52)  ID(12)  
-                                         * ID(2)   ID(87)  ID(93)  ID(35)  SP      
-                                         * ID(19)  
-ret                                     
+l14:                                     | R29       
+mov ID(102), #1                          | R29       
+mov R0, ID(102)                          | ID(102)   R29       
+ret                                      | R29       
 
-l15:                                     | ID(106) ID(107) ID(25)  ID(22)  ID(4)   
-                                         * ID(120) R0      ID(125) ID(126) ID(129) 
-                                         * ID(7)   ID(5)   ID(133) ID(38)  ID(139) 
-                                         * ID(143) ID(52)  ID(12)  ID(75)  ID(2)   
-                                         * ID(93)  ID(35)  SP      ID(70)  ID(19)  
-                                         * ID(26)  ID(112) 
-mov ID(103), ID(3)                       | ID(3)   ID(105) ID(110) ID(111) ID(4)   
-                                         * ID(118) ID(121) ID(123) ID(124) ID(127) 
-                                         * ID(131) ID(135) ID(0)   ID(47)  ID(21)  
-                                         * ID(68)  ID(69)  ID(14)  ID(82)  ID(16)  
-                                         * ID(90)  ID(45)  ID(104) ID(35)  SP      
-                                         * ID(70)  ID(95)  ID(100) ID(101) ID(19)  
-                                         * ID(26)  ID(112) ID(52)  ID(34)  ID(12)  
-                                         * ID(87)  ID(93)  
-mov ID(26), ID(103)                      | ID(103) ID(24)  ID(109) ID(115) ID(116) 
-                                         * ID(29)  ID(30)  ID(31)  ID(32)  ID(34)  
-mov ID(104), ID(3)                       | ID(3)   
-mov ID(23), ID(104)                      | ID(104) R0      
-mov ID(106), ID(23)                      | ID(23)  ID(108) ID(3)   ID(46)  SP      
-                                         * ID(65)  ID(122) R0      ID(33)  ID(4)   
-                                         * ID(64)  ID(62)  ID(37)  ID(13)  ID(81)  
-                                         * ID(86)  ID(136) ID(18)  ID(98)  ID(20)  
-                                         * ID(140) ID(107) ID(141) ID(22)  ID(119) 
-                                         * ID(125) ID(126) ID(129) ID(130) ID(5)   
-                                         * ID(38)  ID(139) ID(39)  ID(143) ID(52)  
-                                         * ID(75)  ID(87)  ID(93)  ID(35)  ID(70)  
-                                         * ID(102) ID(26)  
-mov ID(107), #1                          | ID(26)  ID(112) R0      ID(52)  ID(12)  
-                                         * ID(2)   ID(87)  ID(93)  ID(35)  SP      
-                                         * ID(19)  ID(102) 
-sub ID(105), ID(106), ID(107)            | ID(106) ID(107) ID(25)  ID(22)  ID(4)   
-                                         * ID(120) R0      ID(125) ID(126) ID(129) 
-                                         * ID(7)   ID(5)   ID(133) ID(38)  ID(139) 
-                                         * ID(143) ID(52)  ID(12)  ID(75)  ID(2)   
-                                         * ID(93)  ID(35)  SP      ID(70)  ID(19)  
-                                         * ID(26)  ID(112) 
-mov ID(24), ID(105)                      | ID(105) ID(110) ID(111) ID(4)   ID(117) 
-                                         * ID(121) ID(123) ID(124) ID(127) ID(128) 
-                                         * ID(135) ID(0)   ID(47)  ID(21)  ID(60)  
-                                         * ID(69)  ID(14)  ID(82)  ID(16)  ID(2)   
-                                         * ID(45)  ID(104) ID(35)  SP      ID(72)  
-                                         * ID(95)  ID(100) ID(101) ID(19)  ID(103) 
-                                         * ID(26)  ID(112) ID(52)  ID(34)  ID(12)  
-                                         * ID(87)  ID(93)  
-mov R0, ID(24)                           | ID(24)  ID(109) ID(115) ID(116) ID(28)  
-                                         * ID(30)  ID(31)  ID(32)  ID(34)  
-bl l3                                   
-mov ID(108), R0                          | R0      
-mov ID(25), ID(108)                      | ID(108) ID(3)   ID(46)  SP      ID(59)  
-                                         * ID(122) R0      ID(33)  ID(4)   ID(63)  
-                                         * ID(62)  ID(37)  ID(13)  ID(81)  ID(2)   
-                                         * ID(136) ID(18)  ID(98)  ID(20)  ID(137) 
-                                         * ID(106) ID(107) ID(141) ID(22)  ID(119) 
-                                         * ID(125) ID(126) ID(129) ID(130) ID(5)   
-                                         * ID(38)  ID(139) ID(39)  ID(143) ID(52)  
-                                         * ID(75)  ID(87)  ID(93)  ID(35)  ID(70)  
-                                         * ID(102) ID(26)  
-mov ID(110), ID(26)                      | ID(26)  ID(112) R0      ID(52)  ID(12)  
-                                         * ID(2)   ID(87)  ID(93)  ID(35)  SP      
-                                         * ID(19)  ID(102) 
-mov ID(111), ID(25)                      | ID(25)  ID(22)  ID(4)   ID(119) ID(120) 
-                                         * ID(125) ID(126) ID(129) ID(130) ID(7)   
-                                         * ID(133) ID(38)  ID(139) ID(39)  ID(143) 
-                                         * ID(12)  ID(75)  ID(2)   ID(87)  ID(93)  
-                                         * SP      ID(70)  ID(19)  ID(102) ID(26)  
-smull ID(109), ID(110), ID(111)          | ID(110) ID(111) ID(4)   ID(117) ID(118) 
-                                         * ID(123) ID(124) ID(127) ID(128) ID(131) 
-                                         * ID(0)   ID(47)  ID(21)  ID(60)  ID(68)  
-                                         * ID(14)  ID(82)  ID(16)  ID(2)   ID(90)  
-                                         * ID(104) ID(35)  SP      ID(72)  ID(70)  
-                                         * ID(100) ID(101) ID(19)  ID(103) ID(24)  
-                                         * ID(26)  ID(112) ID(52)  ID(34)  ID(12)  
-                                         * ID(87)  ID(93)  
-mov R0, ID(109)                          | ID(109) ID(115) ID(116) ID(28)  ID(29)  
-                                         * ID(31)  ID(32)  ID(34)  
-ret                                     
+l15:                                     | ID(3)     SP        R29       
+mov ID(103), ID(3)                       | ID(3)     SP        R29       
+mov ID(26), ID(103)                      | ID(103)   ID(3)     SP        R29       
+mov ID(104), ID(3)                       | ID(3)     SP        ID(26)    R29       
+mov ID(23), ID(104)                      | ID(104)   SP        ID(26)    R29       
+mov ID(106), ID(23)                      | ID(23)    SP        ID(26)    R29       
+mov ID(107), #1                          | ID(106)   SP        ID(26)    R29       
+sub ID(105), ID(106), ID(107)            | ID(106)   ID(107)   SP        ID(26)    
+mov ID(24), ID(105)                      | ID(105)   SP        ID(26)    R29       
+mov R0, ID(24)                           | ID(24)    SP        ID(26)    R29       
+bl l3                                    | R0        SP        ID(26)    R29       
+mov ID(108), R0                          | R0        ID(26)    R29       
+mov ID(25), ID(108)                      | ID(108)   ID(26)    R29       
+mov ID(110), ID(26)                      | ID(26)    ID(25)    R29       
+mov ID(111), ID(25)                      | ID(25)    ID(110)   R29       
+smull ID(109), ID(110), ID(111)          | ID(110)   ID(111)   R29       
+mov R0, ID(109)                          | ID(109)   R29       
+ret                                      | R29       
 
-l16:                                    
-mov ID(112), ID(3)                       | ID(3)   ID(46)  SP      ID(59)  ID(65)  
-                                         * R0      ID(33)  ID(4)   ID(63)  ID(64)  
-                                         * ID(37)  ID(13)  ID(81)  ID(2)   ID(86)  
-                                         * ID(18)  ID(98)  ID(20)  ID(137) ID(140) 
-                                         * ID(107) ID(25)  ID(141) ID(22)  ID(119) 
-                                         * ID(125) ID(126) ID(129) ID(130) ID(5)   
-                                         * ID(38)  ID(139) ID(39)  ID(143) ID(52)  
-                                         * ID(75)  ID(87)  ID(93)  ID(35)  ID(70)  
-                                         * ID(102) ID(26)  
-mov ID(22), ID(112)                      | ID(112) R0      ID(52)  ID(12)  ID(75)  
-                                         * ID(87)  ID(93)  ID(35)  SP      ID(70)  
-                                         * ID(102) ID(26)  
-mov ID(114), ID(22)                      | ID(22)  ID(4)   ID(119) ID(120) R0      
-                                         * ID(126) ID(129) ID(130) ID(7)   ID(5)   
-                                         * ID(38)  ID(139) ID(39)  ID(143) ID(52)  
-                                         * ID(75)  ID(2)   ID(87)  ID(93)  ID(35)  
-                                         * ID(70)  ID(19)  ID(102) ID(26)  ID(112) 
-mov ID(115), #1                          | ID(4)   ID(117) ID(118) ID(121) ID(123) 
-                                         * ID(127) ID(128) ID(131) ID(135) ID(0)   
-                                         * ID(21)  ID(60)  ID(68)  ID(69)  ID(14)  
-                                         * ID(16)  ID(2)   ID(90)  ID(45)  ID(104) 
-                                         * SP      ID(72)  ID(70)  ID(95)  ID(100) 
-                                         * ID(19)  ID(103) ID(24)  ID(102) ID(109) 
-                                         * ID(112) ID(52)  ID(34)  ID(12)  ID(75)  
-                                         * ID(93)  
-cmp ID(114), ID(115)                     | ID(115) ID(116) ID(28)  ID(29)  ID(30)  
-                                         * ID(32)  ID(34)  
-cset ID(113), EQ                        
-cbnz l14                                 | ID(46)  SP      ID(59)  ID(65)  ID(122) 
-                                         * ID(33)  ID(4)   ID(63)  ID(64)  ID(62)  
-                                         * ID(13)  ID(81)  ID(2)   ID(86)  ID(136) 
-                                         * ID(98)  ID(20)  ID(137) ID(140) ID(106) 
-                                         * ID(25)  ID(141) ID(22)  ID(119) ID(120) 
-                                         * ID(126) ID(129) ID(130) ID(5)   ID(133) 
-                                         * ID(139) ID(39)  ID(143) ID(52)  ID(12)  
-                                         * ID(87)  ID(93)  ID(35)  ID(70)  ID(19)  
-                                         * ID(26)  ID(112) 
-b l15                                    | R0      ID(52)  ID(12)  ID(75)  ID(2)   
-                                         * ID(93)  ID(35)  SP      ID(70)  ID(19)  
-                                         * ID(26)  ID(112) 
+l16:                                     | ID(3)     R29       SP        
+mov ID(112), ID(3)                       | ID(3)     R29       SP        
+mov ID(22), ID(112)                      | ID(112)   ID(3)     R29       SP        
+mov ID(114), ID(22)                      | ID(22)    ID(3)     R29       SP        
+mov ID(115), #1                          | ID(3)     R29       SP        
+cmp ID(114), ID(115)                     | ID(115)   ID(3)     R29       SP        
+cset ID(113), EQ                         | ID(3)     R29       SP        
+cbnz l14                                 | ID(3)     R29       SP        
+b l15                                    | ID(3)     SP        R29       
 
-l17:                                     | ID(4)   ID(119) ID(120) R0      ID(125) 
-                                         * ID(129) ID(130) ID(7)   ID(5)   ID(133) 
-                                         * ID(139) ID(39)  ID(143) ID(52)  ID(12)  
-                                         * ID(2)   ID(87)  ID(93)  ID(35)  SP      
-                                         * ID(19)  ID(102) ID(26)  ID(112) 
-mov ID(116), ID(4)                       | ID(4)   ID(117) ID(118) ID(121) ID(123) 
-                                         * ID(127) ID(128) ID(131) ID(135) ID(0)   
-                                         * ID(21)  ID(60)  ID(68)  ID(69)  ID(14)  
-                                         * ID(16)  ID(2)   ID(90)  ID(45)  ID(104) 
-                                         * SP      ID(72)  ID(70)  ID(95)  ID(100) 
-                                         * ID(19)  ID(103) ID(24)  ID(102) ID(109) 
-                                         * ID(26)  ID(112) ID(52)  ID(34)  ID(12)  
-                                         * ID(87)  ID(93)  
-mov R0, ID(116)                          | ID(116) ID(28)  ID(29)  ID(30)  ID(31)  
-                                         * ID(34)  
-ret                                     
+l17:                                     | ID(4)     R29       
+mov ID(116), ID(4)                       | ID(4)     R29       
+mov R0, ID(116)                          | ID(116)   R29       
+ret                                      | R29       
 
-l18:                                     | ID(122) ID(33)  ID(37)  ID(136) ID(137) 
-                                         * ID(141) 
-mov ID(117), ID(4)                       | ID(4)   ID(119) ID(120) R0      ID(125) 
-                                         * ID(129) ID(130) ID(7)   ID(5)   ID(133) 
-                                         * ID(139) ID(39)  ID(143) ID(52)  ID(12)  
-                                         * ID(2)   ID(87)  ID(93)  ID(35)  SP      
-                                         * ID(19)  ID(102) ID(26)  ID(112) 
-mov ID(28), ID(117)                      | ID(117) ID(118) ID(121) ID(123) ID(124) 
-                                         * ID(128) ID(131) ID(135) ID(0)   ID(47)  
-                                         * ID(60)  ID(68)  ID(69)  ID(14)  ID(82)  
-                                         * ID(2)   ID(90)  ID(45)  ID(104) ID(35)  
-                                         * ID(72)  ID(70)  ID(95)  ID(100) ID(101) 
-                                         * ID(103) ID(24)  ID(102) ID(109) ID(115) 
-                                         * ID(116) ID(112) ID(52)  ID(34)  ID(12)  
-                                         * ID(87)  ID(93)  
-mov ID(119), ID(28)                      | ID(28)  ID(29)  ID(30)  ID(31)  ID(32)  
-mov ID(120), #1                          | ID(122) ID(33)  ID(37)  ID(136) ID(137) 
-                                         * ID(141) 
-sub ID(118), ID(119), ID(120)            | ID(119) ID(120) R0      ID(4)   ID(125) 
-                                         * ID(129) ID(130) ID(7)   ID(5)   ID(133) 
-                                         * ID(139) ID(39)  ID(143) ID(52)  ID(12)  
-                                         * ID(2)   ID(87)  ID(93)  ID(35)  SP      
-                                         * ID(19)  ID(102) ID(26)  ID(112) 
-mov ID(29), ID(118)                      | ID(118) ID(121) ID(123) ID(124) ID(127) 
-                                         * ID(131) ID(135) ID(0)   ID(47)  ID(21)  
-                                         * ID(68)  ID(69)  ID(14)  ID(82)  ID(16)  
-                                         * ID(90)  ID(45)  ID(104) ID(35)  SP      
-                                         * ID(70)  ID(95)  ID(100) ID(101) ID(19)  
-                                         * ID(24)  ID(102) ID(109) ID(115) ID(26)  
-                                         * ID(112) ID(28)  ID(52)  ID(34)  ID(12)  
-                                         * ID(87)  ID(93)  
-mov R0, ID(29)                           | ID(29)  ID(30)  ID(31)  ID(32)  ID(34)  
-bl l4                                    | ID(122) ID(33)  ID(37)  ID(136) ID(137) 
-                                         * ID(141) 
-mov ID(121), R0                          | R0      ID(4)   ID(125) ID(126) ID(129) 
-                                         * ID(7)   ID(5)   ID(133) ID(38)  ID(139) 
-                                         * ID(143) ID(52)  ID(12)  ID(75)  ID(2)   
-                                         * ID(93)  ID(35)  SP      ID(70)  ID(19)  
-                                         * ID(26)  ID(112) 
-mov ID(30), ID(121)                      | ID(121) ID(123) ID(124) ID(127) ID(128) 
-                                         * ID(135) ID(0)   ID(47)  ID(21)  ID(60)  
-                                         * ID(69)  ID(14)  ID(82)  ID(16)  ID(2)   
-                                         * ID(45)  ID(104) ID(35)  SP      ID(72)  
-                                         * ID(95)  ID(100) ID(101) ID(19)  ID(103) 
-                                         * ID(102) ID(109) ID(115) ID(26)  ID(116) 
-                                         * ID(28)  ID(29)  ID(52)  ID(34)  ID(12)  
-                                         * ID(87)  ID(93)  
-mov ID(122), ID(30)                      | ID(30)  ID(31)  ID(32)  ID(34)  
-mov ID(34), ID(122)                      | ID(122) ID(33)  ID(37)  ID(136) ID(137) 
-                                         * ID(141) 
-mov ID(123), ID(4)                       | ID(4)   ID(125) ID(126) R0      ID(129) 
-                                         * ID(7)   ID(5)   ID(133) ID(38)  ID(139) 
-                                         * ID(143) ID(52)  ID(12)  ID(75)  ID(2)   
-                                         * ID(93)  ID(35)  SP      ID(70)  ID(19)  
-                                         * ID(26)  ID(112) 
-mov ID(31), ID(123)                      | ID(123) ID(124) ID(127) ID(128) ID(131) 
-                                         * ID(0)   ID(47)  ID(21)  ID(60)  ID(68)  
-                                         * ID(14)  ID(82)  ID(16)  ID(2)   ID(90)  
-                                         * ID(104) ID(35)  SP      ID(72)  ID(70)  
-                                         * ID(100) ID(101) ID(19)  ID(103) ID(24)  
-                                         * ID(109) ID(115) ID(26)  ID(116) ID(112) 
-                                         * ID(29)  ID(30)  ID(52)  ID(34)  ID(12)  
-                                         * ID(87)  ID(93)  
-mov ID(125), ID(31)                      | ID(31)  ID(32)  ID(34)  
-mov ID(126), #2                          | ID(33)  ID(37)  ID(136) ID(137) ID(140) 
-sub ID(124), ID(125), ID(126)            | ID(125) ID(126) R0      ID(129) ID(130) 
-                                         * ID(5)   ID(133) ID(38)  ID(139) ID(39)  
-                                         * ID(52)  ID(12)  ID(75)  ID(2)   ID(87)  
-                                         * ID(35)  SP      ID(70)  ID(19)  ID(102) 
-                                         * ID(112) 
-mov ID(32), ID(124)                      | ID(124) ID(127) ID(128) ID(131) ID(135) 
-                                         * ID(47)  ID(21)  ID(60)  ID(68)  ID(69)  
-                                         * ID(82)  ID(16)  ID(2)   ID(90)  ID(45)  
-                                         * ID(35)  SP      ID(72)  ID(70)  ID(95)  
-                                         * ID(101) ID(19)  ID(103) ID(24)  ID(102) 
-                                         * ID(115) ID(26)  ID(116) ID(112) ID(28)  
-                                         * ID(30)  ID(31)  ID(52)  ID(34)  ID(12)  
-                                         * ID(87)  ID(93)  
-mov R0, ID(32)                           | ID(32)  ID(34)  
-bl l4                                    | ID(33)  ID(37)  ID(136) ID(137) ID(140) 
-mov ID(127), R0                          | R0      ID(129) ID(130) ID(7)   ID(5)   
-                                         * ID(38)  ID(139) ID(39)  ID(143) ID(52)  
-                                         * ID(75)  ID(2)   ID(87)  ID(93)  ID(35)  
-                                         * ID(70)  ID(19)  ID(102) ID(26)  ID(112) 
-mov ID(33), ID(127)                      | ID(127) ID(128) ID(131) ID(135) ID(0)   
-                                         * ID(21)  ID(60)  ID(68)  ID(69)  ID(14)  
-                                         * ID(16)  ID(2)   ID(90)  ID(45)  ID(104) 
-                                         * SP      ID(72)  ID(70)  ID(95)  ID(100) 
-                                         * ID(19)  ID(103) ID(24)  ID(102) ID(109) 
-                                         * ID(26)  ID(116) ID(112) ID(28)  ID(29)  
-                                         * ID(31)  ID(52)  ID(32)  ID(34)  ID(12)  
-                                         * ID(87)  ID(93)  
-mov ID(129), ID(34)                      | ID(34)  
-mov ID(130), ID(33)                      | ID(33)  ID(37)  ID(136) ID(137) ID(140) 
-add ID(128), ID(129), ID(130)            | ID(129) ID(130) ID(7)   ID(5)   ID(133) 
-                                         * ID(139) ID(39)  ID(143) R0      ID(52)  
-                                         * ID(75)  ID(2)   ID(87)  ID(93)  ID(35)  
-                                         * ID(70)  ID(19)  ID(102) ID(26)  ID(112) 
-mov R0, ID(128)                          | ID(128) ID(131) ID(135) ID(0)   ID(47)  
-                                         * ID(60)  ID(68)  ID(69)  ID(14)  ID(82)  
-                                         * ID(2)   ID(90)  ID(45)  ID(104) ID(35)  
-                                         * ID(72)  ID(70)  ID(95)  ID(100) ID(101) 
-                                         * ID(103) ID(24)  ID(102) ID(109) ID(115) 
-                                         * ID(116) ID(112) ID(28)  ID(29)  ID(30)  
-                                         * ID(52)  ID(32)  ID(34)  ID(12)  ID(75)  
-                                         * ID(93)  
-ret                                     
+l18:                                     | ID(4)     SP        R29       
+mov ID(117), ID(4)                       | ID(4)     SP        R29       
+mov ID(28), ID(117)                      | ID(117)   SP        ID(4)     R29       
+mov ID(119), ID(28)                      | ID(28)    SP        ID(4)     R29       
+mov ID(120), #1                          | ID(119)   SP        ID(4)     R29       
+sub ID(118), ID(119), ID(120)            | ID(119)   ID(120)   SP        ID(4)     
+mov ID(29), ID(118)                      | ID(118)   SP        ID(4)     R29       
+mov R0, ID(29)                           | ID(29)    SP        ID(4)     R29       
+bl l4                                    | R0        SP        ID(4)     R29       
+mov ID(121), R0                          | R0        ID(4)     SP        R29       
+mov ID(30), ID(121)                      | ID(121)   ID(4)     SP        R29       
+mov ID(122), ID(30)                      | ID(30)    ID(4)     SP        R29       
+mov ID(34), ID(122)                      | ID(122)   ID(4)     SP        R29       
+mov ID(123), ID(4)                       | ID(4)     SP        ID(34)    R29       
+mov ID(31), ID(123)                      | ID(123)   SP        ID(34)    R29       
+mov ID(125), ID(31)                      | ID(31)    SP        ID(34)    R29       
+mov ID(126), #2                          | ID(125)   SP        ID(34)    R29       
+sub ID(124), ID(125), ID(126)            | ID(125)   ID(126)   SP        ID(34)    
+mov ID(32), ID(124)                      | ID(124)   SP        ID(34)    R29       
+mov R0, ID(32)                           | ID(32)    SP        ID(34)    R29       
+bl l4                                    | R0        SP        ID(34)    R29       
+mov ID(127), R0                          | R0        ID(34)    R29       
+mov ID(33), ID(127)                      | ID(127)   ID(34)    R29       
+mov ID(129), ID(34)                      | ID(34)    ID(33)    R29       
+mov ID(130), ID(33)                      | ID(33)    ID(129)   R29       
+add ID(128), ID(129), ID(130)            | ID(129)   ID(130)   R29       
+mov R0, ID(128)                          | ID(128)   R29       
+ret                                      | R29       
 
-l19:                                     | ID(37)  ID(136) ID(137) ID(140) ID(141) 
-mov ID(131), ID(7)                       | ID(7)   ID(5)   ID(133) ID(38)  ID(139) 
-                                         * ID(143) R0      ID(52)  ID(12)  ID(75)  
-                                         * ID(87)  ID(93)  ID(35)  SP      ID(70)  
-                                         * ID(102) ID(26)  ID(112) 
-mov ID(37), ID(131)                      | ID(131) ID(135) ID(0)   ID(47)  ID(21)  
-                                         * ID(68)  ID(69)  ID(14)  ID(82)  ID(16)  
-                                         * ID(90)  ID(45)  ID(104) ID(35)  SP      
-                                         * ID(72)  ID(70)  ID(95)  ID(100) ID(101) 
-                                         * ID(103) ID(24)  ID(102) ID(109) ID(115) 
-                                         * ID(116) ID(112) ID(28)  ID(29)  ID(30)  
-                                         * ID(52)  ID(32)  ID(34)  ID(12)  ID(75)  
-                                         * ID(93)  
-mov ID(134), ID(37)                      | ID(37)  ID(136) ID(137) ID(140) ID(141) 
-mov ID(135), ID(5)                       | ID(5)   ID(133) ID(7)   ID(38)  ID(139) 
-                                         * ID(143) R0      ID(52)  ID(12)  ID(75)  
-                                         * ID(87)  ID(93)  ID(35)  SP      ID(70)  
-                                         * ID(102) ID(26)  ID(112) 
-cmp ID(134), ID(135)                     | ID(135) ID(0)   ID(47)  ID(21)  ID(60)  
-                                         * ID(69)  ID(14)  ID(82)  ID(16)  ID(2)   
-                                         * ID(45)  ID(104) ID(35)  SP      R0      
-                                         * ID(70)  ID(95)  ID(100) ID(101) ID(19)  
-                                         * ID(24)  ID(102) ID(109) ID(115) ID(26)  
-                                         * ID(112) ID(28)  ID(29)  ID(30)  ID(31)  
-                                         * ID(32)  ID(34)  ID(12)  ID(75)  ID(87)  
-cset ID(133), LT                         | ID(136) ID(137) ID(140) ID(141) 
-mvn ID(132), ID(133)                     | ID(133) ID(7)   ID(38)  ID(139) ID(39)  
-                                         * R0      ID(52)  ID(12)  ID(75)  ID(2)   
-                                         * ID(93)  ID(35)  SP      ID(70)  ID(19)  
-                                         * ID(26)  ID(112) 
-cbnz l21                                 | ID(0)   ID(47)  ID(21)  ID(60)  ID(68)  
-                                         * ID(14)  ID(82)  ID(16)  ID(2)   ID(90)  
-                                         * ID(104) ID(35)  SP      R0      ID(72)  
-                                         * ID(95)  ID(100) ID(101) ID(19)  ID(103) 
-                                         * ID(102) ID(109) ID(115) ID(26)  ID(116) 
-                                         * ID(28)  ID(29)  ID(30)  ID(31)  ID(52)  
-                                         * ID(34)  ID(12)  ID(75)  ID(87)  ID(93)  
+l19:                                     | ID(7)     ID(5)     SP        R29       
+mov ID(131), ID(7)                       | ID(7)     ID(5)     SP        R29       
+mov ID(37), ID(131)                      | ID(131)   ID(5)     ID(7)     SP        
+mov ID(134), ID(37)                      | ID(37)    ID(5)     ID(7)     SP        
+mov ID(135), ID(5)                       | ID(5)     ID(7)     SP        R29       
+cmp ID(134), ID(135)                     | ID(135)   ID(7)     SP        R29       
+cset ID(133), LT                         | ID(7)     SP        R29       ID(5)     
+mvn ID(132), ID(133)                     | ID(133)   ID(7)     SP        R29       
+cbnz l21                                 | ID(7)     SP        R29       ID(5)     
 
-l20:                                     | ID(136) ID(137) ID(140) ID(141) 
-mov ID(136), ID(7)                       | ID(7)   ID(38)  ID(139) ID(39)  ID(143) 
-                                         * ID(52)  ID(12)  ID(75)  ID(2)   ID(87)  
-                                         * ID(35)  SP      ID(70)  ID(19)  ID(102) 
-                                         * ID(112) 
-mov ID(38), ID(136)                      | ID(136) ID(137) ID(140) ID(141) 
-mov ID(138), ID(38)                      | ID(38)  ID(139) ID(7)   ID(39)  ID(143) 
-                                         * ID(52)  ID(12)  ID(75)  ID(2)   ID(87)  
-                                         * ID(35)  SP      ID(70)  ID(19)  ID(102) 
-                                         * ID(112) 
-mov ID(139), #2                          | ID(137) ID(140) ID(141) 
-sub ID(137), ID(138), ID(139)            | ID(138) ID(139) ID(7)   ID(39)  ID(143) 
-                                         * ID(52)  ID(12)  ID(75)  ID(2)   ID(87)  
-                                         * ID(35)  SP      ID(70)  ID(19)  ID(102) 
-                                         * ID(112) 
-mov ID(7), ID(137)                       | ID(137) ID(140) ID(141) 
-mov ID(140), ID(7)                       | ID(7)   ID(39)  ID(143) R0      ID(52)  
-                                         * ID(75)  ID(2)   ID(87)  ID(93)  ID(35)  
-                                         * ID(70)  ID(19)  ID(102) ID(26)  ID(112) 
-mov ID(39), ID(140)                      | ID(140) ID(141) 
-mov ID(142), ID(39)                      | ID(39)  ID(143) R0      ID(52)  ID(12)  
-                                         * ID(2)   ID(87)  ID(93)  ID(35)  SP      
-                                         * ID(19)  ID(102) ID(26)  ID(112) 
-mov ID(143), #1                          | ID(141) 
-add ID(141), ID(142), ID(143)            | ID(142) ID(143) R0      ID(52)  ID(12)  
-                                         * ID(2)   ID(87)  ID(93)  ID(35)  SP      
-                                         * ID(19)  ID(102) ID(26)  ID(112) 
-mov ID(7), ID(141)                       | ID(141) 
-b l19                                    | R0      ID(52)  ID(12)  ID(75)  ID(2)   
-                                         * ID(93)  ID(35)  SP      ID(70)  ID(19)  
-                                         * ID(26)  ID(112) 
+l20:                                     | ID(7)     ID(5)     SP        R29       
+mov ID(136), ID(7)                       | ID(7)     ID(5)     SP        R29       
+mov ID(38), ID(136)                      | ID(136)   ID(5)     SP        R29       
+mov ID(138), ID(38)                      | ID(38)    ID(5)     SP        R29       
+mov ID(139), #2                          | ID(138)   ID(5)     SP        R29       
+sub ID(137), ID(138), ID(139)            | ID(138)   ID(139)   ID(5)     SP        
+mov ID(7), ID(137)                       | ID(137)   ID(5)     SP        R29       
+mov ID(140), ID(7)                       | ID(7)     ID(5)     SP        R29       
+mov ID(39), ID(140)                      | ID(140)   ID(5)     SP        R29       
+mov ID(142), ID(39)                      | ID(39)    ID(5)     SP        R29       
+mov ID(143), #1                          | ID(142)   ID(5)     SP        R29       
+add ID(141), ID(142), ID(143)            | ID(142)   ID(143)   ID(5)     SP        
+mov ID(7), ID(141)                       | ID(141)   ID(5)     SP        R29       
+b l19                                    | ID(7)     ID(5)     SP        R29       
 
-l21:                                    
-mov ID(144), #9                         
-mov ID(40), ID(144)                      | ID(144) 
-mov R0, ID(40)                           | ID(40)  
-bl l2                                    | R0      
-mov ID(145), R0                          | R0      
-mov ID(41), ID(145)                      | ID(145) 
-mov ID(146), #0                         
-mov R0, ID(146)                          | ID(146) 
-ret                                     
+l21:                                     | SP        R29       
+mov ID(144), #9                          | SP        R29       
+mov ID(40), ID(144)                      | ID(144)   SP        R29       
+mov R0, ID(40)                           | ID(40)    SP        R29       
+bl l2                                    | R0        SP        R29       
+mov ID(145), R0                          | R0        R29       
+mov ID(41), ID(145)                      | ID(145)   R29       
+mov ID(146), #0                          | R29       
+mov R0, ID(146)                          | ID(146)   R29       
+ret                                      | R29       
+
+
+
+
+
+
+FILE: tests/data/input5.c
+
+l0:                                      | SP        
+str R29, [SP, #16]                       | SP        
+sub SP, SP, #16                          | SP        R29       
+mov ID(6), #0                            | R29       
+mov ID(0), ID(6)                         | ID(6)     R29       
+mov ID(7), #3                            | R29       
+mov ID(1), ID(7)                         | ID(7)     R29       
+ldr ID(8), [R29, #0]                     | R29       
+mov ID(2), ID(8)                         | ID(8)     R29       
+ldr ID(9), [R29, #4]                     | R29       
+mov ID(2), ID(9)                         | ID(9)     R29       
+mov ID(11), ID(2)                        | ID(2)     R29       
+ldr ID(10), [ID(11)]                     | ID(11)    R29       
+mov R0, ID(10)                           | ID(10)    R29       
+mov ID(12), #0                           | R29       
+mov R0, ID(12)                           | ID(12)    R29       
+ldr ID(13), [R29, #0]                    | R29       
+mov ID(3), ID(13)                        | ID(13)    R29       
+mov ID(15), ID(3)                        | ID(3)     R29       
+ldr ID(14), [ID(15)]                     | ID(15)    R29       
+mov ID(5), ID(14)                        | ID(14)    R29       
+mov ID(16), #3                           | R29       
+mov ID(5), ID(16)                        | ID(16)    R29       
+mov ID(17), #0                           | R29       
+mov R0, ID(17)                           | ID(17)    R29       
+ret                                      | R29       
 
 
 
@@ -892,7 +726,7 @@ ret
 successes:
     visualize
 
-test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.08s
 
 
 running 0 tests

@@ -2,8 +2,8 @@ use super::cfg::*;
 pub struct Printer { count: u32 }
 /* note that this only works for LIR CFG */
 impl Printer {
-    pub fn new() -> Self { Self{count: 0} }
-    pub fn print(&mut self, cfg: &CFG) {
+    pub fn print(cfg: &CFG) {
+        let mut printer = Self { count: 0 };
         println!("digraph CFG {{");
         println!(r#"  node [shape=box, fontname="Helvetica", fontsize=12]"#);
         let idx = cfg.start;
@@ -11,24 +11,24 @@ impl Printer {
             r#"  node{} [label="Start {}"]"#,
             cfg.nodes.len(), idx as u32
         ));
-        self.add_edge(
+        printer.add_edge(
             (cfg.nodes.len()) as u32, 
             idx as u32
         );
         for n in &cfg.nodes {
             let asm = cfg.asm[n.idx];
-            self.label(format!("{}", asm));
+            printer.label(format!("{}", asm));
             if let Some(e) = n.t { 
-                self.add_edge(self.count, e as u32) 
+                printer.add_edge(printer.count, e as u32) 
             }
             if let Some(e) = n.f { 
-                self.add_edge(self.count, e as u32) 
+                printer.add_edge(printer.count, e as u32) 
             }
-            self.count += 1;
+            printer.count += 1;
         }
         println!("}}\n");
     }
-    fn add_edge(&mut self, i: u32, j: u32) {
+    fn add_edge(&self, i: u32, j: u32) {
         println!("    node{} -> node{};", i, j)
     }
     fn label(&self, s: String) {
