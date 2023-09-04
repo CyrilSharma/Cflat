@@ -1,8 +1,10 @@
 use core::fmt;
-use std::{fmt::Display, ops::{Index, IndexMut}, cmp::Ordering};
+use std::fmt::Display;
+use std::cmp::Ordering;
 
 pub type Label = u32;
 pub type Const = usize;
+pub const GPRS: usize = 32;
 // Presume everything costs the same.
 
 #[derive(Copy, Clone)]
@@ -113,13 +115,22 @@ impl Reg {
     pub fn index(&self) -> usize {
         use Reg::*;
         // Only 30 other registers.
-        let mx = 30 as usize;
         match self {
             R(i)  => *i as usize,
-            SP    => mx + 1,
-            RZR   => mx + 2,
-            PC    => mx + 3,
-            ID(i) => mx + 4 + *i as usize
+            SP    => GPRS - 3,
+            RZR   => GPRS - 2,
+            PC    => GPRS - 1,
+            ID(i) => GPRS + *i as usize
+        }
+    }
+    pub fn from(idx: u32) -> Self {
+        use Reg::*;
+        match idx {
+            0..=29 => R(idx as u8),
+            30     => SP,
+            31     => RZR,
+            32     => PC,
+            _      => ID(idx - GPRS as u32)
         }
     }
 }

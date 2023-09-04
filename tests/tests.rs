@@ -3,6 +3,8 @@ use compiler::ast;
 use compiler::ir;
 use compiler::registry::Registry;
 
+use asm::allocate::allocate     as AsmAllocate;
+use asm::allocate::print_graph  as PrintInterference;
 use asm::translator::Translator as AsmTranslator;
 use asm::cfg::CFG               as AsmCfg;
 use asm::cfgprinter::Printer    as AsmCfgPrinter;
@@ -31,7 +33,9 @@ struct PrintConfig {
     frames:  bool,
     asm1:    bool,
     asm1cfg: bool,
-    live:    bool
+    live:    bool,
+    asm2:    bool,
+    inter:   bool,
 }
 
 #[test]
@@ -49,9 +53,12 @@ fn visualize() {
         frames:  false,
         asm1:    false,
         asm1cfg: false,
-        live:    true
+        live:    true,
+        asm2:    true,
+        inter:   false,
     };
     while Path::new(&format!("{dir}/input{i}.c")).exists() {
+        //if i != 5 { i += 1; continue }
         let filepath = &format!("{dir}/input{i}.c");
         let input = fs::read_to_string(filepath).expect("File not found!");
         println!("{}", &format!("FILE: {filepath}"));
@@ -95,21 +102,21 @@ fn visualize() {
             ir::cfgprinter::Printer::new().print(&cfg);
         }
 
-        let asm = AsmTranslator::new(&r, frames).translate(fir);
+        let asm = AsmTranslator::translate(&mut r, frames, fir);
         if p.asm1 { AsmPrinter::print(&asm); }
         
         let cfg = AsmCfg::build(&mut r, &asm);
         if p.asm1cfg { AsmCfgPrinter::print(&cfg); }
 
-        let live = AsmLiveness::new(&cfg);
-        if p.live {
-            AsmPrinter::print_live(
-                &asm, 
-                &live.lin
-            );
-        }
-        println!("\n\n\n\n\n");
+        let (defs, live) = AsmLiveness::compute(&cfg);
+        if p.live { AsmPrinter::print_live(&asm, &live); }
 
+        if p.inter { PrintInterference(r.nids, &defs, &live) }
+        let asm = AsmAllocate(&mut r, asm, defs, live);
+        if p.asm2 { AsmPrinter::print(&asm); }
+
+
+        println!("\n\n\n\n\n");
         i += 1;
     }
 }

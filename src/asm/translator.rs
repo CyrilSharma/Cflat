@@ -45,11 +45,19 @@ impl Translator {
             retid:  reg.ret
         }
     }
-    pub fn translate(&mut self, stmts: Vec<Box<Statement>>) -> Vec<AA> {
+    pub fn translate(r: &mut Registry, flist: Vec<usize>, 
+        stmts: Vec<Box<Statement>>) -> Vec<AA> {
+        let mut t = Self { 
+            opt:    BTreeMap::new(),
+            frames: flist,
+            count:  r.nids as usize,
+            retid:  r.ret
+        };
         let mut res = Vec::<AA>::new();
         for s in stmts {
-            res.extend(self.statement(&s));
+            res.extend(t.statement(&s));
         }
+        r.nids = t.count as u32;
         return res;
     }
     fn statement(&mut self, s: &Statement) -> Vec<AA> {
@@ -98,6 +106,9 @@ impl Translator {
         use Reg::*;
         let Call(f, args) = e else { unreachable!(); };
         let mut asm = Vec::<AA>::new();
+        // You can actually avoid pre-coloring the registers.
+        // Make each call load into one set of temps, 
+        // Pull from the same set of temps here
         let arg_reg = vec![R(0), R(1), R(2), R(3), R(4), R(5), R(6), R(7)];
         if args.len() > 8 { panic!("Too many arguments!"); }
         for i in 0..args.len() {

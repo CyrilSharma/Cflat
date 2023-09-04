@@ -2,25 +2,19 @@
 use super::cfg::CFG;
 use super::asm::{AA, Reg};
 use std::collections::{VecDeque, HashSet};
-pub struct Liveness {
-    pub lin:   Vec<Vec<Reg>>,
-    pred:      Vec<Vec<usize>>,
-    has:       Vec<HashSet<Reg>>,
-    defs:      Vec<HashSet<Reg>>,
-    used:      Vec<HashSet<Reg>>,
-    queue:     VecDeque<(usize, Vec<Reg>)>
-}
+pub struct Liveness;
 impl Liveness {
-    pub fn new(cfg: &CFG) -> Self {
-        let mut pred = vec![Vec::new(); cfg.nodes.len()];
-        let lin = vec![Vec::new(); cfg.nodes.len()];
-        let has = vec![HashSet::new(); cfg.nodes.len()];
-        let mut defs: Vec<HashSet<Reg>> = vec![
-            HashSet::new(); cfg.nodes.len()
-        ];
-        let mut used: Vec<HashSet<Reg>> = vec![
-            HashSet::new(); cfg.nodes.len()
-        ];
+    pub fn compute(cfg: &CFG) -> (
+        Vec<Vec<Reg>>,
+        Vec<Vec<Reg>>
+    ) {
+        let mut pred = vec![Vec::new();     cfg.nodes.len()];
+        // Hashset necessary because there's potentially enormous # of temps.
+        let mut lin  = vec![Vec::new(); cfg.nodes.len()];
+        let mut has  = vec![HashSet::new(); cfg.nodes.len()];
+        // There's at most three uses per asm instruction, hashset unnecessary.
+        let mut defs = vec![Vec::new();     cfg.nodes.len()];
+        let mut uses = vec![Vec::new();     cfg.nodes.len()];
         let mut queue: VecDeque<(usize, Vec<Reg>)> = VecDeque::new();
         for i in 0..cfg.nodes.len() {
             let node = &cfg.nodes[i];
@@ -34,49 +28,30 @@ impl Liveness {
                 pred[fidx].push(idx);
             }
             let asm = cfg.asm[idx];
-            let (d, u) = Self::statement(asm);
-            defs[idx] = HashSet::from_iter(d.into_iter());
-            used[idx] = HashSet::from_iter(u.clone());
-            queue.push_back((idx, u));
+            (defs[idx], uses[idx]) = Self::statement(asm);
+            queue.push_back((idx, uses[idx].clone()));
         }
-        let mut ans = Self {
-            lin,
-            pred,
-            has,
-            defs,
-            used,
-            queue
-        };
-        ans.solve();
-        return ans;
-    }
-
-    // When you understand what to update...
-    pub fn update(&mut self) {}
-
-    fn solve(&mut self) {
-        while let Some((idx, delta)) = self.queue.pop_front() {
+        while let Some((idx, delta)) = queue.pop_front() {
             let mut new_delta: Vec<Reg> = Vec::new();
             for change in delta {
-                if !self.used[idx].contains(&change) &&
-                    self.defs[idx].contains(&change) {
-                    continue;
+                // If we use it, OR we don't overwrite it.
+                if !has[idx].contains(&change) &&
+                    (uses[idx].contains(&change) ||
+                    !defs[idx].contains(&change)) {
+                    lin[idx].push(change);
+                    has[idx].insert(change);
+                    new_delta.push(change);
                 }
-                if self.has[idx].contains(&change) {
-                    continue;
-                }
-                self.has[idx].insert(change);
-                self.lin[idx].push(change);
-                new_delta.push(change);
             }
             if new_delta.len() == 0 { continue }
-            for p in &self.pred[idx] {
-                self.queue.push_back((
+            for p in &pred[idx] {
+                queue.push_back((
                     *p,
                     new_delta.clone()
                 ));
             }
         }
+        return (defs, lin);
     }
     // Def, Use
     #[allow(unused_variables)]
