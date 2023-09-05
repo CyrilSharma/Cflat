@@ -38,8 +38,8 @@ impl Liveness {
                 if !has[idx].contains(&change) &&
                     (uses[idx].contains(&change) ||
                     !defs[idx].contains(&change)) {
-                    lin[idx].push(change);
                     has[idx].insert(change);
+                    lin[idx].push(change);
                     new_delta.push(change);
                 }
             }
@@ -51,7 +51,34 @@ impl Liveness {
                 ));
             }
         }
-        return (defs, lin);
+        let mut confhas = vec![
+            HashSet::new();
+            cfg.nodes.len()
+        ];
+        let mut conflicts = vec![
+            Vec::new();
+            cfg.nodes.len()
+        ];
+        for i in 0..cfg.nodes.len() {
+            let node = &cfg.nodes[i];
+            let idx = node.idx;
+            let mut temp = Vec::new();
+            if let Some(t) = node.t {
+                let tidx = cfg.nodes[t].idx;
+                temp.extend(lin[tidx].clone());
+            }
+            if let Some(f) = node.f {
+                let fidx = cfg.nodes[f].idx;
+                temp.extend(lin[fidx].clone());
+            }
+            for t in temp {
+                if defs[idx].contains(&t) { continue }
+                if confhas[idx].contains(&t) { continue }
+                conflicts[idx].push(t);
+                confhas[idx].insert(t);
+            }
+        }
+        return (defs, conflicts);
     }
     // Def, Use
     #[allow(unused_variables)]

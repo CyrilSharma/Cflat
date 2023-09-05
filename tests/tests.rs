@@ -3,7 +3,7 @@ use compiler::ast;
 use compiler::ir;
 use compiler::registry::Registry;
 
-use asm::allocate::allocate     as AsmAllocate;
+use asm::allocate               as AsmAllocate;
 use asm::allocate::print_graph  as PrintInterference;
 use asm::translator::Translator as AsmTranslator;
 use asm::cfg::CFG               as AsmCfg;
@@ -36,6 +36,7 @@ struct PrintConfig {
     live:    bool,
     asm2:    bool,
     inter:   bool,
+    coal:    bool
 }
 
 #[test]
@@ -53,9 +54,10 @@ fn visualize() {
         frames:  false,
         asm1:    false,
         asm1cfg: false,
-        live:    true,
-        asm2:    true,
-        inter:   false,
+        live:    false,
+        asm2:    false,
+        inter:   true,
+        coal:    true
     };
     while Path::new(&format!("{dir}/input{i}.c")).exists() {
         //if i != 5 { i += 1; continue }
@@ -105,16 +107,32 @@ fn visualize() {
         let asm = AsmTranslator::translate(&mut r, frames, fir);
         if p.asm1 { AsmPrinter::print(&asm); }
         
+
         let cfg = AsmCfg::build(&mut r, &asm);
         if p.asm1cfg { AsmCfgPrinter::print(&cfg); }
 
         let (defs, live) = AsmLiveness::compute(&cfg);
         if p.live { AsmPrinter::print_live(&asm, &live); }
 
-        if p.inter { PrintInterference(r.nids, &defs, &live) }
-        let asm = AsmAllocate(&mut r, asm, defs, live);
-        if p.asm2 { AsmPrinter::print(&asm); }
+        if p.inter {
+            let (_, alist) = AsmAllocate::build_graph(
+                r.nids, defs.clone(), live.clone()
+            );
+            PrintInterference(alist);
+        }
 
+        if p.coal {
+            let (mut amat, mut alist) = AsmAllocate::build_graph(
+                r.nids, defs.clone(), live.clone()
+            );
+            AsmAllocate::coalesce_graph(
+                asm.clone(), &mut alist, &mut amat
+            );
+            PrintInterference(alist);
+        }
+        
+        let asm = AsmAllocate::allocate(&mut r, asm, defs, live);
+        if p.asm2 { AsmPrinter::print(&asm); }
 
         println!("\n\n\n\n\n");
         i += 1;

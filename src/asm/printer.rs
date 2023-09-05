@@ -1,15 +1,17 @@
 use super::asm::*;
 pub struct Printer;
 impl Printer {
+    // Removes no-ops.
     pub fn print(instructions: &[AA]) {
         for ins in instructions {
-            if matches!(ins, AA::Label(_)) {
-                println!("\n{}", ins);
-                continue;
+            match ins {
+                AA::Label(_) => println!("\n{}", ins),
+                AA::Mov2(d, s) if d == s => (),
+                _ => println!("{}", ins)
             }
-            println!("{}", ins);
         }
     }
+
     pub fn print_live(instructions: &[AA], live: &[Vec<Reg>]) {
         for (ins_idx, ins) in instructions.iter().enumerate() {
             let mut ind = 0;

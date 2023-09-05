@@ -3,6 +3,7 @@ use crate::registry::Registry;
 
 use super::asm::*;
 use std::cmp::Ordering;
+use std::collections::HashMap;
 use std::collections::HashSet;
 use std::collections::BinaryHeap;
 
@@ -38,9 +39,49 @@ pub fn allocate(
         defs: Vec<Vec<Reg>>,
         live: Vec<Vec<Reg>>,
     ) -> Vec<AA> {
-    let (_, alist) = build_graph(r.nids, defs, live);
+    let (mut amat, mut alist) = build_graph(r.nids, defs, live);
+    let asm = coalesce_graph(asm, &mut alist, &mut amat);
     let colors = color_graph(alist);
-    return color_asm(asm, colors);
+    return rewrite(asm, |r: Reg| {
+        return Reg::R(colors[r.index()] as u8);
+    });
+}
+
+pub fn coalesce_graph(
+        mut asm: Vec<AA>,
+        alist: &mut AdjList,
+        amat: &mut AdjMatrix
+    ) -> Vec<AA> {
+    loop {
+        let mut f = HashMap::new();
+        for ins in &asm {
+            let AA::Mov2(d, s) = ins else { continue };
+            if d == s { continue };
+            let c = amat[d.index()].contains(&s.index());
+            if c { continue };
+            // Map (d -> s)
+            // Small to Large merging could make this more efficient...
+            let temp = std::mem::take(&mut alist[d.index()]);
+            for node in &temp {
+                amat[s.index()].insert(*node);
+                alist[s.index()].push(*node);
+            }
+            for node in &temp {
+                amat[*node].insert(s.index());
+                alist[*node].retain(|x| *x != d.index());
+            }
+            f.insert(*d, *s);
+            break;
+        }
+        if f.len() == 0 { break }
+        asm = rewrite(asm, |r: Reg| {
+            match f.get(&r) {
+                None    => return r,
+                Some(i) => return *i
+            };
+        });
+    }
+    return asm;
 }
 
 fn color_graph(alist: AdjList) -> Vec<usize> {
@@ -59,6 +100,9 @@ fn color_graph(alist: AdjList) -> Vec<usize> {
             });
             degrees[i] = alist[i].len() as u32;
         }
+        // You can also use a regular queue here, since
+        // Each node only has 1-2 children, hence
+        // The whole process would run in linear time...
         'l: while let Some(Node { deg, pos }) = nodes.pop() {
             if degrees[pos as usize] < deg { continue }
             if deg >= GPRS as u32 {
@@ -108,40 +152,13 @@ fn color_graph(alist: AdjList) -> Vec<usize> {
         .collect();
 }
 
-pub fn print_graph(
-        nids: u32,
-        defs: &Vec<Vec<Reg>>,
-        live: &Vec<Vec<Reg>>
-    ) {
-    let (_, alist) = build_graph(
-        nids, defs.clone(), live.clone()
-    );
-    println!("digraph interference_graph {{");
-    let mut added = vec![
-        HashSet::new();
-        nids as usize + GPRS as usize
-    ];
-    for (idx, v) in alist.into_iter().enumerate() {
-        if v.len() == 0 { continue }
-        println!("    node{} [label=\"{}\"]",
-            idx, Reg::from(idx as u32)
-        );
-        for nbr in v {
-            if added[idx].contains(&nbr) { continue }
-            println!("    node{} -> node{} [dir=both];", idx, nbr);
-            added[idx].insert(nbr);
-            added[nbr].insert(idx);
-        }
-    }
-    println!("}}");
-}
-
-fn build_graph(
+pub fn build_graph(
         nids: u32,
         defs: Vec<Vec<Reg>>,
         live: Vec<Vec<Reg>>
     ) -> (AdjMatrix, AdjList) {
-    // HashSet for efficient Deletion.
+    // We need both because we access the graph
+    // sequentially and randomly.
     let mut amat = vec![
         HashSet::new();
         (nids as usize) + GPRS
@@ -150,7 +167,9 @@ fn build_graph(
         Vec::new();
         (nids as usize) + GPRS
     ];
-    // Compute the Graph.
+    // Live only holds Registers that remain live.
+    // We only need to consider edges where variable remains live
+    // When another variable is defined.
     for i in 0..defs.len() {
         for d in &defs[i] {
             for l in &live[i] {
@@ -166,12 +185,8 @@ fn build_graph(
     return (amat, alist)
 }
 
-fn color_asm(asm: Vec<AA>, colors: Vec<usize>) -> Vec<AA> {
+fn rewrite(asm: Vec<AA>, c: impl Fn(Reg) -> Reg) -> Vec<AA> {
     use AA::*;
-    use Reg::*;
-    let c = |r: Reg| {
-        return R(colors[r.index()] as u8)
-    };
     let mut res = Vec::new();
     for a in asm {
         res.push(match a {
@@ -186,7 +201,7 @@ fn color_asm(asm: Vec<AA>, colors: Vec<usize>) -> Vec<AA> {
             Neg2(d, s)         => Neg2(c(d), c(s)),
             SMAddL(d, l, m, r) => SMAddL(c(d), c(l), c(m), c(r)),
             SMNegL(d, l, r)    => SMNegL(c(d), c(l), c(r)),
-            SMSubL(d, l, m, r) => SMSubL(c(d), c(l), c(r), c(r)),
+            SMSubL(d, l, m, r) => SMSubL(c(d), c(l), c(m), c(r)),
             SMulL(d, l, r)     => SMulL(c(d), c(l), c(r)),
             SDiv(d, l, r)      => SDiv(c(d), c(l), c(r)),
             And1(d, l, r)      => And1(c(d),  c(l), r),
@@ -210,4 +225,25 @@ fn color_asm(asm: Vec<AA>, colors: Vec<usize>) -> Vec<AA> {
         });
     }
     return res;
+}
+
+// Utilities...
+pub fn print_graph(alist: AdjList) {
+    println!("digraph interference_graph {{");
+    let mut added = vec![
+        false; alist.len() + GPRS as usize
+    ];
+    for (idx, v) in alist.into_iter().enumerate() {
+        if v.len() == 0 { continue }
+        println!("    node{} [label=\"{}\"]",
+            idx, Reg::from(idx as u32)
+        );
+        for nbr in v {
+            if added[idx] { continue }
+            println!("    node{} -> node{} [dir=both];", idx, nbr);
+            added[idx] = true;
+            added[nbr] = true;
+        }
+    }
+    println!("}}");
 }

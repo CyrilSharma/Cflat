@@ -24,191 +24,14 @@ successes:
 
 ---- visualize stdout ----
 FILE: tests/data/input0.c
-
-l0:                                      | SP        
-str R29, [SP, #16]                       | SP        
-sub SP, SP, #16                          | SP        R29       
-mov ID(39), #5                           | SP        R29       
-mov ID(16), ID(39)                       | ID(39)    SP        R29       
-mov ID(40), #3                           | ID(16)    SP        R29       
-mov ID(17), ID(40)                       | ID(40)    ID(16)    SP        R29       
-mov ID(41), ID(16)                       | ID(16)    ID(17)    SP        R29       
-mov ID(30), ID(41)                       | ID(41)    ID(17)    SP        R29       
-mov ID(42), ID(17)                       | ID(17)    ID(30)    SP        R29       
-mov ID(31), ID(42)                       | ID(42)    ID(30)    SP        ID(17)    
-mov R0, ID(30)                           | ID(30)    ID(31)    SP        ID(17)    
-mov R1, ID(31)                           | ID(31)    R0        SP        ID(17)    
-bl l1                                    | R0        SP        R1        ID(17)    
-mov ID(43), R0                           | R0        SP        ID(17)    R29       
-mov ID(32), ID(43)                       | ID(43)    SP        ID(17)    R29       
-mov ID(44), ID(32)                       | ID(32)    SP        ID(17)    R29       
-mov ID(18), ID(44)                       | ID(44)    SP        ID(17)    R29       
-mov ID(45), #1075838976                  | SP        ID(17)    R29       
-mov ID(19), ID(45)                       | ID(45)    SP        ID(17)    R29       
-mov ID(46), #1067869798                  | ID(19)    SP        ID(17)    R29       
-mov ID(20), ID(46)                       | ID(46)    ID(19)    SP        ID(17)    
-mov ID(47), ID(19)                       | ID(19)    ID(20)    SP        ID(17)    
-mov ID(33), ID(47)                       | ID(47)    ID(20)    SP        ID(17)    
-mov ID(48), ID(20)                       | ID(20)    ID(33)    SP        ID(17)    
-mov ID(34), ID(48)                       | ID(48)    ID(33)    SP        ID(17)    
-mov R0, ID(33)                           | ID(33)    ID(34)    SP        ID(17)    
-mov R1, ID(34)                           | ID(34)    R0        SP        ID(17)    
-bl l7                                    | R0        SP        R1        ID(17)    
-mov ID(49), R0                           | R0        ID(17)    R29       
-mov ID(35), ID(49)                       | ID(49)    ID(17)    R29       
-mov ID(50), ID(35)                       | ID(35)    ID(17)    R29       
-mov ID(21), ID(50)                       | ID(50)    ID(17)    R29       
-mov ID(51), #0                           | ID(17)    R29       
-mov ID(16), ID(51)                       | ID(51)    ID(17)    R29       
-b l9                                     | ID(16)    ID(17)    R29       
-
-l1:                                      | SP        R0        R1        
-str R29, [SP, #16]                       | SP        R0        R1        
-sub SP, SP, #16                          | SP        R0        R1        R29       
-mov ID(0), R0                            | R0        R1        R29       
-mov ID(1), R1                            | R1        ID(0)     R29       
-mov ID(52), ID(0)                        | ID(0)     ID(1)     R29       
-mov R0, ID(52)                           | ID(52)    ID(1)     R29       
-mov ID(54), R0                           | R0        ID(1)     R29       
-mov ID(55), ID(1)                        | ID(1)     ID(54)    R29       
-add ID(53), ID(54), ID(55)               | ID(54)    ID(55)    R29       
-mov R0, ID(53)                           | ID(53)    R29       
-ret                                      | R29       
-
-l2:                                      | SP        R0        R1        
-str R29, [SP, #16]                       | SP        R0        R1        
-sub SP, SP, #16                          | SP        R0        R1        R29       
-mov ID(2), R0                            | R0        R1        R29       
-mov ID(3), R1                            | R1        ID(2)     R29       
-mov ID(56), ID(2)                        | ID(2)     ID(3)     R29       
-mov ID(23), ID(56)                       | ID(56)    ID(3)     R29       
-mov ID(58), ID(23)                       | ID(23)    ID(3)     R29       
-mov ID(59), ID(3)                        | ID(3)     ID(58)    R29       
-sub ID(57), ID(58), ID(59)               | ID(58)    ID(59)    R29       
-mov R0, ID(57)                           | ID(57)    R29       
-ret                                      | R29       
-
-l3:                                      | SP        R0        R1        
-str R29, [SP, #16]                       | SP        R0        R1        
-sub SP, SP, #16                          | SP        R0        R1        R29       
-mov ID(4), R0                            | R0        R1        R29       
-mov ID(5), R1                            | R1        ID(4)     R29       
-mov ID(60), ID(4)                        | ID(4)     ID(5)     R29       
-mov ID(24), ID(60)                       | ID(60)    ID(5)     R29       
-mov ID(62), ID(24)                       | ID(24)    ID(5)     R29       
-mov ID(63), ID(5)                        | ID(5)     ID(62)    R29       
-smull ID(61), ID(62), ID(63)             | ID(62)    ID(63)    R29       
-mov R0, ID(61)                           | ID(61)    R29       
-ret                                      | R29       
-
-l4:                                      | SP        R0        R1        
-str R29, [SP, #16]                       | SP        R0        R1        
-sub SP, SP, #16                          | SP        R0        R1        R29       
-mov ID(6), R0                            | R0        R1        R29       
-mov ID(7), R1                            | R1        ID(6)     R29       
-mov ID(64), ID(6)                        | ID(6)     ID(7)     R29       
-mov ID(25), ID(64)                       | ID(64)    ID(7)     R29       
-mov ID(66), ID(25)                       | ID(25)    ID(7)     R29       
-mov ID(67), ID(7)                        | ID(7)     ID(66)    R29       
-sdiv ID(65), ID(66), ID(67)              | ID(66)    ID(67)    R29       
-mov R0, ID(65)                           | ID(65)    R29       
-ret                                      | R29       
-
-l5:                                      | SP        R0        R1        
-str R29, [SP, #16]                       | SP        R0        R1        
-sub SP, SP, #16                          | SP        R0        R1        R29       
-mov ID(8), R0                            | R0        R1        R29       
-mov ID(9), R1                            | R1        ID(8)     R29       
-mov ID(68), ID(8)                        | ID(8)     ID(9)     R29       
-mov ID(26), ID(68)                       | ID(68)    ID(9)     R29       
-mov ID(70), ID(26)                       | ID(26)    ID(9)     R29       
-mov ID(71), ID(9)                        | ID(9)     ID(70)    R29       
-add ID(69), ID(70), ID(71)               | ID(70)    ID(71)    R29       
-mov R0, ID(69)                           | ID(69)    R29       
-ret                                      | R29       
-
-l6:                                      | SP        R0        R1        
-str R29, [SP, #16]                       | SP        R0        R1        
-sub SP, SP, #16                          | SP        R0        R1        R29       
-mov ID(10), R0                           | R0        R1        R29       
-mov ID(11), R1                           | R1        ID(10)    R29       
-mov ID(72), ID(10)                       | ID(10)    ID(11)    R29       
-mov ID(27), ID(72)                       | ID(72)    ID(11)    R29       
-mov ID(74), ID(27)                       | ID(27)    ID(11)    R29       
-mov ID(75), ID(11)                       | ID(11)    ID(74)    R29       
-sub ID(73), ID(74), ID(75)               | ID(74)    ID(75)    R29       
-mov R0, ID(73)                           | ID(73)    R29       
-ret                                      | R29       
-
-l7:                                      | SP        R0        R1        
-str R29, [SP, #16]                       | SP        R0        R1        
-sub SP, SP, #16                          | SP        R0        R1        R29       
-mov ID(12), R0                           | R0        R1        R29       
-mov ID(13), R1                           | R1        ID(12)    R29       
-mov ID(76), ID(12)                       | ID(12)    ID(13)    R29       
-mov ID(28), ID(76)                       | ID(76)    ID(13)    R29       
-mov ID(78), ID(28)                       | ID(28)    ID(13)    R29       
-mov ID(79), ID(13)                       | ID(13)    ID(78)    R29       
-smull ID(77), ID(78), ID(79)             | ID(78)    ID(79)    R29       
-mov R0, ID(77)                           | ID(77)    R29       
-ret                                      | R29       
-
-l8:                                      | SP        R0        R1        
-str R29, [SP, #16]                       | SP        R0        R1        
-sub SP, SP, #16                          | SP        R0        R1        R29       
-mov ID(14), R0                           | R0        R1        R29       
-mov ID(15), R1                           | R1        ID(14)    R29       
-mov ID(80), ID(14)                       | ID(14)    ID(15)    R29       
-mov ID(29), ID(80)                       | ID(80)    ID(15)    R29       
-mov ID(82), ID(29)                       | ID(29)    ID(15)    R29       
-mov ID(83), ID(15)                       | ID(15)    ID(82)    R29       
-sdiv ID(81), ID(82), ID(83)              | ID(82)    ID(83)    R29       
-mov R0, ID(81)                           | ID(81)    R29       
-ret                                      | R29       
-
-l9:                                      | ID(16)    ID(17)    R29       
-mov ID(84), ID(16)                       | ID(16)    ID(17)    R29       
-mov ID(36), ID(84)                       | ID(84)    ID(17)    R29       ID(16)    
-mov ID(87), ID(36)                       | ID(36)    ID(17)    R29       ID(16)    
-mov ID(88), #5                           | ID(17)    R29       ID(16)    
-cmp ID(87), ID(88)                       | ID(88)    ID(17)    R29       ID(16)    
-cset ID(86), LT                          | ID(17)    R29       ID(16)    
-mvn ID(85), ID(86)                       | ID(86)    ID(17)    R29       ID(16)    
-cbnz l11                                 | ID(17)    R29       ID(16)    
-
-l10:                                     | ID(17)    ID(16)    R29       
-mov ID(89), ID(17)                       | ID(17)    ID(16)    R29       
-mov ID(37), ID(89)                       | ID(89)    ID(16)    R29       
-mov ID(91), ID(37)                       | ID(37)    ID(16)    R29       
-mov ID(92), #1                           | ID(91)    ID(16)    R29       
-add ID(90), ID(91), ID(92)               | ID(91)    ID(92)    ID(16)    R29       
-mov ID(17), ID(90)                       | ID(90)    ID(16)    R29       
-mov ID(93), ID(16)                       | ID(16)    ID(17)    R29       
-mov ID(38), ID(93)                       | ID(93)    ID(17)    R29       
-mov ID(95), ID(38)                       | ID(38)    ID(17)    R29       
-mov ID(96), #1                           | ID(95)    ID(17)    R29       
-add ID(94), ID(95), ID(96)               | ID(95)    ID(96)    ID(17)    R29       
-mov ID(16), ID(94)                       | ID(94)    ID(17)    R29       
-b l9                                     | ID(16)    ID(17)    R29       
-
-l11:                                     | R29       
-mov ID(97), #0                           | R29       
-mov R0, ID(97)                           | ID(97)    R29       
-ret                                      | R29       
 digraph interference_graph {
     node0 [label="R0"]
     node0 -> node62 [dir=both];
-    node0 -> node63 [dir=both];
-    node0 -> node29 [dir=both];
-    node0 -> node49 [dir=both];
-    node0 -> node1 [dir=both];
     node0 -> node75 [dir=both];
     node0 -> node65 [dir=both];
-    node0 -> node66 [dir=both];
     node0 -> node81 [dir=both];
     node0 -> node32 [dir=both];
     node0 -> node84 [dir=both];
-    node0 -> node33 [dir=both];
     node0 -> node86 [dir=both];
     node0 -> node85 [dir=both];
     node0 -> node34 [dir=both];
@@ -228,253 +51,68 @@ digraph interference_graph {
     node0 -> node129 [dir=both];
     node1 [label="R1"]
     node1 -> node63 [dir=both];
-    node1 -> node29 [dir=both];
-    node1 -> node49 [dir=both];
     node1 -> node66 [dir=both];
-    node1 -> node32 [dir=both];
     node1 -> node33 [dir=both];
-    node1 -> node34 [dir=both];
     node1 -> node35 [dir=both];
-    node1 -> node36 [dir=both];
     node1 -> node37 [dir=both];
-    node1 -> node38 [dir=both];
     node1 -> node39 [dir=both];
-    node1 -> node40 [dir=both];
     node1 -> node41 [dir=both];
-    node1 -> node42 [dir=both];
     node1 -> node43 [dir=both];
-    node1 -> node44 [dir=both];
     node1 -> node45 [dir=both];
-    node1 -> node46 [dir=both];
     node1 -> node47 [dir=both];
     node29 [label="R29"]
     node29 -> node29 [dir=both];
-    node29 -> node71 [dir=both];
-    node29 -> node48 [dir=both];
-    node29 -> node72 [dir=both];
-    node29 -> node49 [dir=both];
-    node29 -> node73 [dir=both];
-    node29 -> node62 [dir=both];
-    node29 -> node74 [dir=both];
-    node29 -> node63 [dir=both];
-    node29 -> node75 [dir=both];
-    node29 -> node64 [dir=both];
-    node29 -> node76 [dir=both];
-    node29 -> node50 [dir=both];
-    node29 -> node77 [dir=both];
-    node29 -> node51 [dir=both];
-    node29 -> node78 [dir=both];
-    node29 -> node52 [dir=both];
-    node29 -> node79 [dir=both];
-    node29 -> node65 [dir=both];
-    node29 -> node80 [dir=both];
-    node29 -> node66 [dir=both];
-    node29 -> node81 [dir=both];
-    node29 -> node67 [dir=both];
-    node29 -> node82 [dir=both];
-    node29 -> node53 [dir=both];
-    node29 -> node83 [dir=both];
-    node29 -> node32 [dir=both];
-    node29 -> node33 [dir=both];
-    node29 -> node84 [dir=both];
-    node29 -> node86 [dir=both];
-    node29 -> node87 [dir=both];
-    node29 -> node85 [dir=both];
-    node29 -> node34 [dir=both];
-    node29 -> node35 [dir=both];
-    node29 -> node88 [dir=both];
-    node29 -> node55 [dir=both];
-    node29 -> node90 [dir=both];
-    node29 -> node91 [dir=both];
-    node29 -> node89 [dir=both];
-    node29 -> node36 [dir=both];
-    node29 -> node37 [dir=both];
-    node29 -> node92 [dir=both];
-    node29 -> node56 [dir=both];
-    node29 -> node94 [dir=both];
-    node29 -> node95 [dir=both];
-    node29 -> node93 [dir=both];
-    node29 -> node38 [dir=both];
-    node29 -> node39 [dir=both];
-    node29 -> node96 [dir=both];
-    node29 -> node57 [dir=both];
-    node29 -> node98 [dir=both];
-    node29 -> node99 [dir=both];
-    node29 -> node97 [dir=both];
-    node29 -> node40 [dir=both];
-    node29 -> node41 [dir=both];
-    node29 -> node100 [dir=both];
-    node29 -> node58 [dir=both];
-    node29 -> node102 [dir=both];
-    node29 -> node103 [dir=both];
-    node29 -> node101 [dir=both];
-    node29 -> node42 [dir=both];
-    node29 -> node43 [dir=both];
-    node29 -> node104 [dir=both];
-    node29 -> node59 [dir=both];
-    node29 -> node106 [dir=both];
-    node29 -> node107 [dir=both];
-    node29 -> node105 [dir=both];
-    node29 -> node44 [dir=both];
-    node29 -> node45 [dir=both];
-    node29 -> node108 [dir=both];
-    node29 -> node60 [dir=both];
-    node29 -> node110 [dir=both];
-    node29 -> node111 [dir=both];
-    node29 -> node109 [dir=both];
-    node29 -> node46 [dir=both];
-    node29 -> node47 [dir=both];
-    node29 -> node112 [dir=both];
-    node29 -> node61 [dir=both];
-    node29 -> node114 [dir=both];
-    node29 -> node115 [dir=both];
-    node29 -> node113 [dir=both];
-    node29 -> node116 [dir=both];
-    node29 -> node68 [dir=both];
-    node29 -> node119 [dir=both];
-    node29 -> node120 [dir=both];
-    node29 -> node118 [dir=both];
-    node29 -> node117 [dir=both];
-    node29 -> node121 [dir=both];
-    node29 -> node69 [dir=both];
-    node29 -> node123 [dir=both];
-    node29 -> node124 [dir=both];
-    node29 -> node122 [dir=both];
-    node29 -> node125 [dir=both];
-    node29 -> node70 [dir=both];
-    node29 -> node127 [dir=both];
-    node29 -> node128 [dir=both];
-    node29 -> node126 [dir=both];
-    node29 -> node129 [dir=both];
     node32 [label="PC"]
-    node32 -> node33 [dir=both];
     node32 -> node84 [dir=both];
     node33 [label="ID(1)"]
-    node33 -> node84 [dir=both];
-    node33 -> node86 [dir=both];
     node33 -> node87 [dir=both];
     node34 [label="ID(2)"]
-    node34 -> node35 [dir=both];
     node34 -> node88 [dir=both];
     node35 [label="ID(3)"]
-    node35 -> node88 [dir=both];
-    node35 -> node55 [dir=both];
-    node35 -> node90 [dir=both];
     node35 -> node91 [dir=both];
     node36 [label="ID(4)"]
-    node36 -> node37 [dir=both];
     node36 -> node92 [dir=both];
     node37 [label="ID(5)"]
-    node37 -> node92 [dir=both];
-    node37 -> node56 [dir=both];
-    node37 -> node94 [dir=both];
     node37 -> node95 [dir=both];
     node38 [label="ID(6)"]
-    node38 -> node39 [dir=both];
     node38 -> node96 [dir=both];
     node39 [label="ID(7)"]
-    node39 -> node96 [dir=both];
-    node39 -> node57 [dir=both];
-    node39 -> node98 [dir=both];
     node39 -> node99 [dir=both];
     node40 [label="ID(8)"]
-    node40 -> node41 [dir=both];
     node40 -> node100 [dir=both];
     node41 [label="ID(9)"]
-    node41 -> node100 [dir=both];
-    node41 -> node58 [dir=both];
-    node41 -> node102 [dir=both];
     node41 -> node103 [dir=both];
     node42 [label="ID(10)"]
-    node42 -> node43 [dir=both];
     node42 -> node104 [dir=both];
     node43 [label="ID(11)"]
-    node43 -> node104 [dir=both];
-    node43 -> node59 [dir=both];
-    node43 -> node106 [dir=both];
     node43 -> node107 [dir=both];
     node44 [label="ID(12)"]
-    node44 -> node45 [dir=both];
     node44 -> node108 [dir=both];
     node45 [label="ID(13)"]
-    node45 -> node108 [dir=both];
-    node45 -> node60 [dir=both];
-    node45 -> node110 [dir=both];
     node45 -> node111 [dir=both];
     node46 [label="ID(14)"]
-    node46 -> node47 [dir=both];
     node46 -> node112 [dir=both];
     node47 [label="ID(15)"]
-    node47 -> node112 [dir=both];
-    node47 -> node61 [dir=both];
-    node47 -> node114 [dir=both];
     node47 -> node115 [dir=both];
     node48 [label="ID(16)"]
     node48 -> node71 [dir=both];
-    node48 -> node72 [dir=both];
-    node48 -> node49 [dir=both];
     node48 -> node73 [dir=both];
     node48 -> node83 [dir=both];
     node48 -> node116 [dir=both];
-    node48 -> node68 [dir=both];
-    node48 -> node119 [dir=both];
-    node48 -> node120 [dir=both];
-    node48 -> node118 [dir=both];
-    node48 -> node117 [dir=both];
-    node48 -> node121 [dir=both];
-    node48 -> node69 [dir=both];
-    node48 -> node123 [dir=both];
-    node48 -> node124 [dir=both];
-    node48 -> node122 [dir=both];
     node48 -> node125 [dir=both];
     node48 -> node126 [dir=both];
     node49 [label="ID(17)"]
     node49 -> node72 [dir=both];
-    node49 -> node73 [dir=both];
-    node49 -> node62 [dir=both];
     node49 -> node74 [dir=both];
-    node49 -> node63 [dir=both];
-    node49 -> node75 [dir=both];
-    node49 -> node64 [dir=both];
-    node49 -> node76 [dir=both];
-    node49 -> node50 [dir=both];
-    node49 -> node77 [dir=both];
-    node49 -> node51 [dir=both];
-    node49 -> node78 [dir=both];
-    node49 -> node52 [dir=both];
-    node49 -> node79 [dir=both];
-    node49 -> node65 [dir=both];
-    node49 -> node80 [dir=both];
-    node49 -> node66 [dir=both];
-    node49 -> node81 [dir=both];
-    node49 -> node67 [dir=both];
-    node49 -> node82 [dir=both];
-    node49 -> node53 [dir=both];
-    node49 -> node83 [dir=both];
-    node49 -> node116 [dir=both];
-    node49 -> node68 [dir=both];
-    node49 -> node119 [dir=both];
-    node49 -> node120 [dir=both];
-    node49 -> node118 [dir=both];
-    node49 -> node117 [dir=both];
     node49 -> node121 [dir=both];
     node49 -> node122 [dir=both];
-    node49 -> node125 [dir=both];
-    node49 -> node70 [dir=both];
-    node49 -> node127 [dir=both];
-    node49 -> node128 [dir=both];
-    node49 -> node126 [dir=both];
     node50 [label="ID(18)"]
     node50 -> node76 [dir=both];
     node51 [label="ID(19)"]
     node51 -> node77 [dir=both];
-    node51 -> node78 [dir=both];
-    node51 -> node52 [dir=both];
     node51 -> node79 [dir=both];
     node52 [label="ID(20)"]
     node52 -> node78 [dir=both];
-    node52 -> node79 [dir=both];
-    node52 -> node65 [dir=both];
     node52 -> node80 [dir=both];
     node53 [label="ID(21)"]
     node53 -> node82 [dir=both];
@@ -501,8 +139,6 @@ digraph interference_graph {
     node61 -> node114 [dir=both];
     node62 [label="ID(30)"]
     node62 -> node73 [dir=both];
-    node62 -> node74 [dir=both];
-    node62 -> node63 [dir=both];
     node63 [label="ID(31)"]
     node63 -> node74 [dir=both];
     node64 [label="ID(32)"]
@@ -510,8 +146,6 @@ digraph interference_graph {
     node64 -> node76 [dir=both];
     node65 [label="ID(33)"]
     node65 -> node79 [dir=both];
-    node65 -> node80 [dir=both];
-    node65 -> node66 [dir=both];
     node66 [label="ID(34)"]
     node66 -> node80 [dir=both];
     node67 [label="ID(35)"]
@@ -544,56 +178,48 @@ digraph interference_graph {
     node85 -> node86 [dir=both];
     node85 -> node87 [dir=both];
     node86 [label="ID(54)"]
-    node86 -> node87 [dir=both];
     node87 [label="ID(55)"]
     node88 [label="ID(56)"]
     node89 [label="ID(57)"]
     node89 -> node90 [dir=both];
     node89 -> node91 [dir=both];
     node90 [label="ID(58)"]
-    node90 -> node91 [dir=both];
     node91 [label="ID(59)"]
     node92 [label="ID(60)"]
     node93 [label="ID(61)"]
     node93 -> node94 [dir=both];
     node93 -> node95 [dir=both];
     node94 [label="ID(62)"]
-    node94 -> node95 [dir=both];
     node95 [label="ID(63)"]
     node96 [label="ID(64)"]
     node97 [label="ID(65)"]
     node97 -> node98 [dir=both];
     node97 -> node99 [dir=both];
     node98 [label="ID(66)"]
-    node98 -> node99 [dir=both];
     node99 [label="ID(67)"]
     node100 [label="ID(68)"]
     node101 [label="ID(69)"]
     node101 -> node102 [dir=both];
     node101 -> node103 [dir=both];
     node102 [label="ID(70)"]
-    node102 -> node103 [dir=both];
     node103 [label="ID(71)"]
     node104 [label="ID(72)"]
     node105 [label="ID(73)"]
     node105 -> node106 [dir=both];
     node105 -> node107 [dir=both];
     node106 [label="ID(74)"]
-    node106 -> node107 [dir=both];
     node107 [label="ID(75)"]
     node108 [label="ID(76)"]
     node109 [label="ID(77)"]
     node109 -> node110 [dir=both];
     node109 -> node111 [dir=both];
     node110 [label="ID(78)"]
-    node110 -> node111 [dir=both];
     node111 [label="ID(79)"]
     node112 [label="ID(80)"]
     node113 [label="ID(81)"]
     node113 -> node114 [dir=both];
     node113 -> node115 [dir=both];
     node114 [label="ID(82)"]
-    node114 -> node115 [dir=both];
     node115 [label="ID(83)"]
     node116 [label="ID(84)"]
     node117 [label="ID(85)"]
@@ -607,188 +233,233 @@ digraph interference_graph {
     node122 -> node123 [dir=both];
     node122 -> node124 [dir=both];
     node123 [label="ID(91)"]
-    node123 -> node124 [dir=both];
     node124 [label="ID(92)"]
     node125 [label="ID(93)"]
     node126 [label="ID(94)"]
     node126 -> node127 [dir=both];
     node126 -> node128 [dir=both];
     node127 [label="ID(95)"]
-    node127 -> node128 [dir=both];
     node128 [label="ID(96)"]
     node129 [label="ID(97)"]
 }
-
-l0: 
-str R29, [R29, #16]
-sub R29, R29, #16
-mov R0, #5
-mov R3, R0
-mov R0, #3
-mov R4, R0
-mov R1, R3
-mov R0, R1
-mov R2, R4
-mov R1, R2
-mov R0, R0
-mov R1, R1
-bl l1
-mov R0, R0
-mov R1, R0
-mov R0, R1
-mov R1, R0
-mov R0, #1075838976
-mov R1, R0
-mov R0, #1067869798
-mov R3, R0
-mov R0, R1
-mov R2, R0
-mov R1, R3
-mov R0, R1
-mov R0, R2
-mov R1, R0
-bl l7
-mov R0, R0
-mov R1, R0
-mov R0, R1
-mov R1, R0
-mov R0, #0
-mov R3, R0
-b l9
-
-l1: 
-str R29, [R29, #16]
-sub R29, R29, #16
-mov R1, R0
-mov R3, R1
-mov R2, R1
-mov R0, R2
-mov R2, R0
-mov R0, R3
-add R1, R2, R0
-mov R0, R1
-ret
-
-l2: 
-str R29, [R29, #16]
-sub R29, R29, #16
-mov R2, R0
-mov R3, R1
-mov R1, R2
-mov R0, R1
-mov R1, R0
-mov R0, R3
-sub R2, R1, R0
-mov R0, R2
-ret
-
-l3: 
-str R29, [R29, #16]
-sub R29, R29, #16
-mov R2, R0
-mov R3, R1
-mov R1, R2
-mov R0, R1
-mov R1, R0
-mov R0, R3
-smull R2, R1, R0
-mov R0, R2
-ret
-
-l4: 
-str R29, [R29, #16]
-sub R29, R29, #16
-mov R2, R0
-mov R3, R1
-mov R1, R2
-mov R0, R1
-mov R1, R0
-mov R0, R3
-sdiv R2, R1, R0
-mov R0, R2
-ret
-
-l5: 
-str R29, [R29, #16]
-sub R29, R29, #16
-mov R1, R0
-mov R3, R1
-mov R2, R1
-mov R0, R2
-mov R2, R0
-mov R1, R3
-add R0, R2, R1
-mov R0, R0
-ret
-
-l6: 
-str R29, [R29, #16]
-sub R29, R29, #16
-mov R1, R0
-mov R3, R1
-mov R2, R1
-mov R0, R2
-mov R2, R0
-mov R1, R3
-sub R0, R2, R1
-mov R0, R0
-ret
-
-l7: 
-str R29, [R29, #16]
-sub R29, R29, #16
-mov R1, R0
-mov R3, R1
-mov R2, R1
-mov R0, R2
-mov R2, R0
-mov R1, R3
-smull R0, R2, R1
-mov R0, R0
-ret
-
-l8: 
-str R29, [R29, #16]
-sub R29, R29, #16
-mov R0, R0
-mov R2, R1
-mov R1, R0
-mov R0, R1
-mov R3, R0
-mov R1, R2
-sdiv R0, R3, R1
-mov R0, R0
-ret
-
-l9: 
-mov R0, R3
-mov R1, R0
-mov R0, R1
-mov R1, #5
-cmp R0, R1
-cset R1, LT
-mvn R0, R1
-cbnz l11
-
-l10: 
-mov R1, R4
-mov R0, R1
-mov R1, R0
-mov R0, #1
-add R2, R1, R0
-mov R4, R2
-mov R0, R3
-mov R1, R0
-mov R0, R1
-mov R1, #1
-add R2, R0, R1
-mov R3, R2
-b l9
-
-l11: 
-mov R0, #0
-mov R0, R0
-ret
+digraph interference_graph {
+    node0 [label="R0"]
+    node0 -> node62 [dir=both];
+    node0 -> node75 [dir=both];
+    node0 -> node65 [dir=both];
+    node0 -> node81 [dir=both];
+    node0 -> node32 [dir=both];
+    node0 -> node84 [dir=both];
+    node0 -> node86 [dir=both];
+    node0 -> node85 [dir=both];
+    node0 -> node34 [dir=both];
+    node0 -> node89 [dir=both];
+    node0 -> node36 [dir=both];
+    node0 -> node93 [dir=both];
+    node0 -> node38 [dir=both];
+    node0 -> node97 [dir=both];
+    node0 -> node40 [dir=both];
+    node0 -> node101 [dir=both];
+    node0 -> node42 [dir=both];
+    node0 -> node105 [dir=both];
+    node0 -> node44 [dir=both];
+    node0 -> node109 [dir=both];
+    node0 -> node46 [dir=both];
+    node0 -> node113 [dir=both];
+    node0 -> node129 [dir=both];
+    node1 [label="R1"]
+    node1 -> node63 [dir=both];
+    node1 -> node66 [dir=both];
+    node1 -> node33 [dir=both];
+    node1 -> node35 [dir=both];
+    node1 -> node37 [dir=both];
+    node1 -> node39 [dir=both];
+    node1 -> node41 [dir=both];
+    node1 -> node43 [dir=both];
+    node1 -> node45 [dir=both];
+    node1 -> node47 [dir=both];
+    node29 [label="R29"]
+    node29 -> node29 [dir=both];
+    node32 [label="PC"]
+    node32 -> node84 [dir=both];
+    node33 [label="ID(1)"]
+    node33 -> node87 [dir=both];
+    node34 [label="ID(2)"]
+    node34 -> node88 [dir=both];
+    node35 [label="ID(3)"]
+    node35 -> node91 [dir=both];
+    node36 [label="ID(4)"]
+    node36 -> node92 [dir=both];
+    node37 [label="ID(5)"]
+    node37 -> node95 [dir=both];
+    node38 [label="ID(6)"]
+    node38 -> node96 [dir=both];
+    node39 [label="ID(7)"]
+    node39 -> node99 [dir=both];
+    node40 [label="ID(8)"]
+    node40 -> node100 [dir=both];
+    node41 [label="ID(9)"]
+    node41 -> node103 [dir=both];
+    node42 [label="ID(10)"]
+    node42 -> node104 [dir=both];
+    node43 [label="ID(11)"]
+    node43 -> node107 [dir=both];
+    node44 [label="ID(12)"]
+    node44 -> node108 [dir=both];
+    node45 [label="ID(13)"]
+    node45 -> node111 [dir=both];
+    node46 [label="ID(14)"]
+    node46 -> node112 [dir=both];
+    node47 [label="ID(15)"]
+    node47 -> node115 [dir=both];
+    node48 [label="ID(16)"]
+    node48 -> node71 [dir=both];
+    node48 -> node73 [dir=both];
+    node48 -> node83 [dir=both];
+    node48 -> node116 [dir=both];
+    node48 -> node125 [dir=both];
+    node48 -> node126 [dir=both];
+    node49 [label="ID(17)"]
+    node49 -> node72 [dir=both];
+    node49 -> node74 [dir=both];
+    node49 -> node121 [dir=both];
+    node49 -> node122 [dir=both];
+    node50 [label="ID(18)"]
+    node50 -> node76 [dir=both];
+    node51 [label="ID(19)"]
+    node51 -> node77 [dir=both];
+    node51 -> node79 [dir=both];
+    node52 [label="ID(20)"]
+    node52 -> node78 [dir=both];
+    node52 -> node80 [dir=both];
+    node53 [label="ID(21)"]
+    node53 -> node82 [dir=both];
+    node55 [label="ID(23)"]
+    node55 -> node88 [dir=both];
+    node55 -> node90 [dir=both];
+    node56 [label="ID(24)"]
+    node56 -> node92 [dir=both];
+    node56 -> node94 [dir=both];
+    node57 [label="ID(25)"]
+    node57 -> node96 [dir=both];
+    node57 -> node98 [dir=both];
+    node58 [label="ID(26)"]
+    node58 -> node100 [dir=both];
+    node58 -> node102 [dir=both];
+    node59 [label="ID(27)"]
+    node59 -> node104 [dir=both];
+    node59 -> node106 [dir=both];
+    node60 [label="ID(28)"]
+    node60 -> node108 [dir=both];
+    node60 -> node110 [dir=both];
+    node61 [label="ID(29)"]
+    node61 -> node112 [dir=both];
+    node61 -> node114 [dir=both];
+    node62 [label="ID(30)"]
+    node62 -> node73 [dir=both];
+    node63 [label="ID(31)"]
+    node63 -> node74 [dir=both];
+    node64 [label="ID(32)"]
+    node64 -> node75 [dir=both];
+    node64 -> node76 [dir=both];
+    node65 [label="ID(33)"]
+    node65 -> node79 [dir=both];
+    node66 [label="ID(34)"]
+    node66 -> node80 [dir=both];
+    node67 [label="ID(35)"]
+    node67 -> node81 [dir=both];
+    node67 -> node82 [dir=both];
+    node68 [label="ID(36)"]
+    node68 -> node116 [dir=both];
+    node68 -> node119 [dir=both];
+    node69 [label="ID(37)"]
+    node69 -> node121 [dir=both];
+    node69 -> node123 [dir=both];
+    node70 [label="ID(38)"]
+    node70 -> node125 [dir=both];
+    node70 -> node127 [dir=both];
+    node71 [label="ID(39)"]
+    node72 [label="ID(40)"]
+    node73 [label="ID(41)"]
+    node74 [label="ID(42)"]
+    node75 [label="ID(43)"]
+    node76 [label="ID(44)"]
+    node77 [label="ID(45)"]
+    node78 [label="ID(46)"]
+    node79 [label="ID(47)"]
+    node80 [label="ID(48)"]
+    node81 [label="ID(49)"]
+    node82 [label="ID(50)"]
+    node83 [label="ID(51)"]
+    node84 [label="ID(52)"]
+    node85 [label="ID(53)"]
+    node85 -> node86 [dir=both];
+    node85 -> node87 [dir=both];
+    node86 [label="ID(54)"]
+    node87 [label="ID(55)"]
+    node88 [label="ID(56)"]
+    node89 [label="ID(57)"]
+    node89 -> node90 [dir=both];
+    node89 -> node91 [dir=both];
+    node90 [label="ID(58)"]
+    node91 [label="ID(59)"]
+    node92 [label="ID(60)"]
+    node93 [label="ID(61)"]
+    node93 -> node94 [dir=both];
+    node93 -> node95 [dir=both];
+    node94 [label="ID(62)"]
+    node95 [label="ID(63)"]
+    node96 [label="ID(64)"]
+    node97 [label="ID(65)"]
+    node97 -> node98 [dir=both];
+    node97 -> node99 [dir=both];
+    node98 [label="ID(66)"]
+    node99 [label="ID(67)"]
+    node100 [label="ID(68)"]
+    node101 [label="ID(69)"]
+    node101 -> node102 [dir=both];
+    node101 -> node103 [dir=both];
+    node102 [label="ID(70)"]
+    node103 [label="ID(71)"]
+    node104 [label="ID(72)"]
+    node105 [label="ID(73)"]
+    node105 -> node106 [dir=both];
+    node105 -> node107 [dir=both];
+    node106 [label="ID(74)"]
+    node107 [label="ID(75)"]
+    node108 [label="ID(76)"]
+    node109 [label="ID(77)"]
+    node109 -> node110 [dir=both];
+    node109 -> node111 [dir=both];
+    node110 [label="ID(78)"]
+    node111 [label="ID(79)"]
+    node112 [label="ID(80)"]
+    node113 [label="ID(81)"]
+    node113 -> node114 [dir=both];
+    node113 -> node115 [dir=both];
+    node114 [label="ID(82)"]
+    node115 [label="ID(83)"]
+    node116 [label="ID(84)"]
+    node117 [label="ID(85)"]
+    node117 -> node118 [dir=both];
+    node118 [label="ID(86)"]
+    node119 [label="ID(87)"]
+    node119 -> node120 [dir=both];
+    node120 [label="ID(88)"]
+    node121 [label="ID(89)"]
+    node122 [label="ID(90)"]
+    node122 -> node123 [dir=both];
+    node122 -> node124 [dir=both];
+    node123 [label="ID(91)"]
+    node124 [label="ID(92)"]
+    node125 [label="ID(93)"]
+    node126 [label="ID(94)"]
+    node126 -> node127 [dir=both];
+    node126 -> node128 [dir=both];
+    node127 [label="ID(95)"]
+    node128 [label="ID(96)"]
+    node129 [label="ID(97)"]
+}
 
 
 
@@ -796,79 +467,23 @@ ret
 
 
 FILE: tests/data/input1.c
-
-l0:                                      | SP        
-str R29, [SP, #16]                       | SP        
-sub SP, SP, #16                          | SP        R29       
-mov ID(8), #10                           | R29       SP        
-mov ID(2), ID(8)                         | ID(8)     R29       SP        
-ldr ID(9), [R29, #0]                     | R29       SP        
-mov ID(3), ID(9)                         | ID(9)     SP        R29       
-mov ID(10), ID(3)                        | ID(3)     SP        R29       
-mov ID(5), ID(10)                        | ID(10)    SP        R29       
-mov ID(11), #20                          | ID(5)     SP        R29       
-mov ID(6), ID(11)                        | ID(11)    ID(5)     SP        R29       
-mov R0, ID(5)                            | ID(5)     ID(6)     SP        R29       
-mov R1, ID(6)                            | ID(6)     R0        SP        R29       
-bl l1                                    | R0        SP        R29       R1        
-mov ID(12), R0                           | R0        R29       
-mov ID(7), ID(12)                        | ID(12)    R29       
-mov ID(13), #0                           | R29       
-mov R0, ID(13)                           | ID(13)    R29       
-ret                                      | R29       
-
-l1:                                      | SP        R0        R1        
-str R29, [SP, #16]                       | SP        R0        R1        
-sub SP, SP, #16                          | SP        R0        R1        R29       
-mov ID(0), R0                            | R0        R1        R29       
-mov ID(1), R1                            | R1        ID(0)     R29       
-mov ID(15), ID(0)                        | ID(0)     ID(1)     R29       
-ldr ID(14), [ID(15)]                     | ID(15)    ID(1)     R29       
-mov R0, ID(14)                           | ID(14)    ID(1)     R29       
-mov ID(16), ID(1)                        | ID(1)     R29       
-mov R0, ID(16)                           | ID(16)    R29       
-ret                                      | R29       
 digraph interference_graph {
     node0 [label="R0"]
     node0 -> node37 [dir=both];
-    node0 -> node38 [dir=both];
-    node0 -> node29 [dir=both];
-    node0 -> node1 [dir=both];
     node0 -> node44 [dir=both];
     node0 -> node45 [dir=both];
     node0 -> node32 [dir=both];
     node0 -> node46 [dir=both];
-    node0 -> node33 [dir=both];
     node0 -> node48 [dir=both];
     node1 [label="R1"]
     node1 -> node38 [dir=both];
-    node1 -> node29 [dir=both];
-    node1 -> node32 [dir=both];
     node1 -> node33 [dir=both];
     node29 [label="R29"]
     node29 -> node29 [dir=both];
-    node29 -> node40 [dir=both];
-    node29 -> node34 [dir=both];
     node29 -> node41 [dir=both];
-    node29 -> node35 [dir=both];
-    node29 -> node42 [dir=both];
-    node29 -> node37 [dir=both];
-    node29 -> node43 [dir=both];
-    node29 -> node38 [dir=both];
-    node29 -> node44 [dir=both];
-    node29 -> node39 [dir=both];
-    node29 -> node45 [dir=both];
-    node29 -> node32 [dir=both];
-    node29 -> node33 [dir=both];
-    node29 -> node47 [dir=both];
-    node29 -> node46 [dir=both];
-    node29 -> node48 [dir=both];
     node32 [label="PC"]
-    node32 -> node33 [dir=both];
     node32 -> node47 [dir=both];
     node33 [label="ID(1)"]
-    node33 -> node47 [dir=both];
-    node33 -> node46 [dir=both];
     node33 -> node48 [dir=both];
     node34 [label="ID(2)"]
     node34 -> node40 [dir=both];
@@ -877,8 +492,46 @@ digraph interference_graph {
     node35 -> node42 [dir=both];
     node37 [label="ID(5)"]
     node37 -> node42 [dir=both];
-    node37 -> node43 [dir=both];
-    node37 -> node38 [dir=both];
+    node38 [label="ID(6)"]
+    node38 -> node43 [dir=both];
+    node39 [label="ID(7)"]
+    node39 -> node44 [dir=both];
+    node40 [label="ID(8)"]
+    node41 [label="ID(9)"]
+    node42 [label="ID(10)"]
+    node43 [label="ID(11)"]
+    node44 [label="ID(12)"]
+    node45 [label="ID(13)"]
+    node46 [label="ID(14)"]
+    node46 -> node47 [dir=both];
+    node47 [label="ID(15)"]
+    node48 [label="ID(16)"]
+}
+digraph interference_graph {
+    node0 [label="R0"]
+    node0 -> node37 [dir=both];
+    node0 -> node44 [dir=both];
+    node0 -> node45 [dir=both];
+    node0 -> node32 [dir=both];
+    node0 -> node46 [dir=both];
+    node0 -> node48 [dir=both];
+    node1 [label="R1"]
+    node1 -> node38 [dir=both];
+    node1 -> node33 [dir=both];
+    node29 [label="R29"]
+    node29 -> node29 [dir=both];
+    node29 -> node41 [dir=both];
+    node32 [label="PC"]
+    node32 -> node47 [dir=both];
+    node33 [label="ID(1)"]
+    node33 -> node48 [dir=both];
+    node34 [label="ID(2)"]
+    node34 -> node40 [dir=both];
+    node35 [label="ID(3)"]
+    node35 -> node41 [dir=both];
+    node35 -> node42 [dir=both];
+    node37 [label="ID(5)"]
+    node37 -> node42 [dir=both];
     node38 [label="ID(6)"]
     node38 -> node43 [dir=both];
     node39 [label="ID(7)"]
@@ -895,120 +548,15 @@ digraph interference_graph {
     node48 [label="ID(16)"]
 }
 
-l0: 
-str R29, [R29, #16]
-sub R29, R29, #16
-mov R0, #10
-mov R1, R0
-ldr R1, [R29, #0]
-mov R0, R1
-mov R1, R0
-mov R0, R1
-mov R2, #20
-mov R1, R2
-mov R0, R0
-mov R1, R1
-bl l1
-mov R0, R0
-mov R1, R0
-mov R0, #0
-mov R0, R0
-ret
-
-l1: 
-str R29, [R29, #16]
-sub R29, R29, #16
-mov R1, R0
-mov R2, R1
-mov R0, R1
-ldr R1, [R0]
-mov R0, R1
-mov R1, R2
-mov R0, R1
-ret
-
 
 
 
 
 
 FILE: tests/data/input2.c
-
-l0:                                      | SP        
-str R29, [SP, #16]                       | SP        
-sub SP, SP, #16                          | SP        R29       
-mov ID(14), #5                           | R29       SP        
-mov ID(1), ID(14)                        | ID(14)    R29       SP        
-ldr ID(15), [R29, #0]                    | R29       SP        ID(1)     
-mov ID(9), ID(15)                        | ID(15)    SP        ID(1)     R29       
-mov R0, ID(9)                            | ID(9)     SP        ID(1)     R29       
-bl l1                                    | R0        SP        ID(1)     R29       
-mov ID(16), R0                           | R0        ID(1)     R29       
-mov ID(10), ID(16)                       | ID(16)    ID(1)     R29       
-mov ID(17), ID(1)                        | ID(1)     R29       
-mov ID(11), ID(17)                       | ID(17)    R29       
-mov ID(19), ID(11)                       | ID(11)    R29       
-mov ID(20), #2                           | ID(19)    R29       
-add ID(18), ID(19), ID(20)               | ID(19)    ID(20)    R29       
-mov ID(1), ID(18)                        | ID(18)    R29       
-mov ID(21), ID(1)                        | ID(1)     R29       
-mov ID(2), ID(21)                        | ID(21)    ID(1)     R29       
-mov ID(22), ID(2)                        | ID(2)     ID(1)     R29       
-mov ID(12), ID(22)                       | ID(22)    ID(2)     ID(1)     R29       
-mov ID(24), ID(12)                       | ID(12)    ID(2)     ID(1)     R29       
-mov ID(25), ID(2)                        | ID(2)     ID(24)    ID(1)     R29       
-add ID(23), ID(24), ID(25)               | ID(24)    ID(25)    ID(1)     R29       
-mov ID(2), ID(23)                        | ID(23)    ID(1)     R29       
-mov ID(26), ID(1)                        | ID(1)     ID(2)     R29       
-mov ID(13), ID(26)                       | ID(26)    ID(2)     R29       
-mov ID(28), ID(13)                       | ID(13)    ID(2)     R29       
-mov ID(29), ID(2)                        | ID(2)     ID(28)    R29       
-sub ID(27), ID(28), ID(29)               | ID(28)    ID(29)    R29       
-mov ID(1), ID(27)                        | ID(27)    R29       
-mov ID(30), #0                           | R29       
-mov R0, ID(30)                           | ID(30)    R29       
-ret                                      | R29       
-
-l1:                                      | SP        R0        
-str R29, [SP, #16]                       | SP        R0        
-sub SP, SP, #16                          | SP        R0        R29       
-mov ID(0), R0                            | R0        R29       
-mov ID(32), ID(0)                        | ID(0)     R29       
-ldr ID(31), [ID(32)]                     | ID(32)    ID(0)     R29       
-mov R0, ID(31)                           | ID(31)    ID(0)     R29       
-mov ID(34), ID(0)                        | ID(0)     R29       
-ldr ID(33), [ID(34)]                     | ID(34)    ID(0)     R29       
-mov ID(4), ID(33)                        | ID(33)    ID(0)     R29       
-mov ID(36), ID(4)                        | ID(4)     ID(0)     R29       
-mov ID(37), #1                           | ID(36)    ID(0)     R29       
-add ID(35), ID(36), ID(37)               | ID(36)    ID(37)    ID(0)     R29       
-mov R0, ID(35)                           | ID(35)    ID(0)     R29       
-mov ID(39), ID(0)                        | ID(0)     R29       
-ldr ID(38), [ID(39)]                     | ID(39)    ID(0)     R29       
-mov ID(5), ID(38)                        | ID(38)    ID(0)     R29       
-mov ID(41), ID(0)                        | ID(0)     R29       
-ldr ID(40), [ID(41)]                     | ID(41)    ID(0)     R29       
-mov ID(6), ID(40)                        | ID(40)    ID(0)     R29       
-mov ID(43), ID(6)                        | ID(6)     ID(0)     R29       
-mov ID(44), #2                           | ID(43)    ID(0)     R29       
-smull ID(42), ID(43), ID(44)             | ID(43)    ID(44)    ID(0)     R29       
-mov ID(5), ID(42)                        | ID(42)    ID(0)     R29       
-mov ID(46), ID(0)                        | ID(0)     R29       
-ldr ID(45), [ID(46)]                     | ID(46)    ID(0)     R29       
-mov ID(7), ID(45)                        | ID(45)    ID(0)     R29       
-mov ID(48), ID(0)                        | ID(0)     R29       
-ldr ID(47), [ID(48)]                     | ID(48)    R29       
-mov ID(8), ID(47)                        | ID(47)    R29       
-mov ID(50), ID(8)                        | ID(8)     R29       
-mov ID(51), #3                           | ID(50)    R29       
-sub ID(49), ID(50), ID(51)               | ID(50)    ID(51)    R29       
-mov ID(7), ID(49)                        | ID(49)    R29       
-ret                                      | R29       
 digraph interference_graph {
     node0 [label="R0"]
     node0 -> node41 [dir=both];
-    node0 -> node29 [dir=both];
-    node0 -> node33 [dir=both];
     node0 -> node48 [dir=both];
     node0 -> node62 [dir=both];
     node0 -> node32 [dir=both];
@@ -1016,106 +564,26 @@ digraph interference_graph {
     node0 -> node67 [dir=both];
     node29 [label="R29"]
     node29 -> node29 [dir=both];
-    node29 -> node46 [dir=both];
-    node29 -> node33 [dir=both];
     node29 -> node47 [dir=both];
-    node29 -> node41 [dir=both];
-    node29 -> node48 [dir=both];
-    node29 -> node42 [dir=both];
-    node29 -> node49 [dir=both];
-    node29 -> node43 [dir=both];
-    node29 -> node51 [dir=both];
-    node29 -> node52 [dir=both];
-    node29 -> node50 [dir=both];
-    node29 -> node53 [dir=both];
-    node29 -> node34 [dir=both];
-    node29 -> node54 [dir=both];
-    node29 -> node44 [dir=both];
-    node29 -> node56 [dir=both];
-    node29 -> node57 [dir=both];
-    node29 -> node55 [dir=both];
-    node29 -> node58 [dir=both];
-    node29 -> node45 [dir=both];
-    node29 -> node60 [dir=both];
-    node29 -> node61 [dir=both];
-    node29 -> node59 [dir=both];
-    node29 -> node62 [dir=both];
-    node29 -> node32 [dir=both];
-    node29 -> node64 [dir=both];
-    node29 -> node63 [dir=both];
-    node29 -> node66 [dir=both];
-    node29 -> node65 [dir=both];
-    node29 -> node36 [dir=both];
-    node29 -> node68 [dir=both];
-    node29 -> node69 [dir=both];
-    node29 -> node67 [dir=both];
-    node29 -> node71 [dir=both];
-    node29 -> node70 [dir=both];
-    node29 -> node37 [dir=both];
-    node29 -> node73 [dir=both];
-    node29 -> node72 [dir=both];
-    node29 -> node38 [dir=both];
-    node29 -> node75 [dir=both];
-    node29 -> node76 [dir=both];
-    node29 -> node74 [dir=both];
-    node29 -> node78 [dir=both];
-    node29 -> node77 [dir=both];
-    node29 -> node39 [dir=both];
-    node29 -> node80 [dir=both];
-    node29 -> node79 [dir=both];
-    node29 -> node40 [dir=both];
-    node29 -> node82 [dir=both];
-    node29 -> node83 [dir=both];
-    node29 -> node81 [dir=both];
     node32 [label="PC"]
     node32 -> node64 [dir=both];
-    node32 -> node63 [dir=both];
     node32 -> node66 [dir=both];
-    node32 -> node65 [dir=both];
-    node32 -> node36 [dir=both];
-    node32 -> node68 [dir=both];
-    node32 -> node69 [dir=both];
-    node32 -> node67 [dir=both];
     node32 -> node71 [dir=both];
-    node32 -> node70 [dir=both];
-    node32 -> node37 [dir=both];
     node32 -> node73 [dir=both];
-    node32 -> node72 [dir=both];
-    node32 -> node38 [dir=both];
-    node32 -> node75 [dir=both];
-    node32 -> node76 [dir=both];
-    node32 -> node74 [dir=both];
     node32 -> node78 [dir=both];
-    node32 -> node77 [dir=both];
-    node32 -> node39 [dir=both];
     node32 -> node80 [dir=both];
     node33 [label="ID(1)"]
     node33 -> node46 [dir=both];
-    node33 -> node47 [dir=both];
-    node33 -> node41 [dir=both];
-    node33 -> node48 [dir=both];
-    node33 -> node42 [dir=both];
     node33 -> node49 [dir=both];
     node33 -> node50 [dir=both];
     node33 -> node53 [dir=both];
-    node33 -> node34 [dir=both];
-    node33 -> node54 [dir=both];
-    node33 -> node44 [dir=both];
-    node33 -> node56 [dir=both];
-    node33 -> node57 [dir=both];
-    node33 -> node55 [dir=both];
     node33 -> node58 [dir=both];
     node33 -> node59 [dir=both];
     node34 [label="ID(2)"]
     node34 -> node53 [dir=both];
     node34 -> node54 [dir=both];
-    node34 -> node44 [dir=both];
-    node34 -> node56 [dir=both];
     node34 -> node57 [dir=both];
     node34 -> node55 [dir=both];
-    node34 -> node58 [dir=both];
-    node34 -> node45 [dir=both];
-    node34 -> node60 [dir=both];
     node34 -> node61 [dir=both];
     node36 [label="ID(4)"]
     node36 -> node65 [dir=both];
@@ -1153,7 +621,6 @@ digraph interference_graph {
     node50 -> node51 [dir=both];
     node50 -> node52 [dir=both];
     node51 [label="ID(19)"]
-    node51 -> node52 [dir=both];
     node52 [label="ID(20)"]
     node53 [label="ID(21)"]
     node54 [label="ID(22)"]
@@ -1161,14 +628,12 @@ digraph interference_graph {
     node55 -> node56 [dir=both];
     node55 -> node57 [dir=both];
     node56 [label="ID(24)"]
-    node56 -> node57 [dir=both];
     node57 [label="ID(25)"]
     node58 [label="ID(26)"]
     node59 [label="ID(27)"]
     node59 -> node60 [dir=both];
     node59 -> node61 [dir=both];
     node60 [label="ID(28)"]
-    node60 -> node61 [dir=both];
     node61 [label="ID(29)"]
     node62 [label="ID(30)"]
     node63 [label="ID(31)"]
@@ -1181,7 +646,6 @@ digraph interference_graph {
     node67 -> node68 [dir=both];
     node67 -> node69 [dir=both];
     node68 [label="ID(36)"]
-    node68 -> node69 [dir=both];
     node69 [label="ID(37)"]
     node70 [label="ID(38)"]
     node70 -> node71 [dir=both];
@@ -1193,7 +657,6 @@ digraph interference_graph {
     node74 -> node75 [dir=both];
     node74 -> node76 [dir=both];
     node75 [label="ID(43)"]
-    node75 -> node76 [dir=both];
     node76 [label="ID(44)"]
     node77 [label="ID(45)"]
     node77 -> node78 [dir=both];
@@ -1205,80 +668,124 @@ digraph interference_graph {
     node81 -> node82 [dir=both];
     node81 -> node83 [dir=both];
     node82 [label="ID(50)"]
-    node82 -> node83 [dir=both];
     node83 [label="ID(51)"]
 }
-
-l0: 
-str R29, [R29, #16]
-sub R29, R29, #16
-mov R0, #5
-mov R4, R0
-ldr R0, [R29, #0]
-mov R1, R0
-mov R0, R1
-bl l1
-mov R1, R0
-mov R0, R1
-mov R0, R4
-mov R1, R0
-mov R0, R1
-mov R1, #2
-add R2, R0, R1
-mov R4, R2
-mov R0, R4
-mov R3, R0
-mov R1, R3
-mov R0, R1
-mov R2, R0
-mov R1, R3
-add R0, R2, R1
-mov R3, R0
-mov R1, R4
-mov R0, R1
-mov R2, R0
-mov R1, R3
-sub R0, R2, R1
-mov R4, R0
-mov R1, #0
-mov R0, R1
-ret
-
-l1: 
-str R29, [R29, #16]
-sub R29, R29, #16
-mov R3, R0
-mov R1, R3
-ldr R0, [R1]
-mov R0, R0
-mov R0, R3
-ldr R1, [R0]
-mov R0, R1
-mov R2, R0
-mov R1, #1
-add R0, R2, R1
-mov R0, R0
-mov R0, R3
-ldr R1, [R0]
-mov R0, R1
-mov R1, R3
-ldr R0, [R1]
-mov R1, R0
-mov R0, R1
-mov R1, #2
-smull R2, R0, R1
-mov R0, R2
-mov R0, R3
-ldr R1, [R0]
-mov R0, R1
-mov R0, R3
-ldr R1, [R0]
-mov R0, R1
-mov R2, R0
-mov R0, #3
-sub R1, R2, R0
-mov R0, R1
-ret
+digraph interference_graph {
+    node0 [label="R0"]
+    node0 -> node41 [dir=both];
+    node0 -> node48 [dir=both];
+    node0 -> node62 [dir=both];
+    node0 -> node32 [dir=both];
+    node0 -> node63 [dir=both];
+    node0 -> node67 [dir=both];
+    node29 [label="R29"]
+    node29 -> node29 [dir=both];
+    node29 -> node47 [dir=both];
+    node32 [label="PC"]
+    node32 -> node64 [dir=both];
+    node32 -> node66 [dir=both];
+    node32 -> node71 [dir=both];
+    node32 -> node73 [dir=both];
+    node32 -> node78 [dir=both];
+    node32 -> node80 [dir=both];
+    node33 [label="ID(1)"]
+    node33 -> node46 [dir=both];
+    node33 -> node49 [dir=both];
+    node33 -> node50 [dir=both];
+    node33 -> node53 [dir=both];
+    node33 -> node58 [dir=both];
+    node33 -> node59 [dir=both];
+    node34 [label="ID(2)"]
+    node34 -> node53 [dir=both];
+    node34 -> node54 [dir=both];
+    node34 -> node57 [dir=both];
+    node34 -> node55 [dir=both];
+    node34 -> node61 [dir=both];
+    node36 [label="ID(4)"]
+    node36 -> node65 [dir=both];
+    node36 -> node68 [dir=both];
+    node37 [label="ID(5)"]
+    node37 -> node70 [dir=both];
+    node37 -> node74 [dir=both];
+    node38 [label="ID(6)"]
+    node38 -> node72 [dir=both];
+    node38 -> node75 [dir=both];
+    node39 [label="ID(7)"]
+    node39 -> node77 [dir=both];
+    node39 -> node81 [dir=both];
+    node40 [label="ID(8)"]
+    node40 -> node79 [dir=both];
+    node40 -> node82 [dir=both];
+    node41 [label="ID(9)"]
+    node41 -> node47 [dir=both];
+    node42 [label="ID(10)"]
+    node42 -> node48 [dir=both];
+    node43 [label="ID(11)"]
+    node43 -> node49 [dir=both];
+    node43 -> node51 [dir=both];
+    node44 [label="ID(12)"]
+    node44 -> node54 [dir=both];
+    node44 -> node56 [dir=both];
+    node45 [label="ID(13)"]
+    node45 -> node58 [dir=both];
+    node45 -> node60 [dir=both];
+    node46 [label="ID(14)"]
+    node47 [label="ID(15)"]
+    node48 [label="ID(16)"]
+    node49 [label="ID(17)"]
+    node50 [label="ID(18)"]
+    node50 -> node51 [dir=both];
+    node50 -> node52 [dir=both];
+    node51 [label="ID(19)"]
+    node52 [label="ID(20)"]
+    node53 [label="ID(21)"]
+    node54 [label="ID(22)"]
+    node55 [label="ID(23)"]
+    node55 -> node56 [dir=both];
+    node55 -> node57 [dir=both];
+    node56 [label="ID(24)"]
+    node57 [label="ID(25)"]
+    node58 [label="ID(26)"]
+    node59 [label="ID(27)"]
+    node59 -> node60 [dir=both];
+    node59 -> node61 [dir=both];
+    node60 [label="ID(28)"]
+    node61 [label="ID(29)"]
+    node62 [label="ID(30)"]
+    node63 [label="ID(31)"]
+    node63 -> node64 [dir=both];
+    node64 [label="ID(32)"]
+    node65 [label="ID(33)"]
+    node65 -> node66 [dir=both];
+    node66 [label="ID(34)"]
+    node67 [label="ID(35)"]
+    node67 -> node68 [dir=both];
+    node67 -> node69 [dir=both];
+    node68 [label="ID(36)"]
+    node69 [label="ID(37)"]
+    node70 [label="ID(38)"]
+    node70 -> node71 [dir=both];
+    node71 [label="ID(39)"]
+    node72 [label="ID(40)"]
+    node72 -> node73 [dir=both];
+    node73 [label="ID(41)"]
+    node74 [label="ID(42)"]
+    node74 -> node75 [dir=both];
+    node74 -> node76 [dir=both];
+    node75 [label="ID(43)"]
+    node76 [label="ID(44)"]
+    node77 [label="ID(45)"]
+    node77 -> node78 [dir=both];
+    node78 [label="ID(46)"]
+    node79 [label="ID(47)"]
+    node79 -> node80 [dir=both];
+    node80 [label="ID(48)"]
+    node81 [label="ID(49)"]
+    node81 -> node82 [dir=both];
+    node81 -> node83 [dir=both];
+    node82 [label="ID(50)"]
+    node83 [label="ID(51)"]
+}
 
 
 
@@ -1286,116 +793,14 @@ ret
 
 
 FILE: tests/data/input3.c
-
-l0:                                      | SP        
-str R29, [SP, #16]                       | SP        
-sub SP, SP, #16                          | SP        R29       
-mov ID(21), #5                           | SP        R29       
-mov ID(4), ID(21)                        | ID(21)    SP        R29       
-mov ID(22), #3                           | ID(4)     SP        R29       
-mov ID(5), ID(22)                        | ID(22)    ID(4)     SP        R29       
-mov ID(23), ID(4)                        | ID(4)     ID(5)     SP        R29       
-mov ID(13), ID(23)                       | ID(23)    ID(5)     SP        R29       
-mov ID(24), ID(5)                        | ID(5)     ID(13)    SP        R29       
-mov ID(14), ID(24)                       | ID(24)    ID(13)    SP        R29       
-mov R0, ID(13)                           | ID(13)    ID(14)    SP        R29       
-mov R1, ID(14)                           | ID(14)    R0        SP        R29       
-bl l1                                    | R0        SP        R1        R29       
-mov ID(25), R0                           | R0        SP        R29       
-mov ID(15), ID(25)                       | ID(25)    SP        R29       
-mov ID(26), ID(15)                       | ID(15)    SP        R29       
-mov ID(6), ID(26)                        | ID(26)    SP        R29       
-mov ID(27), #1075838976                  | SP        R29       
-mov ID(7), ID(27)                        | ID(27)    SP        R29       
-mov ID(28), #0                           | ID(7)     SP        R29       
-mov ID(8), ID(28)                        | ID(28)    ID(7)     SP        R29       
-mov ID(29), ID(7)                        | ID(7)     ID(8)     SP        R29       
-mov ID(16), ID(29)                       | ID(29)    ID(8)     SP        R29       
-mov ID(30), ID(8)                        | ID(8)     ID(16)    SP        R29       
-mov ID(17), ID(30)                       | ID(30)    ID(16)    SP        ID(8)     
-mov R0, ID(16)                           | ID(16)    ID(17)    SP        ID(8)     
-mov R1, ID(17)                           | ID(17)    R0        SP        ID(8)     
-bl l2                                    | R0        SP        R1        ID(8)     
-mov ID(31), R0                           | R0        ID(8)     R29       
-mov ID(18), ID(31)                       | ID(31)    ID(8)     R29       
-mov ID(32), ID(18)                       | ID(18)    ID(8)     R29       
-mov ID(9), ID(32)                        | ID(32)    ID(8)     R29       
-mov ID(33), ID(9)                        | ID(9)     ID(8)     R29       
-mov ID(19), ID(33)                       | ID(33)    ID(8)     R29       
-mov ID(35), ID(19)                       | ID(19)    ID(8)     R29       
-mov ID(36), #0                           | ID(8)     R29       
-cmp ID(35), ID(36)                       | ID(36)    ID(8)     R29       
-cset ID(34), GE                          | ID(8)     R29       
-cbnz l5                                  | ID(8)     R29       
-b l6                                     | R29       
-
-l1:                                      | SP        R0        R1        
-str R29, [SP, #16]                       | SP        R0        R1        
-sub SP, SP, #16                          | SP        R0        R1        R29       
-mov ID(0), R0                            | R0        R1        R29       
-mov ID(1), R1                            | R1        ID(0)     R29       
-mov ID(37), ID(0)                        | ID(0)     ID(1)     R29       
-mov R0, ID(37)                           | ID(37)    ID(1)     R29       
-mov ID(39), R0                           | R0        ID(1)     R29       
-mov ID(40), ID(1)                        | ID(1)     ID(39)    R29       
-add ID(38), ID(39), ID(40)               | ID(39)    ID(40)    R29       
-mov R0, ID(38)                           | ID(38)    R29       
-ret                                      | R29       
-
-l2:                                      | SP        R0        R1        
-str R29, [SP, #16]                       | SP        R0        R1        
-sub SP, SP, #16                          | SP        R0        R1        R29       
-mov ID(2), R0                            | R0        R1        R29       
-mov ID(3), R1                            | R1        ID(2)     R29       
-mov ID(41), ID(3)                        | ID(3)     ID(2)     R29       
-mov ID(11), ID(41)                       | ID(41)    ID(2)     R29       ID(3)     
-mov ID(44), ID(11)                       | ID(11)    ID(2)     R29       ID(3)     
-mov ID(45), #0                           | ID(2)     R29       ID(3)     
-cmp ID(44), ID(45)                       | ID(45)    ID(2)     R29       ID(3)     
-cset ID(43), EQ                          | ID(2)     R29       ID(3)     
-mvn ID(42), ID(43)                       | ID(43)    ID(2)     R29       ID(3)     
-cbnz l4                                  | ID(2)     R29       ID(3)     
-
-l3:                                      | R29       
-mov ID(46), #3212836864                  | R29       
-mov R0, ID(46)                           | ID(46)    R29       
-ret                                      | R29       
-
-l4:                                      | ID(2)     ID(3)     R29       
-mov ID(47), ID(2)                        | ID(2)     ID(3)     R29       
-mov ID(12), ID(47)                       | ID(47)    ID(3)     R29       
-mov ID(49), ID(12)                       | ID(12)    ID(3)     R29       
-mov ID(50), ID(3)                        | ID(3)     ID(49)    R29       
-sdiv ID(48), ID(49), ID(50)              | ID(49)    ID(50)    R29       
-mov R0, ID(48)                           | ID(48)    R29       
-ret                                      | R29       
-
-l5:                                      | ID(8)     R29       
-mov ID(51), ID(8)                        | ID(8)     R29       
-mov ID(20), ID(51)                       | ID(51)    R29       
-mov ID(53), ID(20)                       | ID(20)    R29       
-mov ID(54), #1073741824                  | ID(53)    R29       
-add ID(52), ID(53), ID(54)               | ID(53)    ID(54)    R29       
-mov ID(8), ID(52)                        | ID(52)    R29       
-
-l6:                                      | R29       
-mov ID(55), #0                           | R29       
-mov R0, ID(55)                           | ID(55)    R29       
-ret                                      | R29       
 digraph interference_graph {
     node0 [label="R0"]
     node0 -> node45 [dir=both];
-    node0 -> node46 [dir=both];
-    node0 -> node29 [dir=both];
-    node0 -> node1 [dir=both];
     node0 -> node57 [dir=both];
     node0 -> node48 [dir=both];
-    node0 -> node49 [dir=both];
-    node0 -> node40 [dir=both];
     node0 -> node63 [dir=both];
     node0 -> node32 [dir=both];
     node0 -> node69 [dir=both];
-    node0 -> node33 [dir=both];
     node0 -> node71 [dir=both];
     node0 -> node70 [dir=both];
     node0 -> node34 [dir=both];
@@ -1404,129 +809,34 @@ digraph interference_graph {
     node0 -> node87 [dir=both];
     node1 [label="R1"]
     node1 -> node46 [dir=both];
-    node1 -> node29 [dir=both];
     node1 -> node49 [dir=both];
-    node1 -> node40 [dir=both];
-    node1 -> node32 [dir=both];
     node1 -> node33 [dir=both];
-    node1 -> node34 [dir=both];
     node1 -> node35 [dir=both];
     node29 [label="R29"]
     node29 -> node29 [dir=both];
-    node29 -> node53 [dir=both];
-    node29 -> node36 [dir=both];
-    node29 -> node54 [dir=both];
-    node29 -> node37 [dir=both];
-    node29 -> node55 [dir=both];
-    node29 -> node45 [dir=both];
-    node29 -> node56 [dir=both];
-    node29 -> node46 [dir=both];
-    node29 -> node57 [dir=both];
-    node29 -> node47 [dir=both];
-    node29 -> node58 [dir=both];
-    node29 -> node38 [dir=both];
-    node29 -> node59 [dir=both];
-    node29 -> node39 [dir=both];
-    node29 -> node60 [dir=both];
-    node29 -> node40 [dir=both];
-    node29 -> node61 [dir=both];
-    node29 -> node48 [dir=both];
-    node29 -> node62 [dir=both];
-    node29 -> node49 [dir=both];
-    node29 -> node63 [dir=both];
-    node29 -> node50 [dir=both];
-    node29 -> node64 [dir=both];
-    node29 -> node41 [dir=both];
-    node29 -> node65 [dir=both];
-    node29 -> node51 [dir=both];
-    node29 -> node67 [dir=both];
-    node29 -> node68 [dir=both];
-    node29 -> node66 [dir=both];
-    node29 -> node32 [dir=both];
-    node29 -> node33 [dir=both];
-    node29 -> node69 [dir=both];
-    node29 -> node71 [dir=both];
-    node29 -> node72 [dir=both];
-    node29 -> node70 [dir=both];
-    node29 -> node34 [dir=both];
-    node29 -> node35 [dir=both];
-    node29 -> node73 [dir=both];
-    node29 -> node43 [dir=both];
-    node29 -> node76 [dir=both];
-    node29 -> node77 [dir=both];
-    node29 -> node75 [dir=both];
-    node29 -> node74 [dir=both];
-    node29 -> node78 [dir=both];
-    node29 -> node79 [dir=both];
-    node29 -> node44 [dir=both];
-    node29 -> node81 [dir=both];
-    node29 -> node82 [dir=both];
-    node29 -> node80 [dir=both];
-    node29 -> node83 [dir=both];
-    node29 -> node52 [dir=both];
-    node29 -> node85 [dir=both];
-    node29 -> node86 [dir=both];
-    node29 -> node84 [dir=both];
-    node29 -> node87 [dir=both];
     node32 [label="PC"]
-    node32 -> node33 [dir=both];
     node32 -> node69 [dir=both];
     node33 [label="ID(1)"]
-    node33 -> node69 [dir=both];
-    node33 -> node71 [dir=both];
     node33 -> node72 [dir=both];
     node34 [label="ID(2)"]
-    node34 -> node35 [dir=both];
-    node34 -> node73 [dir=both];
-    node34 -> node43 [dir=both];
-    node34 -> node76 [dir=both];
-    node34 -> node77 [dir=both];
-    node34 -> node75 [dir=both];
-    node34 -> node74 [dir=both];
     node34 -> node79 [dir=both];
     node35 [label="ID(3)"]
     node35 -> node73 [dir=both];
-    node35 -> node43 [dir=both];
-    node35 -> node76 [dir=both];
-    node35 -> node77 [dir=both];
-    node35 -> node75 [dir=both];
-    node35 -> node74 [dir=both];
-    node35 -> node79 [dir=both];
-    node35 -> node44 [dir=both];
-    node35 -> node81 [dir=both];
     node35 -> node82 [dir=both];
     node36 [label="ID(4)"]
     node36 -> node53 [dir=both];
-    node36 -> node54 [dir=both];
-    node36 -> node37 [dir=both];
     node36 -> node55 [dir=both];
     node37 [label="ID(5)"]
     node37 -> node54 [dir=both];
-    node37 -> node55 [dir=both];
-    node37 -> node45 [dir=both];
     node37 -> node56 [dir=both];
     node38 [label="ID(6)"]
     node38 -> node58 [dir=both];
     node39 [label="ID(7)"]
     node39 -> node59 [dir=both];
-    node39 -> node60 [dir=both];
-    node39 -> node40 [dir=both];
     node39 -> node61 [dir=both];
     node40 [label="ID(8)"]
     node40 -> node60 [dir=both];
-    node40 -> node61 [dir=both];
-    node40 -> node48 [dir=both];
     node40 -> node62 [dir=both];
-    node40 -> node49 [dir=both];
-    node40 -> node63 [dir=both];
-    node40 -> node50 [dir=both];
-    node40 -> node64 [dir=both];
-    node40 -> node41 [dir=both];
-    node40 -> node65 [dir=both];
-    node40 -> node51 [dir=both];
-    node40 -> node67 [dir=both];
-    node40 -> node68 [dir=both];
-    node40 -> node66 [dir=both];
     node40 -> node83 [dir=both];
     node40 -> node84 [dir=both];
     node41 [label="ID(9)"]
@@ -1540,8 +850,6 @@ digraph interference_graph {
     node44 -> node81 [dir=both];
     node45 [label="ID(13)"]
     node45 -> node55 [dir=both];
-    node45 -> node56 [dir=both];
-    node45 -> node46 [dir=both];
     node46 [label="ID(14)"]
     node46 -> node56 [dir=both];
     node47 [label="ID(15)"]
@@ -1549,8 +857,6 @@ digraph interference_graph {
     node47 -> node58 [dir=both];
     node48 [label="ID(16)"]
     node48 -> node61 [dir=both];
-    node48 -> node62 [dir=both];
-    node48 -> node49 [dir=both];
     node49 [label="ID(17)"]
     node49 -> node62 [dir=both];
     node50 [label="ID(18)"]
@@ -1575,7 +881,6 @@ digraph interference_graph {
     node63 [label="ID(31)"]
     node64 [label="ID(32)"]
     node65 [label="ID(33)"]
-    node66 [label="ID(34)"]
     node67 [label="ID(35)"]
     node67 -> node68 [dir=both];
     node68 [label="ID(36)"]
@@ -1584,7 +889,6 @@ digraph interference_graph {
     node70 -> node71 [dir=both];
     node70 -> node72 [dir=both];
     node71 [label="ID(39)"]
-    node71 -> node72 [dir=both];
     node72 [label="ID(40)"]
     node73 [label="ID(41)"]
     node74 [label="ID(42)"]
@@ -1599,113 +903,134 @@ digraph interference_graph {
     node80 -> node81 [dir=both];
     node80 -> node82 [dir=both];
     node81 [label="ID(49)"]
-    node81 -> node82 [dir=both];
     node82 [label="ID(50)"]
     node83 [label="ID(51)"]
     node84 [label="ID(52)"]
     node84 -> node85 [dir=both];
     node84 -> node86 [dir=both];
     node85 [label="ID(53)"]
-    node85 -> node86 [dir=both];
     node86 [label="ID(54)"]
     node87 [label="ID(55)"]
 }
-
-l0: 
-str R29, [R29, #16]
-sub R29, R29, #16
-mov R0, #5
-mov R1, R0
-mov R0, #3
-mov R3, R0
-mov R0, R1
-mov R2, R0
-mov R1, R3
-mov R0, R1
-mov R0, R2
-mov R1, R0
-bl l1
-mov R1, R0
-mov R0, R1
-mov R1, R0
-mov R0, R1
-mov R0, #1075838976
-mov R1, R0
-mov R0, #0
-mov R3, R0
-mov R0, R1
-mov R2, R0
-mov R1, R3
-mov R0, R1
-mov R0, R2
-mov R1, R0
-bl l2
-mov R0, R0
-mov R1, R0
-mov R0, R1
-mov R1, R0
-mov R0, R1
-mov R1, R0
-mov R0, R1
-mov R1, #0
-cmp R0, R1
-cset R0, GE
-cbnz l5
-b l6
-
-l1: 
-str R29, [R29, #16]
-sub R29, R29, #16
-mov R1, R0
-mov R3, R1
-mov R2, R1
-mov R0, R2
-mov R1, R0
-mov R0, R3
-add R2, R1, R0
-mov R0, R2
-ret
-
-l2: 
-str R29, [R29, #16]
-sub R29, R29, #16
-mov R2, R0
-mov R3, R1
-mov R1, R3
-mov R0, R1
-mov R1, R0
-mov R0, #0
-cmp R1, R0
-cset R1, EQ
-mvn R0, R1
-cbnz l4
-
-l3: 
-mov R1, #3212836864
-mov R0, R1
-ret
-
-l4: 
-mov R0, R2
-mov R1, R0
-mov R2, R1
-mov R0, R3
-sdiv R1, R2, R0
-mov R0, R1
-ret
-
-l5: 
-mov R0, R3
-mov R1, R0
-mov R2, R1
-mov R1, #1073741824
-add R0, R2, R1
-mov R3, R0
-
-l6: 
-mov R1, #0
-mov R0, R1
-ret
+digraph interference_graph {
+    node0 [label="R0"]
+    node0 -> node45 [dir=both];
+    node0 -> node57 [dir=both];
+    node0 -> node48 [dir=both];
+    node0 -> node63 [dir=both];
+    node0 -> node32 [dir=both];
+    node0 -> node69 [dir=both];
+    node0 -> node71 [dir=both];
+    node0 -> node70 [dir=both];
+    node0 -> node34 [dir=both];
+    node0 -> node78 [dir=both];
+    node0 -> node80 [dir=both];
+    node0 -> node87 [dir=both];
+    node1 [label="R1"]
+    node1 -> node46 [dir=both];
+    node1 -> node49 [dir=both];
+    node1 -> node33 [dir=both];
+    node1 -> node35 [dir=both];
+    node29 [label="R29"]
+    node29 -> node29 [dir=both];
+    node32 [label="PC"]
+    node32 -> node69 [dir=both];
+    node33 [label="ID(1)"]
+    node33 -> node72 [dir=both];
+    node34 [label="ID(2)"]
+    node34 -> node79 [dir=both];
+    node35 [label="ID(3)"]
+    node35 -> node73 [dir=both];
+    node35 -> node82 [dir=both];
+    node36 [label="ID(4)"]
+    node36 -> node53 [dir=both];
+    node36 -> node55 [dir=both];
+    node37 [label="ID(5)"]
+    node37 -> node54 [dir=both];
+    node37 -> node56 [dir=both];
+    node38 [label="ID(6)"]
+    node38 -> node58 [dir=both];
+    node39 [label="ID(7)"]
+    node39 -> node59 [dir=both];
+    node39 -> node61 [dir=both];
+    node40 [label="ID(8)"]
+    node40 -> node60 [dir=both];
+    node40 -> node62 [dir=both];
+    node40 -> node83 [dir=both];
+    node40 -> node84 [dir=both];
+    node41 [label="ID(9)"]
+    node41 -> node64 [dir=both];
+    node41 -> node65 [dir=both];
+    node43 [label="ID(11)"]
+    node43 -> node73 [dir=both];
+    node43 -> node76 [dir=both];
+    node44 [label="ID(12)"]
+    node44 -> node79 [dir=both];
+    node44 -> node81 [dir=both];
+    node45 [label="ID(13)"]
+    node45 -> node55 [dir=both];
+    node46 [label="ID(14)"]
+    node46 -> node56 [dir=both];
+    node47 [label="ID(15)"]
+    node47 -> node57 [dir=both];
+    node47 -> node58 [dir=both];
+    node48 [label="ID(16)"]
+    node48 -> node61 [dir=both];
+    node49 [label="ID(17)"]
+    node49 -> node62 [dir=both];
+    node50 [label="ID(18)"]
+    node50 -> node63 [dir=both];
+    node50 -> node64 [dir=both];
+    node51 [label="ID(19)"]
+    node51 -> node65 [dir=both];
+    node51 -> node67 [dir=both];
+    node52 [label="ID(20)"]
+    node52 -> node83 [dir=both];
+    node52 -> node85 [dir=both];
+    node53 [label="ID(21)"]
+    node54 [label="ID(22)"]
+    node55 [label="ID(23)"]
+    node56 [label="ID(24)"]
+    node57 [label="ID(25)"]
+    node58 [label="ID(26)"]
+    node59 [label="ID(27)"]
+    node60 [label="ID(28)"]
+    node61 [label="ID(29)"]
+    node62 [label="ID(30)"]
+    node63 [label="ID(31)"]
+    node64 [label="ID(32)"]
+    node65 [label="ID(33)"]
+    node67 [label="ID(35)"]
+    node67 -> node68 [dir=both];
+    node68 [label="ID(36)"]
+    node69 [label="ID(37)"]
+    node70 [label="ID(38)"]
+    node70 -> node71 [dir=both];
+    node70 -> node72 [dir=both];
+    node71 [label="ID(39)"]
+    node72 [label="ID(40)"]
+    node73 [label="ID(41)"]
+    node74 [label="ID(42)"]
+    node74 -> node75 [dir=both];
+    node75 [label="ID(43)"]
+    node76 [label="ID(44)"]
+    node76 -> node77 [dir=both];
+    node77 [label="ID(45)"]
+    node78 [label="ID(46)"]
+    node79 [label="ID(47)"]
+    node80 [label="ID(48)"]
+    node80 -> node81 [dir=both];
+    node80 -> node82 [dir=both];
+    node81 [label="ID(49)"]
+    node82 [label="ID(50)"]
+    node83 [label="ID(51)"]
+    node84 [label="ID(52)"]
+    node84 -> node85 [dir=both];
+    node84 -> node86 [dir=both];
+    node85 [label="ID(53)"]
+    node86 [label="ID(54)"]
+    node87 [label="ID(55)"]
+}
 
 
 
@@ -1713,270 +1038,9 @@ ret
 
 
 FILE: tests/data/input4.c
-
-l0:                                      | SP        
-str R29, [SP, #16]                       | SP        
-sub SP, SP, #16                          | SP        R29       
-mov ID(42), #5                           | SP        R29       
-mov ID(5), ID(42)                        | ID(42)    SP        R29       
-mov ID(43), #1072064102                  | SP        ID(5)     R29       
-mov ID(35), ID(43)                       | ID(43)    SP        ID(5)     R29       
-mov R0, ID(35)                           | ID(35)    SP        ID(5)     R29       
-bl l1                                    | R0        SP        ID(5)     R29       
-mov ID(44), R0                           | R0        ID(5)     SP        R29       
-mov ID(36), ID(44)                       | ID(44)    ID(5)     SP        R29       
-mov ID(45), ID(36)                       | ID(36)    ID(5)     SP        R29       
-mov ID(6), ID(45)                        | ID(45)    ID(5)     SP        R29       
-mov ID(46), #0                           | ID(5)     SP        R29       
-mov ID(7), ID(46)                        | ID(46)    ID(5)     SP        R29       
-b l19                                    | ID(7)     ID(5)     SP        R29       
-
-l1:                                      | SP        R0        
-str R29, [SP, #16]                       | SP        R0        
-sub SP, SP, #16                          | SP        R0        R29       
-mov ID(0), R0                            | R0        R29       SP        
-mov ID(47), ID(0)                        | ID(0)     R29       SP        
-mov R0, ID(47)                           | ID(47)    ID(0)     R29       SP        
-mov ID(49), R0                           | R0        ID(0)     R29       SP        
-mov ID(50), #0                           | ID(0)     R29       SP        
-cmp ID(49), ID(50)                       | ID(50)    ID(0)     R29       SP        
-cset ID(48), LE                          | ID(0)     R29       SP        
-cbnz l5                                  | ID(0)     R29       SP        
-b l6                                     | ID(0)     SP        R29       
-
-l2:                                      | SP        R0        
-str R29, [SP, #16]                       | SP        R0        
-sub SP, SP, #16                          | SP        R0        R29       
-mov ID(1), R0                            | R0        R29       
-mov ID(51), #1                           | ID(1)     R29       
-mov ID(2), ID(51)                        | ID(51)    ID(1)     R29       
-b l7                                     | ID(2)     ID(1)     R29       
-
-l3:                                      | SP        R0        
-str R29, [SP, #16]                       | SP        R0        
-sub SP, SP, #16                          | SP        R0        R29       
-mov ID(3), R0                            | R0        R29       SP        
-mov ID(52), ID(3)                        | ID(3)     R29       SP        
-mov ID(21), ID(52)                       | ID(52)    ID(3)     R29       SP        
-mov ID(54), ID(21)                       | ID(21)    ID(3)     R29       SP        
-mov ID(55), #0                           | ID(3)     R29       SP        
-cmp ID(54), ID(55)                       | ID(55)    ID(3)     R29       SP        
-cset ID(53), EQ                          | ID(3)     R29       SP        
-cbnz l14                                 | ID(3)     R29       SP        
-b l16                                    | ID(3)     R29       SP        
-
-l4:                                      | SP        R0        
-str R29, [SP, #16]                       | SP        R0        
-sub SP, SP, #16                          | SP        R0        R29       
-mov ID(4), R0                            | R0        R29       SP        
-mov ID(56), ID(4)                        | ID(4)     R29       SP        
-mov ID(27), ID(56)                       | ID(56)    ID(4)     R29       SP        
-mov ID(58), ID(27)                       | ID(27)    ID(4)     R29       SP        
-mov ID(59), #1                           | ID(4)     R29       SP        
-cmp ID(58), ID(59)                       | ID(59)    ID(4)     R29       SP        
-cset ID(57), LE                          | ID(4)     R29       SP        
-cbnz l17                                 | ID(4)     R29       SP        
-b l18                                    | ID(4)     SP        R29       
-
-l5:                                      | ID(0)     R29       
-mov ID(60), ID(0)                        | ID(0)     R29       
-mov R0, ID(60)                           | ID(60)    R29       
-ret                                      | R29       
-
-l6:                                      | ID(0)     SP        R29       
-mov ID(61), ID(0)                        | ID(0)     SP        R29       
-mov ID(9), ID(61)                        | ID(61)    SP        ID(0)     R29       
-mov ID(63), ID(9)                        | ID(9)     SP        ID(0)     R29       
-mov ID(64), #1                           | ID(63)    SP        ID(0)     R29       
-sub ID(62), ID(63), ID(64)               | ID(63)    ID(64)    SP        ID(0)     
-mov ID(10), ID(62)                       | ID(62)    SP        ID(0)     R29       
-mov R0, ID(10)                           | ID(10)    SP        ID(0)     R29       
-bl l1                                    | R0        SP        ID(0)     R29       
-mov ID(65), R0                           | R0        ID(0)     R29       
-mov ID(11), ID(65)                       | ID(65)    ID(0)     R29       
-mov ID(66), ID(11)                       | ID(11)    ID(0)     R29       
-mov ID(12), ID(66)                       | ID(66)    ID(0)     R29       
-mov ID(68), ID(12)                       | ID(12)    ID(0)     R29       
-mov ID(69), ID(0)                        | ID(0)     ID(68)    R29       
-add ID(67), ID(68), ID(69)               | ID(68)    ID(69)    R29       
-mov R0, ID(67)                           | ID(67)    R29       
-ret                                      | R29       
-
-l7:                                      | ID(2)     ID(1)     R29       
-mov ID(70), ID(2)                        | ID(2)     ID(1)     R29       
-mov ID(13), ID(70)                       | ID(70)    ID(1)     ID(2)     R29       
-mov ID(73), ID(13)                       | ID(13)    ID(1)     ID(2)     R29       
-mov ID(74), ID(1)                        | ID(1)     ID(2)     R29       
-cmp ID(73), ID(74)                       | ID(74)    ID(2)     R29       ID(1)     
-cset ID(72), LE                          | ID(2)     R29       ID(1)     
-mvn ID(71), ID(72)                       | ID(72)    ID(2)     R29       ID(1)     
-cbnz l9                                  | ID(2)     R29       ID(1)     
-
-l8:                                      | ID(2)     ID(1)     R29       
-mov ID(75), ID(2)                        | ID(2)     ID(1)     R29       
-mov ID(14), ID(75)                       | ID(75)    ID(2)     ID(1)     R29       
-mov ID(77), ID(14)                       | ID(14)    ID(2)     ID(1)     R29       
-mov ID(78), #2                           | ID(77)    ID(2)     ID(1)     R29       
-sdiv ID(76), ID(77), ID(78)              | ID(77)    ID(78)    ID(2)     ID(1)     
-mov ID(15), ID(76)                       | ID(76)    ID(2)     ID(1)     R29       
-mov ID(80), ID(15)                       | ID(15)    ID(2)     ID(1)     R29       
-mov ID(81), #0                           | ID(2)     ID(1)     R29       
-cmp ID(80), ID(81)                       | ID(81)    ID(2)     ID(1)     R29       
-cset ID(79), EQ                          | ID(2)     ID(1)     R29       
-cbnz l10                                 | ID(2)     ID(1)     R29       
-b l11                                    | ID(2)     ID(1)     R29       
-
-l9:                                      | R29       
-ret                                      | R29       
-
-l10:                                     | ID(2)     ID(1)     R29       
-mov ID(82), ID(2)                        | ID(2)     ID(1)     R29       
-mov ID(16), ID(82)                       | ID(82)    ID(1)     R29       
-mov ID(84), ID(16)                       | ID(16)    ID(1)     R29       
-mov ID(85), #1                           | ID(84)    ID(1)     R29       
-add ID(83), ID(84), ID(85)               | ID(84)    ID(85)    ID(1)     R29       
-mov ID(2), ID(83)                        | ID(83)    ID(1)     R29       
-
-l11:                                     | ID(2)     ID(1)     R29       
-mov ID(86), ID(2)                        | ID(2)     ID(1)     R29       
-mov ID(17), ID(86)                       | ID(86)    ID(1)     R29       
-mov ID(88), ID(17)                       | ID(17)    ID(1)     R29       
-mov ID(89), #2                           | ID(88)    ID(1)     R29       
-sub ID(87), ID(88), ID(89)               | ID(88)    ID(89)    ID(1)     R29       
-mov ID(2), ID(87)                        | ID(87)    ID(1)     R29       
-mov ID(90), ID(2)                        | ID(2)     ID(1)     R29       
-mov ID(19), ID(90)                       | ID(90)    ID(1)     ID(2)     R29       
-mov ID(91), ID(1)                        | ID(1)     ID(19)    ID(2)     R29       
-mov ID(18), ID(91)                       | ID(91)    ID(19)    ID(2)     ID(1)     
-mov ID(94), ID(19)                       | ID(19)    ID(18)    ID(2)     ID(1)     
-mov ID(96), ID(18)                       | ID(18)    ID(2)     ID(1)     R29       
-mov ID(97), #2                           | ID(96)    ID(2)     ID(1)     R29       
-sdiv ID(95), ID(96), ID(97)              | ID(96)    ID(97)    ID(2)     ID(1)     
-cmp ID(94), ID(95)                       | ID(95)    ID(2)     ID(1)     R29       
-cset ID(93), EQ                          | ID(2)     ID(1)     R29       
-mvn ID(92), ID(93)                       | ID(93)    ID(2)     ID(1)     R29       
-cbnz l13                                 | ID(2)     ID(1)     R29       
-
-l12:                                     | ID(2)     ID(1)     R29       
-b l8                                     | ID(2)     ID(1)     R29       
-
-l13:                                     | ID(2)     ID(1)     R29       
-mov ID(98), ID(2)                        | ID(2)     ID(1)     R29       
-mov ID(20), ID(98)                       | ID(98)    ID(1)     R29       
-mov ID(100), ID(20)                      | ID(20)    ID(1)     R29       
-mov ID(101), #1                          | ID(100)   ID(1)     R29       
-add ID(99), ID(100), ID(101)             | ID(100)   ID(101)   ID(1)     R29       
-mov ID(2), ID(99)                        | ID(99)    ID(1)     R29       
-b l7                                     | ID(2)     ID(1)     R29       
-
-l14:                                     | R29       
-mov ID(102), #1                          | R29       
-mov R0, ID(102)                          | ID(102)   R29       
-ret                                      | R29       
-
-l15:                                     | ID(3)     SP        R29       
-mov ID(103), ID(3)                       | ID(3)     SP        R29       
-mov ID(26), ID(103)                      | ID(103)   ID(3)     SP        R29       
-mov ID(104), ID(3)                       | ID(3)     SP        ID(26)    R29       
-mov ID(23), ID(104)                      | ID(104)   SP        ID(26)    R29       
-mov ID(106), ID(23)                      | ID(23)    SP        ID(26)    R29       
-mov ID(107), #1                          | ID(106)   SP        ID(26)    R29       
-sub ID(105), ID(106), ID(107)            | ID(106)   ID(107)   SP        ID(26)    
-mov ID(24), ID(105)                      | ID(105)   SP        ID(26)    R29       
-mov R0, ID(24)                           | ID(24)    SP        ID(26)    R29       
-bl l3                                    | R0        SP        ID(26)    R29       
-mov ID(108), R0                          | R0        ID(26)    R29       
-mov ID(25), ID(108)                      | ID(108)   ID(26)    R29       
-mov ID(110), ID(26)                      | ID(26)    ID(25)    R29       
-mov ID(111), ID(25)                      | ID(25)    ID(110)   R29       
-smull ID(109), ID(110), ID(111)          | ID(110)   ID(111)   R29       
-mov R0, ID(109)                          | ID(109)   R29       
-ret                                      | R29       
-
-l16:                                     | ID(3)     R29       SP        
-mov ID(112), ID(3)                       | ID(3)     R29       SP        
-mov ID(22), ID(112)                      | ID(112)   ID(3)     R29       SP        
-mov ID(114), ID(22)                      | ID(22)    ID(3)     R29       SP        
-mov ID(115), #1                          | ID(3)     R29       SP        
-cmp ID(114), ID(115)                     | ID(115)   ID(3)     R29       SP        
-cset ID(113), EQ                         | ID(3)     R29       SP        
-cbnz l14                                 | ID(3)     R29       SP        
-b l15                                    | ID(3)     SP        R29       
-
-l17:                                     | ID(4)     R29       
-mov ID(116), ID(4)                       | ID(4)     R29       
-mov R0, ID(116)                          | ID(116)   R29       
-ret                                      | R29       
-
-l18:                                     | ID(4)     SP        R29       
-mov ID(117), ID(4)                       | ID(4)     SP        R29       
-mov ID(28), ID(117)                      | ID(117)   SP        ID(4)     R29       
-mov ID(119), ID(28)                      | ID(28)    SP        ID(4)     R29       
-mov ID(120), #1                          | ID(119)   SP        ID(4)     R29       
-sub ID(118), ID(119), ID(120)            | ID(119)   ID(120)   SP        ID(4)     
-mov ID(29), ID(118)                      | ID(118)   SP        ID(4)     R29       
-mov R0, ID(29)                           | ID(29)    SP        ID(4)     R29       
-bl l4                                    | R0        SP        ID(4)     R29       
-mov ID(121), R0                          | R0        ID(4)     SP        R29       
-mov ID(30), ID(121)                      | ID(121)   ID(4)     SP        R29       
-mov ID(122), ID(30)                      | ID(30)    ID(4)     SP        R29       
-mov ID(34), ID(122)                      | ID(122)   ID(4)     SP        R29       
-mov ID(123), ID(4)                       | ID(4)     SP        ID(34)    R29       
-mov ID(31), ID(123)                      | ID(123)   SP        ID(34)    R29       
-mov ID(125), ID(31)                      | ID(31)    SP        ID(34)    R29       
-mov ID(126), #2                          | ID(125)   SP        ID(34)    R29       
-sub ID(124), ID(125), ID(126)            | ID(125)   ID(126)   SP        ID(34)    
-mov ID(32), ID(124)                      | ID(124)   SP        ID(34)    R29       
-mov R0, ID(32)                           | ID(32)    SP        ID(34)    R29       
-bl l4                                    | R0        SP        ID(34)    R29       
-mov ID(127), R0                          | R0        ID(34)    R29       
-mov ID(33), ID(127)                      | ID(127)   ID(34)    R29       
-mov ID(129), ID(34)                      | ID(34)    ID(33)    R29       
-mov ID(130), ID(33)                      | ID(33)    ID(129)   R29       
-add ID(128), ID(129), ID(130)            | ID(129)   ID(130)   R29       
-mov R0, ID(128)                          | ID(128)   R29       
-ret                                      | R29       
-
-l19:                                     | ID(7)     ID(5)     SP        R29       
-mov ID(131), ID(7)                       | ID(7)     ID(5)     SP        R29       
-mov ID(37), ID(131)                      | ID(131)   ID(5)     ID(7)     SP        
-mov ID(134), ID(37)                      | ID(37)    ID(5)     ID(7)     SP        
-mov ID(135), ID(5)                       | ID(5)     ID(7)     SP        R29       
-cmp ID(134), ID(135)                     | ID(135)   ID(7)     SP        R29       
-cset ID(133), LT                         | ID(7)     SP        R29       ID(5)     
-mvn ID(132), ID(133)                     | ID(133)   ID(7)     SP        R29       
-cbnz l21                                 | ID(7)     SP        R29       ID(5)     
-
-l20:                                     | ID(7)     ID(5)     SP        R29       
-mov ID(136), ID(7)                       | ID(7)     ID(5)     SP        R29       
-mov ID(38), ID(136)                      | ID(136)   ID(5)     SP        R29       
-mov ID(138), ID(38)                      | ID(38)    ID(5)     SP        R29       
-mov ID(139), #2                          | ID(138)   ID(5)     SP        R29       
-sub ID(137), ID(138), ID(139)            | ID(138)   ID(139)   ID(5)     SP        
-mov ID(7), ID(137)                       | ID(137)   ID(5)     SP        R29       
-mov ID(140), ID(7)                       | ID(7)     ID(5)     SP        R29       
-mov ID(39), ID(140)                      | ID(140)   ID(5)     SP        R29       
-mov ID(142), ID(39)                      | ID(39)    ID(5)     SP        R29       
-mov ID(143), #1                          | ID(142)   ID(5)     SP        R29       
-add ID(141), ID(142), ID(143)            | ID(142)   ID(143)   ID(5)     SP        
-mov ID(7), ID(141)                       | ID(141)   ID(5)     SP        R29       
-b l19                                    | ID(7)     ID(5)     SP        R29       
-
-l21:                                     | SP        R29       
-mov ID(144), #9                          | SP        R29       
-mov ID(40), ID(144)                      | ID(144)   SP        R29       
-mov R0, ID(40)                           | ID(40)    SP        R29       
-bl l2                                    | R0        SP        R29       
-mov ID(145), R0                          | R0        R29       
-mov ID(41), ID(145)                      | ID(145)   R29       
-mov ID(146), #0                          | R29       
-mov R0, ID(146)                          | ID(146)   R29       
-ret                                      | R29       
 digraph interference_graph {
     node0 [label="R0"]
     node0 -> node67 [dir=both];
-    node0 -> node29 [dir=both];
-    node0 -> node37 [dir=both];
     node0 -> node76 [dir=both];
     node0 -> node32 [dir=both];
     node0 -> node79 [dir=both];
@@ -1990,14 +1054,12 @@ digraph interference_graph {
     node0 -> node99 [dir=both];
     node0 -> node134 [dir=both];
     node0 -> node56 [dir=both];
-    node0 -> node58 [dir=both];
     node0 -> node140 [dir=both];
     node0 -> node141 [dir=both];
     node0 -> node148 [dir=both];
     node0 -> node61 [dir=both];
     node0 -> node153 [dir=both];
     node0 -> node64 [dir=both];
-    node0 -> node66 [dir=both];
     node0 -> node159 [dir=both];
     node0 -> node160 [dir=both];
     node0 -> node72 [dir=both];
@@ -2005,314 +1067,43 @@ digraph interference_graph {
     node0 -> node178 [dir=both];
     node29 [label="R29"]
     node29 -> node29 [dir=both];
-    node29 -> node74 [dir=both];
-    node29 -> node37 [dir=both];
-    node29 -> node75 [dir=both];
-    node29 -> node67 [dir=both];
-    node29 -> node76 [dir=both];
-    node29 -> node68 [dir=both];
-    node29 -> node77 [dir=both];
-    node29 -> node38 [dir=both];
-    node29 -> node78 [dir=both];
-    node29 -> node39 [dir=both];
-    node29 -> node32 [dir=both];
-    node29 -> node79 [dir=both];
-    node29 -> node81 [dir=both];
-    node29 -> node82 [dir=both];
-    node29 -> node80 [dir=both];
-    node29 -> node33 [dir=both];
-    node29 -> node83 [dir=both];
-    node29 -> node34 [dir=both];
-    node29 -> node35 [dir=both];
-    node29 -> node84 [dir=both];
-    node29 -> node53 [dir=both];
-    node29 -> node86 [dir=both];
-    node29 -> node87 [dir=both];
-    node29 -> node85 [dir=both];
-    node29 -> node36 [dir=both];
-    node29 -> node88 [dir=both];
-    node29 -> node59 [dir=both];
-    node29 -> node90 [dir=both];
-    node29 -> node91 [dir=both];
-    node29 -> node89 [dir=both];
-    node29 -> node92 [dir=both];
-    node29 -> node93 [dir=both];
-    node29 -> node41 [dir=both];
-    node29 -> node95 [dir=both];
-    node29 -> node96 [dir=both];
-    node29 -> node94 [dir=both];
-    node29 -> node42 [dir=both];
-    node29 -> node97 [dir=both];
-    node29 -> node43 [dir=both];
-    node29 -> node98 [dir=both];
-    node29 -> node44 [dir=both];
-    node29 -> node100 [dir=both];
-    node29 -> node101 [dir=both];
-    node29 -> node99 [dir=both];
-    node29 -> node102 [dir=both];
-    node29 -> node45 [dir=both];
-    node29 -> node105 [dir=both];
-    node29 -> node106 [dir=both];
-    node29 -> node104 [dir=both];
-    node29 -> node103 [dir=both];
-    node29 -> node107 [dir=both];
-    node29 -> node46 [dir=both];
-    node29 -> node109 [dir=both];
-    node29 -> node110 [dir=both];
-    node29 -> node108 [dir=both];
-    node29 -> node47 [dir=both];
-    node29 -> node112 [dir=both];
-    node29 -> node113 [dir=both];
-    node29 -> node111 [dir=both];
-    node29 -> node114 [dir=both];
-    node29 -> node48 [dir=both];
-    node29 -> node116 [dir=both];
-    node29 -> node117 [dir=both];
-    node29 -> node115 [dir=both];
-    node29 -> node118 [dir=both];
-    node29 -> node49 [dir=both];
-    node29 -> node120 [dir=both];
-    node29 -> node121 [dir=both];
-    node29 -> node119 [dir=both];
-    node29 -> node122 [dir=both];
-    node29 -> node51 [dir=both];
-    node29 -> node123 [dir=both];
-    node29 -> node50 [dir=both];
-    node29 -> node126 [dir=both];
-    node29 -> node128 [dir=both];
-    node29 -> node129 [dir=both];
-    node29 -> node127 [dir=both];
-    node29 -> node125 [dir=both];
-    node29 -> node124 [dir=both];
-    node29 -> node130 [dir=both];
-    node29 -> node52 [dir=both];
-    node29 -> node132 [dir=both];
-    node29 -> node133 [dir=both];
-    node29 -> node131 [dir=both];
-    node29 -> node134 [dir=both];
-    node29 -> node135 [dir=both];
-    node29 -> node58 [dir=both];
-    node29 -> node136 [dir=both];
-    node29 -> node55 [dir=both];
-    node29 -> node138 [dir=both];
-    node29 -> node139 [dir=both];
-    node29 -> node137 [dir=both];
-    node29 -> node56 [dir=both];
-    node29 -> node140 [dir=both];
-    node29 -> node57 [dir=both];
-    node29 -> node142 [dir=both];
-    node29 -> node143 [dir=both];
-    node29 -> node141 [dir=both];
-    node29 -> node144 [dir=both];
-    node29 -> node54 [dir=both];
-    node29 -> node146 [dir=both];
-    node29 -> node147 [dir=both];
-    node29 -> node145 [dir=both];
-    node29 -> node148 [dir=both];
-    node29 -> node149 [dir=both];
-    node29 -> node60 [dir=both];
-    node29 -> node151 [dir=both];
-    node29 -> node152 [dir=both];
-    node29 -> node150 [dir=both];
-    node29 -> node61 [dir=both];
-    node29 -> node153 [dir=both];
-    node29 -> node62 [dir=both];
-    node29 -> node154 [dir=both];
-    node29 -> node66 [dir=both];
-    node29 -> node155 [dir=both];
-    node29 -> node63 [dir=both];
-    node29 -> node157 [dir=both];
-    node29 -> node158 [dir=both];
-    node29 -> node156 [dir=both];
-    node29 -> node64 [dir=both];
-    node29 -> node159 [dir=both];
-    node29 -> node65 [dir=both];
-    node29 -> node161 [dir=both];
-    node29 -> node162 [dir=both];
-    node29 -> node160 [dir=both];
-    node29 -> node163 [dir=both];
-    node29 -> node69 [dir=both];
-    node29 -> node166 [dir=both];
-    node29 -> node167 [dir=both];
-    node29 -> node165 [dir=both];
-    node29 -> node164 [dir=both];
-    node29 -> node168 [dir=both];
-    node29 -> node70 [dir=both];
-    node29 -> node170 [dir=both];
-    node29 -> node171 [dir=both];
-    node29 -> node169 [dir=both];
-    node29 -> node172 [dir=both];
-    node29 -> node71 [dir=both];
-    node29 -> node174 [dir=both];
-    node29 -> node175 [dir=both];
-    node29 -> node173 [dir=both];
-    node29 -> node176 [dir=both];
-    node29 -> node72 [dir=both];
-    node29 -> node177 [dir=both];
-    node29 -> node73 [dir=both];
-    node29 -> node178 [dir=both];
     node32 [label="PC"]
     node32 -> node79 [dir=both];
-    node32 -> node81 [dir=both];
-    node32 -> node82 [dir=both];
-    node32 -> node80 [dir=both];
     node32 -> node92 [dir=both];
     node32 -> node93 [dir=both];
-    node32 -> node41 [dir=both];
-    node32 -> node95 [dir=both];
-    node32 -> node96 [dir=both];
-    node32 -> node94 [dir=both];
-    node32 -> node42 [dir=both];
-    node32 -> node97 [dir=both];
-    node32 -> node43 [dir=both];
-    node32 -> node98 [dir=both];
-    node32 -> node44 [dir=both];
-    node32 -> node100 [dir=both];
     node32 -> node101 [dir=both];
     node33 [label="ID(1)"]
-    node33 -> node83 [dir=both];
-    node33 -> node34 [dir=both];
-    node33 -> node102 [dir=both];
-    node33 -> node45 [dir=both];
-    node33 -> node105 [dir=both];
     node33 -> node106 [dir=both];
-    node33 -> node104 [dir=both];
-    node33 -> node103 [dir=both];
-    node33 -> node107 [dir=both];
-    node33 -> node46 [dir=both];
-    node33 -> node109 [dir=both];
-    node33 -> node110 [dir=both];
-    node33 -> node108 [dir=both];
-    node33 -> node47 [dir=both];
-    node33 -> node112 [dir=both];
-    node33 -> node113 [dir=both];
-    node33 -> node111 [dir=both];
-    node33 -> node114 [dir=both];
-    node33 -> node48 [dir=both];
-    node33 -> node116 [dir=both];
-    node33 -> node117 [dir=both];
-    node33 -> node115 [dir=both];
-    node33 -> node118 [dir=both];
-    node33 -> node49 [dir=both];
-    node33 -> node120 [dir=both];
-    node33 -> node121 [dir=both];
-    node33 -> node119 [dir=both];
-    node33 -> node122 [dir=both];
-    node33 -> node51 [dir=both];
     node33 -> node123 [dir=both];
-    node33 -> node50 [dir=both];
-    node33 -> node126 [dir=both];
-    node33 -> node128 [dir=both];
-    node33 -> node129 [dir=both];
-    node33 -> node127 [dir=both];
-    node33 -> node125 [dir=both];
-    node33 -> node124 [dir=both];
-    node33 -> node130 [dir=both];
-    node33 -> node52 [dir=both];
-    node33 -> node132 [dir=both];
-    node33 -> node133 [dir=both];
-    node33 -> node131 [dir=both];
     node34 [label="ID(2)"]
     node34 -> node83 [dir=both];
     node34 -> node102 [dir=both];
-    node34 -> node45 [dir=both];
-    node34 -> node105 [dir=both];
-    node34 -> node106 [dir=both];
-    node34 -> node104 [dir=both];
-    node34 -> node103 [dir=both];
     node34 -> node107 [dir=both];
-    node34 -> node46 [dir=both];
-    node34 -> node109 [dir=both];
-    node34 -> node110 [dir=both];
-    node34 -> node108 [dir=both];
-    node34 -> node47 [dir=both];
-    node34 -> node112 [dir=both];
-    node34 -> node113 [dir=both];
-    node34 -> node111 [dir=both];
     node34 -> node114 [dir=both];
     node34 -> node115 [dir=both];
     node34 -> node118 [dir=both];
     node34 -> node119 [dir=both];
     node34 -> node122 [dir=both];
-    node34 -> node51 [dir=both];
-    node34 -> node123 [dir=both];
-    node34 -> node50 [dir=both];
-    node34 -> node126 [dir=both];
-    node34 -> node128 [dir=both];
-    node34 -> node129 [dir=both];
-    node34 -> node127 [dir=both];
-    node34 -> node125 [dir=both];
-    node34 -> node124 [dir=both];
     node34 -> node130 [dir=both];
     node34 -> node131 [dir=both];
     node35 [label="ID(3)"]
     node35 -> node84 [dir=both];
-    node35 -> node53 [dir=both];
-    node35 -> node86 [dir=both];
-    node35 -> node87 [dir=both];
-    node35 -> node85 [dir=both];
     node35 -> node135 [dir=both];
-    node35 -> node58 [dir=both];
     node35 -> node136 [dir=both];
     node35 -> node144 [dir=both];
-    node35 -> node54 [dir=both];
-    node35 -> node146 [dir=both];
-    node35 -> node147 [dir=both];
-    node35 -> node145 [dir=both];
     node36 [label="ID(4)"]
     node36 -> node88 [dir=both];
-    node36 -> node59 [dir=both];
-    node36 -> node90 [dir=both];
-    node36 -> node91 [dir=both];
-    node36 -> node89 [dir=both];
     node36 -> node148 [dir=both];
     node36 -> node149 [dir=both];
-    node36 -> node60 [dir=both];
-    node36 -> node151 [dir=both];
-    node36 -> node152 [dir=both];
-    node36 -> node150 [dir=both];
-    node36 -> node61 [dir=both];
-    node36 -> node153 [dir=both];
-    node36 -> node62 [dir=both];
-    node36 -> node154 [dir=both];
-    node36 -> node66 [dir=both];
     node36 -> node155 [dir=both];
     node37 [label="ID(5)"]
     node37 -> node74 [dir=both];
-    node37 -> node75 [dir=both];
-    node37 -> node67 [dir=both];
-    node37 -> node76 [dir=both];
-    node37 -> node68 [dir=both];
-    node37 -> node77 [dir=both];
-    node37 -> node38 [dir=both];
-    node37 -> node78 [dir=both];
-    node37 -> node39 [dir=both];
-    node37 -> node163 [dir=both];
-    node37 -> node69 [dir=both];
-    node37 -> node166 [dir=both];
     node37 -> node167 [dir=both];
-    node37 -> node165 [dir=both];
-    node37 -> node164 [dir=both];
-    node37 -> node168 [dir=both];
-    node37 -> node70 [dir=both];
-    node37 -> node170 [dir=both];
-    node37 -> node171 [dir=both];
-    node37 -> node169 [dir=both];
-    node37 -> node172 [dir=both];
-    node37 -> node71 [dir=both];
-    node37 -> node174 [dir=both];
-    node37 -> node175 [dir=both];
-    node37 -> node173 [dir=both];
     node38 [label="ID(6)"]
     node38 -> node77 [dir=both];
     node39 [label="ID(7)"]
     node39 -> node78 [dir=both];
     node39 -> node163 [dir=both];
-    node39 -> node69 [dir=both];
-    node39 -> node166 [dir=both];
-    node39 -> node167 [dir=both];
-    node39 -> node165 [dir=both];
-    node39 -> node164 [dir=both];
     node39 -> node168 [dir=both];
     node39 -> node169 [dir=both];
     node39 -> node172 [dir=both];
@@ -2345,12 +1136,9 @@ digraph interference_graph {
     node49 -> node120 [dir=both];
     node50 [label="ID(18)"]
     node50 -> node123 [dir=both];
-    node50 -> node51 [dir=both];
-    node50 -> node126 [dir=both];
     node50 -> node128 [dir=both];
     node51 [label="ID(19)"]
     node51 -> node122 [dir=both];
-    node51 -> node123 [dir=both];
     node51 -> node126 [dir=both];
     node52 [label="ID(20)"]
     node52 -> node130 [dir=both];
@@ -2363,23 +1151,14 @@ digraph interference_graph {
     node54 -> node146 [dir=both];
     node55 [label="ID(23)"]
     node55 -> node136 [dir=both];
-    node55 -> node58 [dir=both];
     node55 -> node138 [dir=both];
     node56 [label="ID(24)"]
     node56 -> node137 [dir=both];
-    node56 -> node58 [dir=both];
     node57 [label="ID(25)"]
     node57 -> node140 [dir=both];
-    node57 -> node58 [dir=both];
-    node57 -> node142 [dir=both];
     node57 -> node143 [dir=both];
     node58 [label="ID(26)"]
     node58 -> node135 [dir=both];
-    node58 -> node136 [dir=both];
-    node58 -> node138 [dir=both];
-    node58 -> node139 [dir=both];
-    node58 -> node137 [dir=both];
-    node58 -> node140 [dir=both];
     node58 -> node142 [dir=both];
     node59 [label="ID(27)"]
     node59 -> node88 [dir=both];
@@ -2394,23 +1173,14 @@ digraph interference_graph {
     node62 -> node154 [dir=both];
     node63 [label="ID(31)"]
     node63 -> node155 [dir=both];
-    node63 -> node66 [dir=both];
     node63 -> node157 [dir=both];
     node64 [label="ID(32)"]
     node64 -> node156 [dir=both];
-    node64 -> node66 [dir=both];
     node65 [label="ID(33)"]
     node65 -> node159 [dir=both];
-    node65 -> node66 [dir=both];
-    node65 -> node161 [dir=both];
     node65 -> node162 [dir=both];
     node66 [label="ID(34)"]
     node66 -> node154 [dir=both];
-    node66 -> node155 [dir=both];
-    node66 -> node157 [dir=both];
-    node66 -> node158 [dir=both];
-    node66 -> node156 [dir=both];
-    node66 -> node159 [dir=both];
     node66 -> node161 [dir=both];
     node67 [label="ID(35)"]
     node67 -> node75 [dir=both];
@@ -2436,18 +1206,15 @@ digraph interference_graph {
     node77 [label="ID(45)"]
     node78 [label="ID(46)"]
     node79 [label="ID(47)"]
-    node80 [label="ID(48)"]
     node81 [label="ID(49)"]
     node81 -> node82 [dir=both];
     node82 [label="ID(50)"]
     node83 [label="ID(51)"]
     node84 [label="ID(52)"]
-    node85 [label="ID(53)"]
     node86 [label="ID(54)"]
     node86 -> node87 [dir=both];
     node87 [label="ID(55)"]
     node88 [label="ID(56)"]
-    node89 [label="ID(57)"]
     node90 [label="ID(58)"]
     node90 -> node91 [dir=both];
     node91 [label="ID(59)"]
@@ -2457,7 +1224,6 @@ digraph interference_graph {
     node94 -> node95 [dir=both];
     node94 -> node96 [dir=both];
     node95 [label="ID(63)"]
-    node95 -> node96 [dir=both];
     node96 [label="ID(64)"]
     node97 [label="ID(65)"]
     node98 [label="ID(66)"]
@@ -2465,7 +1231,6 @@ digraph interference_graph {
     node99 -> node100 [dir=both];
     node99 -> node101 [dir=both];
     node100 [label="ID(68)"]
-    node100 -> node101 [dir=both];
     node101 [label="ID(69)"]
     node102 [label="ID(70)"]
     node103 [label="ID(71)"]
@@ -2479,9 +1244,7 @@ digraph interference_graph {
     node108 -> node109 [dir=both];
     node108 -> node110 [dir=both];
     node109 [label="ID(77)"]
-    node109 -> node110 [dir=both];
     node110 [label="ID(78)"]
-    node111 [label="ID(79)"]
     node112 [label="ID(80)"]
     node112 -> node113 [dir=both];
     node113 [label="ID(81)"]
@@ -2490,14 +1253,12 @@ digraph interference_graph {
     node115 -> node116 [dir=both];
     node115 -> node117 [dir=both];
     node116 [label="ID(84)"]
-    node116 -> node117 [dir=both];
     node117 [label="ID(85)"]
     node118 [label="ID(86)"]
     node119 [label="ID(87)"]
     node119 -> node120 [dir=both];
     node119 -> node121 [dir=both];
     node120 [label="ID(88)"]
-    node120 -> node121 [dir=both];
     node121 [label="ID(89)"]
     node122 [label="ID(90)"]
     node123 [label="ID(91)"]
@@ -2510,14 +1271,12 @@ digraph interference_graph {
     node127 -> node128 [dir=both];
     node127 -> node129 [dir=both];
     node128 [label="ID(96)"]
-    node128 -> node129 [dir=both];
     node129 [label="ID(97)"]
     node130 [label="ID(98)"]
     node131 [label="ID(99)"]
     node131 -> node132 [dir=both];
     node131 -> node133 [dir=both];
     node132 [label="ID(100)"]
-    node132 -> node133 [dir=both];
     node133 [label="ID(101)"]
     node134 [label="ID(102)"]
     node135 [label="ID(103)"]
@@ -2526,17 +1285,14 @@ digraph interference_graph {
     node137 -> node138 [dir=both];
     node137 -> node139 [dir=both];
     node138 [label="ID(106)"]
-    node138 -> node139 [dir=both];
     node139 [label="ID(107)"]
     node140 [label="ID(108)"]
     node141 [label="ID(109)"]
     node141 -> node142 [dir=both];
     node141 -> node143 [dir=both];
     node142 [label="ID(110)"]
-    node142 -> node143 [dir=both];
     node143 [label="ID(111)"]
     node144 [label="ID(112)"]
-    node145 [label="ID(113)"]
     node146 [label="ID(114)"]
     node146 -> node147 [dir=both];
     node147 [label="ID(115)"]
@@ -2546,7 +1302,6 @@ digraph interference_graph {
     node150 -> node151 [dir=both];
     node150 -> node152 [dir=both];
     node151 [label="ID(119)"]
-    node151 -> node152 [dir=both];
     node152 [label="ID(120)"]
     node153 [label="ID(121)"]
     node154 [label="ID(122)"]
@@ -2555,14 +1310,12 @@ digraph interference_graph {
     node156 -> node157 [dir=both];
     node156 -> node158 [dir=both];
     node157 [label="ID(125)"]
-    node157 -> node158 [dir=both];
     node158 [label="ID(126)"]
     node159 [label="ID(127)"]
     node160 [label="ID(128)"]
     node160 -> node161 [dir=both];
     node160 -> node162 [dir=both];
     node161 [label="ID(129)"]
-    node161 -> node162 [dir=both];
     node162 [label="ID(130)"]
     node163 [label="ID(131)"]
     node164 [label="ID(132)"]
@@ -2576,278 +1329,319 @@ digraph interference_graph {
     node169 -> node170 [dir=both];
     node169 -> node171 [dir=both];
     node170 [label="ID(138)"]
-    node170 -> node171 [dir=both];
     node171 [label="ID(139)"]
     node172 [label="ID(140)"]
     node173 [label="ID(141)"]
     node173 -> node174 [dir=both];
     node173 -> node175 [dir=both];
     node174 [label="ID(142)"]
-    node174 -> node175 [dir=both];
     node175 [label="ID(143)"]
     node176 [label="ID(144)"]
     node177 [label="ID(145)"]
     node178 [label="ID(146)"]
 }
-
-l0: 
-str R29, [R29, #16]
-sub R29, R29, #16
-mov R0, #5
-mov R3, R0
-mov R1, #1072064102
-mov R0, R1
-mov R0, R0
-bl l1
-mov R1, R0
-mov R0, R1
-mov R1, R0
-mov R0, R1
-mov R0, #0
-mov R2, R0
-b l19
-
-l1: 
-str R29, [R29, #16]
-sub R29, R29, #16
-mov R3, R0
-mov R1, R3
-mov R0, R1
-mov R0, R0
-mov R1, #0
-cmp R0, R1
-cset R0, LE
-cbnz l5
-b l6
-
-l2: 
-str R29, [R29, #16]
-sub R29, R29, #16
-mov R4, R0
-mov R0, #1
-mov R3, R0
-b l7
-
-l3: 
-str R29, [R29, #16]
-sub R29, R29, #16
-mov R2, R0
-mov R0, R2
-mov R1, R0
-mov R0, R1
-mov R1, #0
-cmp R0, R1
-cset R0, EQ
-cbnz l14
-b l16
-
-l4: 
-str R29, [R29, #16]
-sub R29, R29, #16
-mov R3, R0
-mov R0, R3
-mov R1, R0
-mov R0, R1
-mov R1, #1
-cmp R0, R1
-cset R0, LE
-cbnz l17
-b l18
-
-l5: 
-mov R1, R3
-mov R0, R1
-ret
-
-l6: 
-mov R1, R3
-mov R0, R1
-mov R1, R0
-mov R0, #1
-sub R2, R1, R0
-mov R1, R2
-mov R0, R1
-bl l1
-mov R1, R0
-mov R0, R1
-mov R1, R0
-mov R0, R1
-mov R2, R0
-mov R0, R3
-add R1, R2, R0
-mov R0, R1
-ret
-
-l7: 
-mov R0, R3
-mov R1, R0
-mov R0, R1
-mov R1, R4
-cmp R0, R1
-cset R0, LE
-mvn R1, R0
-cbnz l9
-
-l8: 
-mov R1, R3
-mov R0, R1
-mov R2, R0
-mov R1, #2
-sdiv R0, R2, R1
-mov R1, R0
-mov R0, R1
-mov R1, #0
-cmp R0, R1
-cset R0, EQ
-cbnz l10
-b l11
-
-l9: 
-ret
-
-l10: 
-mov R0, R3
-mov R1, R0
-mov R2, R1
-mov R1, #1
-add R0, R2, R1
-mov R3, R0
-
-l11: 
-mov R0, R3
-mov R1, R0
-mov R2, R1
-mov R1, #2
-sub R0, R2, R1
-mov R3, R0
-mov R0, R3
-mov R2, R0
-mov R1, R4
-mov R0, R1
-mov R1, R2
-mov R2, R0
-mov R1, #2
-sdiv R0, R2, R1
-cmp R1, R0
-cset R0, EQ
-mvn R1, R0
-cbnz l13
-
-l12: 
-b l8
-
-l13: 
-mov R0, R3
-mov R1, R0
-mov R2, R1
-mov R1, #1
-add R0, R2, R1
-mov R3, R0
-b l7
-
-l14: 
-mov R1, #1
-mov R0, R1
-ret
-
-l15: 
-mov R0, R2
-mov R3, R0
-mov R1, R2
-mov R0, R1
-mov R2, R0
-mov R1, #1
-sub R0, R2, R1
-mov R1, R0
-mov R0, R1
-bl l3
-mov R1, R0
-mov R0, R1
-mov R1, R3
-mov R2, R0
-smull R3, R1, R2
-mov R0, R3
-ret
-
-l16: 
-mov R0, R2
-mov R1, R0
-mov R0, R1
-mov R1, #1
-cmp R0, R1
-cset R0, EQ
-cbnz l14
-b l15
-
-l17: 
-mov R1, R3
-mov R0, R1
-ret
-
-l18: 
-mov R1, R3
-mov R0, R1
-mov R2, R0
-mov R0, #1
-sub R1, R2, R0
-mov R0, R1
-mov R0, R0
-bl l4
-mov R0, R0
-mov R1, R0
-mov R0, R1
-mov R4, R0
-mov R1, R3
-mov R0, R1
-mov R2, R0
-mov R0, #2
-sub R1, R2, R0
-mov R0, R1
-mov R0, R0
-bl l4
-mov R1, R0
-mov R0, R1
-mov R3, R4
-mov R2, R0
-add R1, R3, R2
-mov R0, R1
-ret
-
-l19: 
-mov R0, R2
-mov R1, R0
-mov R0, R1
-mov R1, R3
-cmp R0, R1
-cset R1, LT
-mvn R0, R1
-cbnz l21
-
-l20: 
-mov R0, R2
-mov R1, R0
-mov R2, R1
-mov R1, #2
-sub R0, R2, R1
-mov R2, R0
-mov R0, R2
-mov R1, R0
-mov R2, R1
-mov R1, #1
-add R0, R2, R1
-mov R2, R0
-b l19
-
-l21: 
-mov R1, #9
-mov R0, R1
-mov R0, R0
-bl l2
-mov R0, R0
-mov R1, R0
-mov R1, #0
-mov R0, R1
-ret
+digraph interference_graph {
+    node0 [label="R0"]
+    node0 -> node67 [dir=both];
+    node0 -> node76 [dir=both];
+    node0 -> node32 [dir=both];
+    node0 -> node79 [dir=both];
+    node0 -> node81 [dir=both];
+    node0 -> node33 [dir=both];
+    node0 -> node35 [dir=both];
+    node0 -> node36 [dir=both];
+    node0 -> node92 [dir=both];
+    node0 -> node42 [dir=both];
+    node0 -> node97 [dir=both];
+    node0 -> node99 [dir=both];
+    node0 -> node134 [dir=both];
+    node0 -> node56 [dir=both];
+    node0 -> node140 [dir=both];
+    node0 -> node141 [dir=both];
+    node0 -> node148 [dir=both];
+    node0 -> node61 [dir=both];
+    node0 -> node153 [dir=both];
+    node0 -> node64 [dir=both];
+    node0 -> node159 [dir=both];
+    node0 -> node160 [dir=both];
+    node0 -> node72 [dir=both];
+    node0 -> node177 [dir=both];
+    node0 -> node178 [dir=both];
+    node29 [label="R29"]
+    node29 -> node29 [dir=both];
+    node32 [label="PC"]
+    node32 -> node79 [dir=both];
+    node32 -> node92 [dir=both];
+    node32 -> node93 [dir=both];
+    node32 -> node101 [dir=both];
+    node33 [label="ID(1)"]
+    node33 -> node106 [dir=both];
+    node33 -> node123 [dir=both];
+    node34 [label="ID(2)"]
+    node34 -> node83 [dir=both];
+    node34 -> node102 [dir=both];
+    node34 -> node107 [dir=both];
+    node34 -> node114 [dir=both];
+    node34 -> node115 [dir=both];
+    node34 -> node118 [dir=both];
+    node34 -> node119 [dir=both];
+    node34 -> node122 [dir=both];
+    node34 -> node130 [dir=both];
+    node34 -> node131 [dir=both];
+    node35 [label="ID(3)"]
+    node35 -> node84 [dir=both];
+    node35 -> node135 [dir=both];
+    node35 -> node136 [dir=both];
+    node35 -> node144 [dir=both];
+    node36 [label="ID(4)"]
+    node36 -> node88 [dir=both];
+    node36 -> node148 [dir=both];
+    node36 -> node149 [dir=both];
+    node36 -> node155 [dir=both];
+    node37 [label="ID(5)"]
+    node37 -> node74 [dir=both];
+    node37 -> node167 [dir=both];
+    node38 [label="ID(6)"]
+    node38 -> node77 [dir=both];
+    node39 [label="ID(7)"]
+    node39 -> node78 [dir=both];
+    node39 -> node163 [dir=both];
+    node39 -> node168 [dir=both];
+    node39 -> node169 [dir=both];
+    node39 -> node172 [dir=both];
+    node39 -> node173 [dir=both];
+    node41 [label="ID(9)"]
+    node41 -> node93 [dir=both];
+    node41 -> node95 [dir=both];
+    node42 [label="ID(10)"]
+    node42 -> node94 [dir=both];
+    node43 [label="ID(11)"]
+    node43 -> node97 [dir=both];
+    node43 -> node98 [dir=both];
+    node44 [label="ID(12)"]
+    node44 -> node98 [dir=both];
+    node44 -> node100 [dir=both];
+    node45 [label="ID(13)"]
+    node45 -> node102 [dir=both];
+    node45 -> node105 [dir=both];
+    node46 [label="ID(14)"]
+    node46 -> node107 [dir=both];
+    node46 -> node109 [dir=both];
+    node47 [label="ID(15)"]
+    node47 -> node108 [dir=both];
+    node47 -> node112 [dir=both];
+    node48 [label="ID(16)"]
+    node48 -> node114 [dir=both];
+    node48 -> node116 [dir=both];
+    node49 [label="ID(17)"]
+    node49 -> node118 [dir=both];
+    node49 -> node120 [dir=both];
+    node50 [label="ID(18)"]
+    node50 -> node123 [dir=both];
+    node50 -> node128 [dir=both];
+    node51 [label="ID(19)"]
+    node51 -> node122 [dir=both];
+    node51 -> node126 [dir=both];
+    node52 [label="ID(20)"]
+    node52 -> node130 [dir=both];
+    node52 -> node132 [dir=both];
+    node53 [label="ID(21)"]
+    node53 -> node84 [dir=both];
+    node53 -> node86 [dir=both];
+    node54 [label="ID(22)"]
+    node54 -> node144 [dir=both];
+    node54 -> node146 [dir=both];
+    node55 [label="ID(23)"]
+    node55 -> node136 [dir=both];
+    node55 -> node138 [dir=both];
+    node56 [label="ID(24)"]
+    node56 -> node137 [dir=both];
+    node57 [label="ID(25)"]
+    node57 -> node140 [dir=both];
+    node57 -> node143 [dir=both];
+    node58 [label="ID(26)"]
+    node58 -> node135 [dir=both];
+    node58 -> node142 [dir=both];
+    node59 [label="ID(27)"]
+    node59 -> node88 [dir=both];
+    node59 -> node90 [dir=both];
+    node60 [label="ID(28)"]
+    node60 -> node149 [dir=both];
+    node60 -> node151 [dir=both];
+    node61 [label="ID(29)"]
+    node61 -> node150 [dir=both];
+    node62 [label="ID(30)"]
+    node62 -> node153 [dir=both];
+    node62 -> node154 [dir=both];
+    node63 [label="ID(31)"]
+    node63 -> node155 [dir=both];
+    node63 -> node157 [dir=both];
+    node64 [label="ID(32)"]
+    node64 -> node156 [dir=both];
+    node65 [label="ID(33)"]
+    node65 -> node159 [dir=both];
+    node65 -> node162 [dir=both];
+    node66 [label="ID(34)"]
+    node66 -> node154 [dir=both];
+    node66 -> node161 [dir=both];
+    node67 [label="ID(35)"]
+    node67 -> node75 [dir=both];
+    node68 [label="ID(36)"]
+    node68 -> node76 [dir=both];
+    node68 -> node77 [dir=both];
+    node69 [label="ID(37)"]
+    node69 -> node163 [dir=both];
+    node69 -> node166 [dir=both];
+    node70 [label="ID(38)"]
+    node70 -> node168 [dir=both];
+    node70 -> node170 [dir=both];
+    node71 [label="ID(39)"]
+    node71 -> node172 [dir=both];
+    node71 -> node174 [dir=both];
+    node72 [label="ID(40)"]
+    node72 -> node176 [dir=both];
+    node73 [label="ID(41)"]
+    node73 -> node177 [dir=both];
+    node74 [label="ID(42)"]
+    node75 [label="ID(43)"]
+    node76 [label="ID(44)"]
+    node77 [label="ID(45)"]
+    node78 [label="ID(46)"]
+    node79 [label="ID(47)"]
+    node81 [label="ID(49)"]
+    node81 -> node82 [dir=both];
+    node82 [label="ID(50)"]
+    node83 [label="ID(51)"]
+    node84 [label="ID(52)"]
+    node86 [label="ID(54)"]
+    node86 -> node87 [dir=both];
+    node87 [label="ID(55)"]
+    node88 [label="ID(56)"]
+    node90 [label="ID(58)"]
+    node90 -> node91 [dir=both];
+    node91 [label="ID(59)"]
+    node92 [label="ID(60)"]
+    node93 [label="ID(61)"]
+    node94 [label="ID(62)"]
+    node94 -> node95 [dir=both];
+    node94 -> node96 [dir=both];
+    node95 [label="ID(63)"]
+    node96 [label="ID(64)"]
+    node97 [label="ID(65)"]
+    node98 [label="ID(66)"]
+    node99 [label="ID(67)"]
+    node99 -> node100 [dir=both];
+    node99 -> node101 [dir=both];
+    node100 [label="ID(68)"]
+    node101 [label="ID(69)"]
+    node102 [label="ID(70)"]
+    node103 [label="ID(71)"]
+    node103 -> node104 [dir=both];
+    node104 [label="ID(72)"]
+    node105 [label="ID(73)"]
+    node105 -> node106 [dir=both];
+    node106 [label="ID(74)"]
+    node107 [label="ID(75)"]
+    node108 [label="ID(76)"]
+    node108 -> node109 [dir=both];
+    node108 -> node110 [dir=both];
+    node109 [label="ID(77)"]
+    node110 [label="ID(78)"]
+    node112 [label="ID(80)"]
+    node112 -> node113 [dir=both];
+    node113 [label="ID(81)"]
+    node114 [label="ID(82)"]
+    node115 [label="ID(83)"]
+    node115 -> node116 [dir=both];
+    node115 -> node117 [dir=both];
+    node116 [label="ID(84)"]
+    node117 [label="ID(85)"]
+    node118 [label="ID(86)"]
+    node119 [label="ID(87)"]
+    node119 -> node120 [dir=both];
+    node119 -> node121 [dir=both];
+    node120 [label="ID(88)"]
+    node121 [label="ID(89)"]
+    node122 [label="ID(90)"]
+    node123 [label="ID(91)"]
+    node124 [label="ID(92)"]
+    node124 -> node125 [dir=both];
+    node125 [label="ID(93)"]
+    node126 [label="ID(94)"]
+    node126 -> node127 [dir=both];
+    node127 [label="ID(95)"]
+    node127 -> node128 [dir=both];
+    node127 -> node129 [dir=both];
+    node128 [label="ID(96)"]
+    node129 [label="ID(97)"]
+    node130 [label="ID(98)"]
+    node131 [label="ID(99)"]
+    node131 -> node132 [dir=both];
+    node131 -> node133 [dir=both];
+    node132 [label="ID(100)"]
+    node133 [label="ID(101)"]
+    node134 [label="ID(102)"]
+    node135 [label="ID(103)"]
+    node136 [label="ID(104)"]
+    node137 [label="ID(105)"]
+    node137 -> node138 [dir=both];
+    node137 -> node139 [dir=both];
+    node138 [label="ID(106)"]
+    node139 [label="ID(107)"]
+    node140 [label="ID(108)"]
+    node141 [label="ID(109)"]
+    node141 -> node142 [dir=both];
+    node141 -> node143 [dir=both];
+    node142 [label="ID(110)"]
+    node143 [label="ID(111)"]
+    node144 [label="ID(112)"]
+    node146 [label="ID(114)"]
+    node146 -> node147 [dir=both];
+    node147 [label="ID(115)"]
+    node148 [label="ID(116)"]
+    node149 [label="ID(117)"]
+    node150 [label="ID(118)"]
+    node150 -> node151 [dir=both];
+    node150 -> node152 [dir=both];
+    node151 [label="ID(119)"]
+    node152 [label="ID(120)"]
+    node153 [label="ID(121)"]
+    node154 [label="ID(122)"]
+    node155 [label="ID(123)"]
+    node156 [label="ID(124)"]
+    node156 -> node157 [dir=both];
+    node156 -> node158 [dir=both];
+    node157 [label="ID(125)"]
+    node158 [label="ID(126)"]
+    node159 [label="ID(127)"]
+    node160 [label="ID(128)"]
+    node160 -> node161 [dir=both];
+    node160 -> node162 [dir=both];
+    node161 [label="ID(129)"]
+    node162 [label="ID(130)"]
+    node163 [label="ID(131)"]
+    node164 [label="ID(132)"]
+    node164 -> node165 [dir=both];
+    node165 [label="ID(133)"]
+    node166 [label="ID(134)"]
+    node166 -> node167 [dir=both];
+    node167 [label="ID(135)"]
+    node168 [label="ID(136)"]
+    node169 [label="ID(137)"]
+    node169 -> node170 [dir=both];
+    node169 -> node171 [dir=both];
+    node170 [label="ID(138)"]
+    node171 [label="ID(139)"]
+    node172 [label="ID(140)"]
+    node173 [label="ID(141)"]
+    node173 -> node174 [dir=both];
+    node173 -> node175 [dir=both];
+    node174 [label="ID(142)"]
+    node175 [label="ID(143)"]
+    node176 [label="ID(144)"]
+    node177 [label="ID(145)"]
+    node178 [label="ID(146)"]
+}
 
 
 
@@ -2855,58 +1649,16 @@ ret
 
 
 FILE: tests/data/input5.c
-
-l0:                                      | SP        
-str R29, [SP, #16]                       | SP        
-sub SP, SP, #16                          | SP        R29       
-mov ID(6), #0                            | R29       
-mov ID(0), ID(6)                         | ID(6)     R29       
-mov ID(7), #3                            | R29       
-mov ID(1), ID(7)                         | ID(7)     R29       
-ldr ID(8), [R29, #0]                     | R29       
-mov ID(2), ID(8)                         | ID(8)     R29       
-ldr ID(9), [R29, #4]                     | R29       
-mov ID(2), ID(9)                         | ID(9)     R29       
-mov ID(11), ID(2)                        | ID(2)     R29       
-ldr ID(10), [ID(11)]                     | ID(11)    R29       
-mov R0, ID(10)                           | ID(10)    R29       
-mov ID(12), #0                           | R29       
-mov R0, ID(12)                           | ID(12)    R29       
-ldr ID(13), [R29, #0]                    | R29       
-mov ID(3), ID(13)                        | ID(13)    R29       
-mov ID(15), ID(3)                        | ID(3)     R29       
-ldr ID(14), [ID(15)]                     | ID(15)    R29       
-mov ID(5), ID(14)                        | ID(14)    R29       
-mov ID(16), #3                           | R29       
-mov ID(5), ID(16)                        | ID(16)    R29       
-mov ID(17), #0                           | R29       
-mov R0, ID(17)                           | ID(17)    R29       
-ret                                      | R29       
 digraph interference_graph {
     node0 [label="R0"]
     node0 -> node42 [dir=both];
-    node0 -> node29 [dir=both];
     node0 -> node44 [dir=both];
     node0 -> node49 [dir=both];
     node29 [label="R29"]
     node29 -> node29 [dir=both];
-    node29 -> node38 [dir=both];
-    node29 -> node32 [dir=both];
-    node29 -> node39 [dir=both];
-    node29 -> node33 [dir=both];
     node29 -> node40 [dir=both];
-    node29 -> node34 [dir=both];
     node29 -> node41 [dir=both];
-    node29 -> node43 [dir=both];
-    node29 -> node42 [dir=both];
-    node29 -> node44 [dir=both];
     node29 -> node45 [dir=both];
-    node29 -> node35 [dir=both];
-    node29 -> node47 [dir=both];
-    node29 -> node46 [dir=both];
-    node29 -> node37 [dir=both];
-    node29 -> node48 [dir=both];
-    node29 -> node49 [dir=both];
     node32 [label="PC"]
     node32 -> node38 [dir=both];
     node33 [label="ID(1)"]
@@ -2936,33 +1688,45 @@ digraph interference_graph {
     node48 [label="ID(16)"]
     node49 [label="ID(17)"]
 }
-
-l0: 
-str R29, [R29, #16]
-sub R29, R29, #16
-mov R0, #0
-mov R1, R0
-mov R0, #3
-mov R1, R0
-ldr R0, [R29, #0]
-mov R1, R0
-ldr R0, [R29, #4]
-mov R1, R0
-mov R0, R1
-ldr R1, [R0]
-mov R0, R1
-mov R1, #0
-mov R0, R1
-ldr R0, [R29, #0]
-mov R1, R0
-mov R0, R1
-ldr R1, [R0]
-mov R0, R1
-mov R1, #3
-mov R0, R1
-mov R1, #0
-mov R0, R1
-ret
+digraph interference_graph {
+    node0 [label="R0"]
+    node0 -> node42 [dir=both];
+    node0 -> node44 [dir=both];
+    node0 -> node49 [dir=both];
+    node29 [label="R29"]
+    node29 -> node29 [dir=both];
+    node29 -> node40 [dir=both];
+    node29 -> node41 [dir=both];
+    node29 -> node45 [dir=both];
+    node32 [label="PC"]
+    node32 -> node38 [dir=both];
+    node33 [label="ID(1)"]
+    node33 -> node39 [dir=both];
+    node34 [label="ID(2)"]
+    node34 -> node40 [dir=both];
+    node34 -> node41 [dir=both];
+    node34 -> node43 [dir=both];
+    node35 [label="ID(3)"]
+    node35 -> node45 [dir=both];
+    node35 -> node47 [dir=both];
+    node37 [label="ID(5)"]
+    node37 -> node46 [dir=both];
+    node37 -> node48 [dir=both];
+    node38 [label="ID(6)"]
+    node39 [label="ID(7)"]
+    node40 [label="ID(8)"]
+    node41 [label="ID(9)"]
+    node42 [label="ID(10)"]
+    node42 -> node43 [dir=both];
+    node43 [label="ID(11)"]
+    node44 [label="ID(12)"]
+    node45 [label="ID(13)"]
+    node46 [label="ID(14)"]
+    node46 -> node47 [dir=both];
+    node47 [label="ID(15)"]
+    node48 [label="ID(16)"]
+    node49 [label="ID(17)"]
+}
 
 
 
