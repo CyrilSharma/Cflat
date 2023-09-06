@@ -16,7 +16,7 @@ impl Printer {
             idx as u32
         );
         for n in &cfg.nodes {
-            let asm = cfg.asm[n.idx];
+            let asm = &cfg.asm[n.idx];
             printer.label(format!("{}", asm));
             if let Some(e) = n.t { 
                 printer.add_edge(printer.count, e as u32) 

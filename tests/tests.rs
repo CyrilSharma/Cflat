@@ -111,17 +111,18 @@ fn visualize() {
         let cfg = AsmCfg::build(&mut r, &asm);
         if p.asm1cfg { AsmCfgPrinter::print(&cfg); }
 
-        let (defs, live) = AsmLiveness::compute(&cfg);
-        if p.live { AsmPrinter::print_live(&asm, &live); }
+        let liveness = AsmLiveness::compute(&cfg);
+
+        /* if p.live { AsmPrinter::print_live(&liveness); }
 
         if p.inter {
             let (_, alist) = AsmAllocate::build_graph(
                 r.nids, defs.clone(), live.clone()
             );
             PrintInterference(alist);
-        }
+        } */
 
-        if p.coal {
+        /* if p.coal {
             let (mut amat, mut alist) = AsmAllocate::build_graph(
                 r.nids, defs.clone(), live.clone()
             );
@@ -129,9 +130,9 @@ fn visualize() {
                 asm.clone(), &mut alist, &mut amat
             );
             PrintInterference(alist);
-        }
+        } */
         
-        let asm = AsmAllocate::allocate(&mut r, asm, defs, live);
+        let asm = AsmAllocate::allocate(&mut r, liveness);
         if p.asm2 { AsmPrinter::print(&asm); }
 
         println!("\n\n\n\n\n");

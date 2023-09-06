@@ -7,7 +7,7 @@ pub type Const = usize;
 pub const GPRS: usize = 32;
 // Presume everything costs the same.
 
-#[derive(Copy, Clone)]
+#[derive(Clone)]
 pub enum AA {
     Label(Label),
     Mov1(Reg, Const),
@@ -40,9 +40,54 @@ pub enum AA {
     LDR2(Reg, Reg),
     STR1(Reg, Reg, Const),
     STR2(Reg, Reg),
-    Ret
+    Ret,
+
+    BB(Vec<Reg>)               // Pseudo-OP
+}
+impl AA {
+    #[allow(unused_variables)]
+    pub fn defuse(&self) -> (Vec<Reg>, Vec<Reg>) {
+        use AA::*;
+        use Reg::*;
+        return match self.clone() {
+            Label(l)           => (vec![],   vec![]),
+            Mov1(d, s)         => (vec![d],  vec![]),
+            Mov2(d, s)         => (vec![d],  vec![s]),
+            Add1(d, l, r)      => (vec![d],  vec![l]),
+            Add2(d, l, r)      => (vec![d],  vec![l, r]),
+            Sub1(d, l, r)      => (vec![d],  vec![l]),
+            Sub2(d, l, r)      => (vec![d],  vec![l, r]),
+            Neg1(d, s)         => (vec![d],  vec![]),
+            Neg2(d, s)         => (vec![d],  vec![s]),
+            SMAddL(d, l, m, r) => (vec![d],  vec![l, m, r]),
+            SMNegL(d, l, r)    => (vec![d],  vec![l, r]),
+            SMSubL(d, l, m, r) => (vec![d],  vec![l, r]),
+            SMulL(d, l, r)     => (vec![d],  vec![l, r]),
+            SDiv(d, l, r)      => (vec![d],  vec![l, r]),
+            And1(d, l, r)      => (vec![d],  vec![l]),
+            And2(d, l, r)      => (vec![d],  vec![l, r]),
+            Or1(d, l, r)       => (vec![d],  vec![l]),
+            Or2(d, l, r)       => (vec![d],  vec![l, r]),
+            Mvn1(d, s)         => (vec![d],  vec![]),
+            Mvn2(d, s)         => (vec![d],  vec![s]),
+            B(l)               => (vec![],   vec![]),
+            BL(l)              => (vec![],   vec![]),
+            CBZ(l)             => (vec![],   vec![]),
+            CBNZ(l)            => (vec![],   vec![]),
+            CMP1(d, s)         => (vec![d],  vec![]),
+            CMP2(d, s)         => (vec![d],  vec![s]),
+            CSET(d, s)         => (vec![d],  vec![]),
+            LDR1(d, l, r)      => (vec![d],  vec![l]),
+            LDR2(d, s)         => (vec![d],  vec![s]),
+            STR1(d, l, r)      => (vec![d],  vec![l]),
+            STR2(d, s)         => (vec![d],  vec![s]),
+            Ret                => (vec![SP], vec![R(29)]),
+            BB(v)              => (v.clone(),vec![])
+        };
+    }
 }
 impl Display for AA {
+    #[allow(unused_variables)]
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         use AA::*;
         let res = match self {
@@ -78,6 +123,7 @@ impl Display for AA {
             STR1(d, l, r)      => format!("str {}, [{}, #{}]", d, l, r),
             STR2(d, s)         => format!("str {}, [{}]", d, s),
             Ret                => format!("ret"),
+            BB(v)              => format!("Basic Block"),
         };
         write!(f, "{res}")
     }
@@ -86,27 +132,9 @@ impl Display for AA {
 
 #[derive(Copy, Clone, PartialEq, Eq, Hash)]
 pub enum Reg {
-    // Args && Return Values
-    // R0, R1, R2, R3, R4, R5, R6, R7,
-    // Indirect Result
-    // R8,
-    // Temporary
-    // R9, R10, R11, R12, R13, R14, R15,
-    // ???
-    // R18,
-    // Temporary (must be preserved)
-    // R19, R20, R21, R22, R23, R24, R25,
-    // R26, R27, R28,
-    // Frame Pointer (must be preserved)
-    // R29,
-    // Return Address
-    // R30,
     R(u8),
-    // Stack Pointer
     SP,
-    // Zero
     RZR,
-    // Program Counter
     PC,
     // Virtual Registers
     ID(u32)

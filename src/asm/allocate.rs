@@ -1,98 +1,114 @@
-// See https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.452.8606&rep=rep1&type=pdf
+// See https://web.eecs.umich.edu/~mahlke/courses/583f12/reading/chaitin82.pdf
 use crate::registry::Registry;
 
 use super::asm::*;
-use std::cmp::Ordering;
 use std::collections::HashMap;
 use std::collections::HashSet;
-use std::collections::BinaryHeap;
+use std::mem::swap;
 
 
 type AdjMatrix = Vec<HashSet<usize>>;
 type AdjList   = Vec<Vec<usize>>;
 
-#[derive(Copy, Clone, Eq, PartialEq)]
+struct DSU { parent: Vec<i32> }
+impl DSU {
+    pub fn new(n: i32) -> Self {
+        let parent = vec![-1; n as usize];
+        return DSU { parent }
+    }
+    pub fn find(&mut self, idx: i32) -> i32 {
+        if self.parent[idx as usize] < 0 { return idx }
+        self.parent[idx as usize] = self.find(
+            self.parent[idx as usize]
+        );
+        return self.parent[idx as usize];
+    }
+    pub fn merge(&mut self, l: i32, r: i32) {
+        let mut large = self.find(l) as usize;
+        let mut small = self.find(r) as usize;
+        if large == small { return }
+        if self.parent[small] < self.parent[large] {
+            swap(&mut small, &mut large);
+        }
+        self.parent[large] += self.parent[small];
+        self.parent[small] = large as i32;
+    }
+}
 struct Node {
     deg:   u32,
     pos:   u32,
 }
 
-// Binary Heap is Largest to Smallest by default.
-impl Ord for Node {
-    fn cmp(&self, other: &Self) -> Ordering {
-        // Select the Node with the smallest # of legal options,
-        // Followed by Nodes with the highest Degree (fail fast)
-        other.deg.cmp(&self.deg)
-            .then_with(|| self.pos.cmp(&other.pos))
-    }
-}
-
-impl PartialOrd for Node {
-    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-        Some(self.cmp(other))
-    }
-}
-
 pub fn allocate(
         r: &mut Registry,
-        asm:  Vec<AA>,
-        defs: Vec<Vec<Reg>>,
-        live: Vec<Vec<Reg>>,
+        mut live: Vec<(AA, Vec<bool>, Vec<bool>)>,
     ) -> Vec<AA> {
-    let (mut amat, mut alist) = build_graph(r.nids, defs, live);
-    let asm = coalesce_graph(asm, &mut alist, &mut amat);
+    let (mut amat, mut alist) = build_graph(r.nids, &mut live);
+    coalesce_graph(&mut live, &mut alist, &mut amat);
     let colors = color_graph(alist);
-    return rewrite(asm, |r: Reg| {
+    rewrite(&mut live, |r: Reg| {
         return Reg::R(colors[r.index()] as u8);
     });
+    return live.into_iter().map(|x| x.0).collect();
 }
 
 pub fn coalesce_graph(
-        mut asm: Vec<AA>,
+        live:  &mut Vec<(AA, Vec<bool>, Vec<bool>)>,
         alist: &mut AdjList,
-        amat: &mut AdjMatrix
-    ) -> Vec<AA> {
-    loop {
-        let mut f = HashMap::new();
-        for ins in &asm {
+        amat:  &mut AdjMatrix
+    ) {
+    // You can also iterate until you reach a fixed point.
+    for _ in 0..=1 {
+        // Things may get mapped multiple times.
+        // Use a dsu to keep track.
+        let mut dsu = DSU::new(alist.len() as i32);
+        let mut f   = HashMap::new();
+        for (ins, _, _) in live.iter() {
             let AA::Mov2(d, s) = ins else { continue };
+            let (d, s) = (
+                dsu.find(d.index() as i32),
+                dsu.find(s.index() as i32)
+            );
             if d == s { continue };
-            let c = amat[d.index()].contains(&s.index());
+            let c = amat[d as usize].contains(&(s as usize));
             if c { continue };
             // Map (d -> s)
             // Small to Large merging could make this more efficient...
-            let temp = std::mem::take(&mut alist[d.index()]);
+            let temp = std::mem::take(&mut alist[d as usize]);
             for node in &temp {
-                amat[s.index()].insert(*node);
-                alist[s.index()].push(*node);
+                amat[s as usize].insert(*node);
+                amat[*node].insert(s as usize);
             }
-            for node in &temp {
-                amat[*node].insert(s.index());
-                alist[*node].retain(|x| *x != d.index());
-            }
-            f.insert(*d, *s);
-            break;
+            alist[s as usize].extend(temp);
+            f.insert(d, s);
         }
         if f.len() == 0 { break }
-        asm = rewrite(asm, |r: Reg| {
-            match f.get(&r) {
+        rewrite(live, |r: Reg| {
+            match f.get(&(r.index() as i32)) {
                 None    => return r,
-                Some(i) => return *i
+                Some(i) => return Reg::from(*i as u32)
             };
         });
+        // The coloring algorithm won't work because
+        // We haven't updated amat and alist properly.
+        // Rebuild the graph.
+        (*amat, *alist) = build_graph(
+            alist.len() as u32, live
+        );
     }
-    return asm;
 }
 
 fn color_graph(alist: AdjList) -> Vec<usize> {
-    let mut again   = true;
-    let mut stk     = Vec::new();
-    let mut spill   = Vec::new();
-    let mut degrees = vec![0; alist.len()];
-    let mut legal   = vec![[true; GPRS]; degrees.len()];
-    let mut colors  = vec![None; degrees.len()];
-    while again {
-        let mut nodes = BinaryHeap::new();
+    // If no coloring was found, recolor.
+    let (mut legal, mut colors, mut stk) = (
+        Vec::new(), Vec::new(), Vec::new()
+    );
+    loop {
+        let mut degrees = vec![0; alist.len()];
+        let mut nodes   = Vec::new();
+        legal   = vec![[true; GPRS]; degrees.len()];
+        colors  = vec![None; degrees.len()];
+        stk     = Vec::new();
         for i in 0..alist.len() {
             nodes.push(Node {
                 deg: alist[i].len() as u32,
@@ -100,17 +116,15 @@ fn color_graph(alist: AdjList) -> Vec<usize> {
             });
             degrees[i] = alist[i].len() as u32;
         }
-        // You can also use a regular queue here, since
-        // Each node only has 1-2 children, hence
-        // The whole process would run in linear time...
-        'l: while let Some(Node { deg, pos }) = nodes.pop() {
+        while let Some(Node { deg, pos }) = nodes.pop() {
+            // We've updated it multiple times, and this is an old version.
             if degrees[pos as usize] < deg { continue }
-            if deg >= GPRS as u32 {
-                spill.push(pos);
-                break 'l;
-            }
+            if deg >= GPRS as u32 { continue }
             for nbr in &alist[pos as usize] {
+                // We don't update the adjlist
+                // Hence, we need this check.
                 if degrees[*nbr] == 0 { continue }
+                // Node is precolored, so act on it.
                 if pos < GPRS as u32 {
                     legal[*nbr][pos as usize] = false
                 }
@@ -125,13 +139,13 @@ fn color_graph(alist: AdjList) -> Vec<usize> {
                 colors[pos as usize] = Some(pos as usize);
                 continue;
             }
-            stk.push(pos)
+            stk.push(pos);
         }
-        if spill.len() != 0 {
+        if stk.len() != alist.len() {
+            // Spill Logic.
             todo!();
-        } else {
-            again = false;
         }
+        break;
     }
 
     // Determine the Colors...
@@ -154,8 +168,7 @@ fn color_graph(alist: AdjList) -> Vec<usize> {
 
 pub fn build_graph(
         nids: u32,
-        defs: Vec<Vec<Reg>>,
-        live: Vec<Vec<Reg>>
+        live: &Vec<(AA, Vec<bool>, Vec<bool>)>
     ) -> (AdjMatrix, AdjList) {
     // We need both because we access the graph
     // sequentially and randomly.
@@ -167,29 +180,63 @@ pub fn build_graph(
         Vec::new();
         (nids as usize) + GPRS
     ];
-    // Live only holds Registers that remain live.
-    // We only need to consider edges where variable remains live
-    // When another variable is defined.
-    for i in 0..defs.len() {
-        for d in &defs[i] {
-            for l in &live[i] {
-                let c = amat[d.index()].contains(&l.index());
-                if c { continue }
-                alist[d.index()].push(l.index()); 
-                alist[l.index()].push(d.index());
-                amat[d.index()].insert(l.index());
-                amat[l.index()].insert(d.index());
+    // Literally the Chaitin Graph Building Algo.
+    // 1. We store counts because there WILL be duplicates
+    // because of graph coalescing.
+    // 2. This has been cleverly designed to allow dynamically
+    // recomputing the liveness, in linear time!
+    use AA::*;
+    let mut conflicts = HashMap::new();
+    for (asm, defdead, usedead) in live {
+        if let BB(v) = asm.clone() {
+            conflicts = HashMap::new();
+            for reg in v {
+                match conflicts.get(&reg.index()) {
+                    None    => conflicts.insert(reg.index(), 1),
+                    Some(i) => conflicts.insert(reg.index(), *i + 1)
+                };
+            }
+        } else {
+            let (defs, uses) = asm.defuse();
+            // If the register dies after this use, it doesn't produce a conflict.
+            // The count is important here, if the count is non-zero, that means
+            // That a duplicate of this register has been inserted (prbly bc coalescing)
+            // And hence, the register is still live because the duplicate is in use.
+            for (reg, dead) in uses.iter().zip(defdead.iter()) {
+                if !*dead { continue }
+                match conflicts.get(&reg.index()).unwrap() {
+                    1  => conflicts.remove(&reg.index()),
+                    i  => conflicts.insert(reg.index(), *i - 1)
+                };
+            }
+            for (reg, dead) in defs.iter().zip(usedead.iter()) {
+                // Add edges between everything which conflicts with this definition.
+                for (key, _) in &conflicts {
+                    amat[reg.index()].insert(*key); 
+                    amat[*key].insert(reg.index());
+                    alist[reg.index()].push(*key);
+                    alist[*key].push(reg.index());
+                }
+                if *dead { continue }
+                // We've redefined the variable (and it's used somewhere)
+                // Hence, it could conflict with stuff in the future.
+                match conflicts.get(&reg.index()) {
+                    None    => conflicts.insert(reg.index(), 1),
+                    Some(i) => conflicts.insert(reg.index(), *i + 1)
+                };
             }
         }
     }
     return (amat, alist)
 }
 
-fn rewrite(asm: Vec<AA>, c: impl Fn(Reg) -> Reg) -> Vec<AA> {
+fn rewrite(
+        live: &mut Vec<(AA, Vec<bool>, Vec<bool>)>,
+        c: impl Fn(Reg) -> Reg
+    ) {
     use AA::*;
-    let mut res = Vec::new();
-    for a in asm {
-        res.push(match a {
+    for (asm, _, _) in live {
+        *asm = match asm.clone() {
             Label(l)           => Label(l),
             Mov1(d, s)         => Mov1(c(d), s),
             Mov2(d, s)         => Mov2(c(d), c(s)),
@@ -221,10 +268,10 @@ fn rewrite(asm: Vec<AA>, c: impl Fn(Reg) -> Reg) -> Vec<AA> {
             LDR2(d, s)         => LDR2(c(d), c(s)),
             STR1(d, l, r)      => STR1(c(d), c(l), r),
             STR2(d, s)         => STR2(c(d), c(s)),
-            Ret                => Ret
-        });
+            Ret                => Ret,
+            BB(v)              => BB(v.iter().map(|r| c(*r)).collect())
+        };
     }
-    return res;
 }
 
 // Utilities...
