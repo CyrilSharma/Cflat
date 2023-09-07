@@ -18,730 +18,16 @@ test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 
 
 running 1 test
-test visualize ... FAILED
+test visualize ... ok
 
 successes:
-
-successes:
-
-failures:
 
 ---- visualize stdout ----
 FILE: tests/data/input0.c
-asm: l0: 
-asm: str R29, [SP, #16]
-reg: R29
-life-false: true
-idx: 1, fidx: 13
-dead: false
-asm: sub SP, SP, #16
-reg: SP
-life-false: true
-idx: 2, fidx: 14
-dead: false
-asm: mov ID(39), #5
-reg: ID(39)
-life-false: false
-idx: 3, fidx: 15
-dead: true
-asm: mov ID(16), ID(39)
-reg: ID(16)
-life-false: false
-idx: 4, fidx: 16
-dead: true
-asm: mov ID(40), #3
-reg: ID(40)
-life-false: false
-idx: 5, fidx: 17
-dead: true
-asm: mov ID(17), ID(40)
-reg: ID(17)
-life-false: true
-idx: 6, fidx: 18
-dead: false
-asm: mov ID(41), ID(16)
-reg: ID(41)
-life-false: false
-idx: 7, fidx: 19
-dead: true
-asm: mov ID(30), ID(41)
-reg: ID(30)
-life-false: false
-idx: 8, fidx: 20
-dead: true
-asm: mov ID(42), ID(17)
-reg: ID(42)
-life-false: false
-idx: 9, fidx: 21
-dead: true
-asm: mov ID(31), ID(42)
-reg: ID(31)
-life-false: false
-idx: 10, fidx: 22
-dead: true
-asm: mov R0, ID(30)
-reg: R0
-life-false: false
-idx: 11, fidx: 23
-dead: true
-asm: mov R1, ID(31)
-reg: R1
-life-false: false
-idx: 12, fidx: 24
-dead: true
-asm: bl l1
-asm: mov ID(43), R0
-reg: ID(43)
-life-false: false
-idx: 14, fidx: 26
-dead: true
-asm: mov ID(32), ID(43)
-reg: ID(32)
-life-false: false
-idx: 15, fidx: 27
-dead: true
-asm: mov ID(44), ID(32)
-reg: ID(44)
-life-false: false
-idx: 16, fidx: 28
-dead: true
-asm: mov ID(18), ID(44)
-reg: ID(18)
-life-false: false
-idx: 17, fidx: 29
-dead: true
-asm: mov ID(45), #1075838976
-reg: ID(45)
-life-false: false
-idx: 18, fidx: 30
-dead: true
-asm: mov ID(19), ID(45)
-reg: ID(19)
-life-false: false
-idx: 19, fidx: 31
-dead: true
-asm: mov ID(46), #1067869798
-reg: ID(46)
-life-false: false
-idx: 20, fidx: 32
-dead: true
-asm: mov ID(20), ID(46)
-reg: ID(20)
-life-false: false
-idx: 21, fidx: 33
-dead: true
-asm: mov ID(47), ID(19)
-reg: ID(47)
-life-false: false
-idx: 22, fidx: 34
-dead: true
-asm: mov ID(33), ID(47)
-reg: ID(33)
-life-false: false
-idx: 23, fidx: 35
-dead: true
-asm: mov ID(48), ID(20)
-reg: ID(48)
-life-false: false
-idx: 24, fidx: 36
-dead: true
-asm: mov ID(34), ID(48)
-reg: ID(34)
-life-false: false
-idx: 25, fidx: 37
-dead: true
-asm: mov R0, ID(33)
-reg: R0
-life-false: true
-idx: 26, fidx: 38
-dead: false
-asm: mov R1, ID(34)
-reg: R1
-life-false: true
-idx: 27, fidx: 39
-dead: false
-asm: bl l7
-asm: mov ID(49), R0
-reg: ID(49)
-life-false: false
-idx: 29, fidx: 41
-dead: true
-asm: mov ID(35), ID(49)
-reg: ID(35)
-life-false: false
-idx: 30, fidx: 42
-dead: true
-asm: mov ID(50), ID(35)
-reg: ID(50)
-life-false: false
-idx: 31, fidx: 43
-dead: true
-asm: mov ID(21), ID(50)
-reg: ID(21)
-life-false: false
-idx: 32, fidx: 44
-dead: true
-asm: mov ID(51), #0
-reg: ID(51)
-life-false: false
-idx: 33, fidx: 45
-dead: true
-asm: mov ID(16), ID(51)
-reg: ID(16)
-life-false: false
-idx: 34, fidx: 46
-dead: true
-asm: b l9
-asm: l1: 
-asm: str R29, [SP, #16]
-reg: R29
-life-false: false
-idx: 37, fidx: 48
-dead: true
-asm: sub SP, SP, #16
-reg: SP
-life-false: true
-idx: 38, fidx: 49
-dead: false
-asm: mov ID(0), R0
-reg: ID(0)
-life-false: false
-idx: 39, fidx: 50
-dead: true
-asm: mov ID(1), R1
-reg: ID(1)
-life-false: false
-idx: 40, fidx: 51
-dead: true
-asm: mov ID(52), ID(0)
-reg: ID(52)
-life-false: false
-idx: 41, fidx: 52
-dead: true
-asm: mov R0, ID(52)
-reg: R0
-life-false: false
-idx: 42, fidx: 53
-dead: true
-asm: mov ID(54), R0
-reg: ID(54)
-life-false: false
-idx: 43, fidx: 54
-dead: true
-asm: mov ID(55), ID(1)
-reg: ID(55)
-life-false: false
-idx: 44, fidx: 55
-dead: true
-asm: add ID(53), ID(54), ID(55)
-reg: ID(53)
-life-false: false
-idx: 45, fidx: 56
-dead: true
-asm: mov R0, ID(53)
-reg: R0
-life-false: false
-idx: 46, fidx: 57
-dead: true
-asm: ret
-reg: SP
-dead: true
-asm: l2: 
-asm: str R29, [SP, #16]
-reg: R29
-life-false: true
-idx: 49, fidx: 59
-dead: false
-asm: sub SP, SP, #16
-reg: SP
-life-false: true
-idx: 50, fidx: 60
-dead: false
-asm: mov ID(2), R0
-reg: ID(2)
-life-false: false
-idx: 51, fidx: 61
-dead: true
-asm: mov ID(3), R1
-reg: ID(3)
-life-false: false
-idx: 52, fidx: 62
-dead: true
-asm: mov ID(56), ID(2)
-reg: ID(56)
-life-false: false
-idx: 53, fidx: 63
-dead: true
-asm: mov ID(23), ID(56)
-reg: ID(23)
-life-false: false
-idx: 54, fidx: 64
-dead: true
-asm: mov ID(58), ID(23)
-reg: ID(58)
-life-false: false
-idx: 55, fidx: 65
-dead: true
-asm: mov ID(59), ID(3)
-reg: ID(59)
-life-false: false
-idx: 56, fidx: 66
-dead: true
-asm: sub ID(57), ID(58), ID(59)
-reg: ID(57)
-life-false: false
-idx: 57, fidx: 67
-dead: true
-asm: mov R0, ID(57)
-reg: R0
-life-false: false
-idx: 58, fidx: 68
-dead: true
-asm: ret
-reg: SP
-dead: true
-asm: l3: 
-asm: str R29, [SP, #16]
-reg: R29
-life-false: true
-idx: 61, fidx: 70
-dead: false
-asm: sub SP, SP, #16
-reg: SP
-life-false: false
-idx: 62, fidx: 71
-dead: true
-asm: mov ID(4), R0
-reg: ID(4)
-life-false: false
-idx: 63, fidx: 72
-dead: true
-asm: mov ID(5), R1
-reg: ID(5)
-life-false: false
-idx: 64, fidx: 73
-dead: true
-asm: mov ID(60), ID(4)
-reg: ID(60)
-life-false: false
-idx: 65, fidx: 74
-dead: true
-asm: mov ID(24), ID(60)
-reg: ID(24)
-life-false: false
-idx: 66, fidx: 75
-dead: true
-asm: mov ID(62), ID(24)
-reg: ID(62)
-life-false: false
-idx: 67, fidx: 76
-dead: true
-asm: mov ID(63), ID(5)
-reg: ID(63)
-life-false: false
-idx: 68, fidx: 77
-dead: true
-asm: smull ID(61), ID(62), ID(63)
-reg: ID(61)
-life-false: false
-idx: 69, fidx: 78
-dead: true
-asm: mov R0, ID(61)
-reg: R0
-life-false: false
-idx: 70, fidx: 79
-dead: true
-asm: ret
-reg: SP
-dead: true
-asm: l4: 
-asm: str R29, [SP, #16]
-reg: R29
-life-false: true
-idx: 73, fidx: 81
-dead: false
-asm: sub SP, SP, #16
-reg: SP
-life-false: false
-idx: 74, fidx: 82
-dead: true
-asm: mov ID(6), R0
-reg: ID(6)
-life-false: false
-idx: 75, fidx: 83
-dead: true
-asm: mov ID(7), R1
-reg: ID(7)
-life-false: false
-idx: 76, fidx: 84
-dead: true
-asm: mov ID(64), ID(6)
-reg: ID(64)
-life-false: false
-idx: 77, fidx: 85
-dead: true
-asm: mov ID(25), ID(64)
-reg: ID(25)
-life-false: false
-idx: 78, fidx: 86
-dead: true
-asm: mov ID(66), ID(25)
-reg: ID(66)
-life-false: false
-idx: 79, fidx: 87
-dead: true
-asm: mov ID(67), ID(7)
-reg: ID(67)
-life-false: false
-idx: 80, fidx: 88
-dead: true
-asm: sdiv ID(65), ID(66), ID(67)
-reg: ID(65)
-life-false: false
-idx: 81, fidx: 89
-dead: true
-asm: mov R0, ID(65)
-reg: R0
-life-false: false
-idx: 82, fidx: 90
-dead: true
-asm: ret
-reg: SP
-dead: true
-asm: l5: 
-asm: str R29, [SP, #16]
-reg: R29
-life-false: true
-idx: 85, fidx: 92
-dead: false
-asm: sub SP, SP, #16
-reg: SP
-life-false: false
-idx: 86, fidx: 93
-dead: true
-asm: mov ID(8), R0
-reg: ID(8)
-life-false: false
-idx: 87, fidx: 94
-dead: true
-asm: mov ID(9), R1
-reg: ID(9)
-life-false: false
-idx: 88, fidx: 95
-dead: true
-asm: mov ID(68), ID(8)
-reg: ID(68)
-life-false: false
-idx: 89, fidx: 96
-dead: true
-asm: mov ID(26), ID(68)
-reg: ID(26)
-life-false: false
-idx: 90, fidx: 97
-dead: true
-asm: mov ID(70), ID(26)
-reg: ID(70)
-life-false: false
-idx: 91, fidx: 98
-dead: true
-asm: mov ID(71), ID(9)
-reg: ID(71)
-life-false: false
-idx: 92, fidx: 99
-dead: true
-asm: add ID(69), ID(70), ID(71)
-reg: ID(69)
-life-false: false
-idx: 93, fidx: 100
-dead: true
-asm: mov R0, ID(69)
-reg: R0
-life-false: false
-idx: 94, fidx: 101
-dead: true
-asm: ret
-reg: SP
-dead: true
-asm: l6: 
-asm: str R29, [SP, #16]
-reg: R29
-life-false: true
-idx: 97, fidx: 103
-dead: false
-asm: sub SP, SP, #16
-reg: SP
-life-false: false
-idx: 98, fidx: 104
-dead: true
-asm: mov ID(10), R0
-reg: ID(10)
-life-false: false
-idx: 99, fidx: 105
-dead: true
-asm: mov ID(11), R1
-reg: ID(11)
-life-false: false
-idx: 100, fidx: 106
-dead: true
-asm: mov ID(72), ID(10)
-reg: ID(72)
-life-false: false
-idx: 101, fidx: 107
-dead: true
-asm: mov ID(27), ID(72)
-reg: ID(27)
-life-false: false
-idx: 102, fidx: 108
-dead: true
-asm: mov ID(74), ID(27)
-reg: ID(74)
-life-false: false
-idx: 103, fidx: 109
-dead: true
-asm: mov ID(75), ID(11)
-reg: ID(75)
-life-false: false
-idx: 104, fidx: 110
-dead: true
-asm: sub ID(73), ID(74), ID(75)
-reg: ID(73)
-life-false: false
-idx: 105, fidx: 111
-dead: true
-asm: mov R0, ID(73)
-reg: R0
-life-false: false
-idx: 106, fidx: 112
-dead: true
-asm: ret
-reg: SP
-dead: true
-asm: l7: 
-asm: str R29, [SP, #16]
-reg: R29
-life-false: true
-idx: 109, fidx: 114
-dead: false
-asm: sub SP, SP, #16
-reg: SP
-life-false: false
-idx: 110, fidx: 115
-dead: true
-asm: mov ID(12), R0
-reg: ID(12)
-life-false: false
-idx: 111, fidx: 116
-dead: true
-asm: mov ID(13), R1
-reg: ID(13)
-life-false: false
-idx: 112, fidx: 117
-dead: true
-asm: mov ID(76), ID(12)
-reg: ID(76)
-life-false: false
-idx: 113, fidx: 118
-dead: true
-asm: mov ID(28), ID(76)
-reg: ID(28)
-life-false: false
-idx: 114, fidx: 119
-dead: true
-asm: mov ID(78), ID(28)
-reg: ID(78)
-life-false: false
-idx: 115, fidx: 120
-dead: true
-asm: mov ID(79), ID(13)
-reg: ID(79)
-life-false: false
-idx: 116, fidx: 121
-dead: true
-asm: smull ID(77), ID(78), ID(79)
-reg: ID(77)
-life-false: false
-idx: 117, fidx: 122
-dead: true
-asm: mov R0, ID(77)
-reg: R0
-life-false: true
-idx: 118, fidx: 123
-dead: false
-asm: ret
-reg: SP
-dead: true
-asm: l8: 
-asm: str R29, [SP, #16]
-reg: R29
-life-false: true
-idx: 121, fidx: 125
-dead: false
-asm: sub SP, SP, #16
-reg: SP
-life-false: false
-idx: 122, fidx: 126
-dead: true
-asm: mov ID(14), R0
-reg: ID(14)
-life-false: false
-idx: 123, fidx: 127
-dead: true
-asm: mov ID(15), R1
-reg: ID(15)
-life-false: true
-idx: 124, fidx: 128
-dead: false
-asm: mov ID(80), ID(14)
-reg: ID(80)
-life-false: false
-idx: 125, fidx: 129
-dead: true
-asm: mov ID(29), ID(80)
-reg: ID(29)
-life-false: false
-idx: 126, fidx: 130
-dead: true
-asm: mov ID(82), ID(29)
-reg: ID(82)
-life-false: false
-idx: 127, fidx: 131
-dead: true
-asm: mov ID(83), ID(15)
-reg: ID(83)
-life-false: false
-idx: 128, fidx: 132
-dead: true
-asm: sdiv ID(81), ID(82), ID(83)
-reg: ID(81)
-life-false: false
-idx: 129, fidx: 133
-dead: true
-asm: mov R0, ID(81)
-reg: R0
-life-false: false
-idx: 130, fidx: 134
-dead: true
-asm: ret
-reg: SP
-dead: true
-asm: l9: 
-asm: mov ID(84), ID(16)
-reg: ID(84)
-life-false: false
-idx: 133, fidx: 136
-dead: true
-asm: mov ID(36), ID(84)
-reg: ID(36)
-life-false: false
-idx: 134, fidx: 137
-dead: true
-asm: mov ID(87), ID(36)
-reg: ID(87)
-life-false: false
-idx: 135, fidx: 138
-dead: true
-asm: mov ID(88), #5
-reg: ID(88)
-life-false: false
-idx: 136, fidx: 139
-dead: true
-asm: cmp ID(87), ID(88)
-reg: ID(87)
-life-false: false
-idx: 137, fidx: 140
-dead: true
-asm: cset ID(86), LT
-reg: ID(86)
-life-false: false
-idx: 138, fidx: 141
-dead: true
-asm: mvn ID(85), ID(86)
-reg: ID(85)
-life-false: false
-idx: 139, fidx: 142
-dead: true
-asm: cbnz l11
-asm: l10: 
-asm: mov ID(89), ID(17)
-reg: ID(89)
-life-false: false
-idx: 142, fidx: 144
-dead: true
-asm: mov ID(37), ID(89)
-reg: ID(37)
-life-false: false
-idx: 143, fidx: 145
-dead: true
-asm: mov ID(91), ID(37)
-reg: ID(91)
-life-false: true
-idx: 144, fidx: 146
-dead: false
-asm: mov ID(92), #1
-reg: ID(92)
-life-false: false
-idx: 145, fidx: 147
-dead: true
-asm: add ID(90), ID(91), ID(92)
-reg: ID(90)
-life-false: false
-idx: 146, fidx: 148
-dead: true
-asm: mov ID(17), ID(90)
-reg: ID(17)
-life-false: false
-idx: 147, fidx: 149
-dead: true
-asm: mov ID(93), ID(16)
-reg: ID(93)
-life-false: false
-idx: 148, fidx: 150
-dead: true
-asm: mov ID(38), ID(93)
-reg: ID(38)
-life-false: false
-idx: 149, fidx: 151
-dead: true
-asm: mov ID(95), ID(38)
-reg: ID(95)
-life-false: true
-idx: 150, fidx: 152
-dead: false
-asm: mov ID(96), #1
-reg: ID(96)
-life-false: false
-idx: 151, fidx: 153
-dead: true
-asm: add ID(94), ID(95), ID(96)
-reg: ID(94)
-life-false: false
-idx: 152, fidx: 154
-dead: true
-asm: mov ID(16), ID(94)
-reg: ID(16)
-life-false: false
-idx: 153, fidx: 155
-dead: true
-asm: b l9
-asm: l11: 
-asm: mov ID(97), #0
-reg: ID(97)
-life-false: true
-idx: 156, fidx: 157
-dead: false
-asm: mov R0, ID(97)
-reg: R0
-life-false: false
-idx: 157, fidx: 158
-dead: true
-asm: ret
-reg: SP
-dead: true
-Basic Block SP
 
 l0: 
-str R29, [SP, #16]
-sub SP, SP, #16
+str R29, [SP, #-16]
+sub SP, SP, #-16
 mov ID(39), #5
 mov ID(16), ID(39)
 mov ID(40), #3
@@ -753,14 +39,13 @@ mov ID(31), ID(42)
 mov R0, ID(30)
 mov R1, ID(31)
 bl l1
-Basic Block R0, SP, ID(17), R29
 mov ID(43), R0
 mov ID(32), ID(43)
 mov ID(44), ID(32)
 mov ID(18), ID(44)
-mov ID(45), #1075838976
+mov ID(45), #2.5
 mov ID(19), ID(45)
-mov ID(46), #1067869798
+mov ID(46), #1.3
 mov ID(20), ID(46)
 mov ID(47), ID(19)
 mov ID(33), ID(47)
@@ -769,7 +54,6 @@ mov ID(34), ID(48)
 mov R0, ID(33)
 mov R1, ID(34)
 bl l7
-Basic Block R0, ID(17), R29
 mov ID(49), R0
 mov ID(35), ID(49)
 mov ID(50), ID(35)
@@ -777,11 +61,10 @@ mov ID(21), ID(50)
 mov ID(51), #0
 mov ID(16), ID(51)
 b l9
-Basic Block SP, R0, R1
 
 l1: 
-str R29, [SP, #16]
-sub SP, SP, #16
+str R29, [SP, #-16]
+sub SP, SP, #-16
 mov ID(0), R0
 mov ID(1), R1
 mov ID(52), ID(0)
@@ -791,11 +74,10 @@ mov ID(55), ID(1)
 add ID(53), ID(54), ID(55)
 mov R0, ID(53)
 ret
-Basic Block SP, R0, R1
 
 l2: 
-str R29, [SP, #16]
-sub SP, SP, #16
+str R29, [SP, #-16]
+sub SP, SP, #-16
 mov ID(2), R0
 mov ID(3), R1
 mov ID(56), ID(2)
@@ -805,11 +87,10 @@ mov ID(59), ID(3)
 sub ID(57), ID(58), ID(59)
 mov R0, ID(57)
 ret
-Basic Block SP, R0, R1
 
 l3: 
-str R29, [SP, #16]
-sub SP, SP, #16
+str R29, [SP, #-16]
+sub SP, SP, #-16
 mov ID(4), R0
 mov ID(5), R1
 mov ID(60), ID(4)
@@ -819,11 +100,10 @@ mov ID(63), ID(5)
 smull ID(61), ID(62), ID(63)
 mov R0, ID(61)
 ret
-Basic Block SP, R0, R1
 
 l4: 
-str R29, [SP, #16]
-sub SP, SP, #16
+str R29, [SP, #-16]
+sub SP, SP, #-16
 mov ID(6), R0
 mov ID(7), R1
 mov ID(64), ID(6)
@@ -833,11 +113,10 @@ mov ID(67), ID(7)
 sdiv ID(65), ID(66), ID(67)
 mov R0, ID(65)
 ret
-Basic Block SP, R0, R1
 
 l5: 
-str R29, [SP, #16]
-sub SP, SP, #16
+str R29, [SP, #-16]
+sub SP, SP, #-16
 mov ID(8), R0
 mov ID(9), R1
 mov ID(68), ID(8)
@@ -847,11 +126,10 @@ mov ID(71), ID(9)
 add ID(69), ID(70), ID(71)
 mov R0, ID(69)
 ret
-Basic Block SP, R0, R1
 
 l6: 
-str R29, [SP, #16]
-sub SP, SP, #16
+str R29, [SP, #-16]
+sub SP, SP, #-16
 mov ID(10), R0
 mov ID(11), R1
 mov ID(72), ID(10)
@@ -861,11 +139,10 @@ mov ID(75), ID(11)
 sub ID(73), ID(74), ID(75)
 mov R0, ID(73)
 ret
-Basic Block SP, R0, R1
 
 l7: 
-str R29, [SP, #16]
-sub SP, SP, #16
+str R29, [SP, #-16]
+sub SP, SP, #-16
 mov ID(12), R0
 mov ID(13), R1
 mov ID(76), ID(12)
@@ -875,11 +152,10 @@ mov ID(79), ID(13)
 smull ID(77), ID(78), ID(79)
 mov R0, ID(77)
 ret
-Basic Block SP, R0, R1
 
 l8: 
-str R29, [SP, #16]
-sub SP, SP, #16
+str R29, [SP, #-16]
+sub SP, SP, #-16
 mov ID(14), R0
 mov ID(15), R1
 mov ID(80), ID(14)
@@ -889,7 +165,6 @@ mov ID(83), ID(15)
 sdiv ID(81), ID(82), ID(83)
 mov R0, ID(81)
 ret
-Basic Block ID(16), ID(17), R29
 
 l9: 
 mov ID(84), ID(16)
@@ -900,7 +175,6 @@ cmp ID(87), ID(88)
 cset ID(86), LT
 mvn ID(85), ID(86)
 cbnz l11
-Basic Block ID(17), ID(16)
 
 l10: 
 mov ID(89), ID(17)
@@ -916,734 +190,295 @@ mov ID(96), #1
 add ID(94), ID(95), ID(96)
 mov ID(16), ID(94)
 b l9
-Basic Block R29
 
 l11: 
 mov ID(97), #0
 mov R0, ID(97)
 ret
+Basic Block SP
 
-asm: l0: 
-asm: str R29, [SP, #16]
-reg: R29
-life-false: true
-idx: 1, fidx: 13
-dead: false
-asm: sub SP, SP, #16
-reg: SP
-life-false: true
-idx: 2, fidx: 14
-dead: false
-asm: mov ID(39), #5
-reg: ID(39)
-life-false: false
-idx: 3, fidx: 15
-dead: true
-asm: mov ID(16), ID(39)
-reg: ID(16)
-life-false: false
-idx: 4, fidx: 16
-dead: true
-asm: mov ID(40), #3
-reg: ID(40)
-life-false: false
-idx: 5, fidx: 17
-dead: true
-asm: mov ID(17), ID(40)
-reg: ID(17)
-life-false: true
-idx: 6, fidx: 18
-dead: false
-asm: mov ID(41), ID(16)
-reg: ID(41)
-life-false: false
-idx: 7, fidx: 19
-dead: true
-asm: mov ID(30), ID(41)
-reg: ID(30)
-life-false: false
-idx: 8, fidx: 20
-dead: true
-asm: mov ID(42), ID(17)
-reg: ID(42)
-life-false: false
-idx: 9, fidx: 21
-dead: true
-asm: mov ID(31), ID(42)
-reg: ID(31)
-life-false: false
-idx: 10, fidx: 22
-dead: true
-asm: mov R0, ID(30)
-reg: R0
-life-false: false
-idx: 11, fidx: 23
-dead: true
-asm: mov R1, ID(31)
-reg: R1
-life-false: false
-idx: 12, fidx: 24
-dead: true
-asm: bl l1
-asm: mov ID(43), R0
-reg: ID(43)
-life-false: false
-idx: 14, fidx: 26
-dead: true
-asm: mov ID(32), ID(43)
-reg: ID(32)
-life-false: false
-idx: 15, fidx: 27
-dead: true
-asm: mov ID(44), ID(32)
-reg: ID(44)
-life-false: false
-idx: 16, fidx: 28
-dead: true
-asm: mov ID(18), ID(44)
-reg: ID(18)
-life-false: false
-idx: 17, fidx: 29
-dead: true
-asm: mov ID(45), #1075838976
-reg: ID(45)
-life-false: false
-idx: 18, fidx: 30
-dead: true
-asm: mov ID(19), ID(45)
-reg: ID(19)
-life-false: false
-idx: 19, fidx: 31
-dead: true
-asm: mov ID(46), #1067869798
-reg: ID(46)
-life-false: false
-idx: 20, fidx: 32
-dead: true
-asm: mov ID(20), ID(46)
-reg: ID(20)
-life-false: false
-idx: 21, fidx: 33
-dead: true
-asm: mov ID(47), ID(19)
-reg: ID(47)
-life-false: false
-idx: 22, fidx: 34
-dead: true
-asm: mov ID(33), ID(47)
-reg: ID(33)
-life-false: false
-idx: 23, fidx: 35
-dead: true
-asm: mov ID(48), ID(20)
-reg: ID(48)
-life-false: false
-idx: 24, fidx: 36
-dead: true
-asm: mov ID(34), ID(48)
-reg: ID(34)
-life-false: false
-idx: 25, fidx: 37
-dead: true
-asm: mov R0, ID(33)
-reg: R0
-life-false: true
-idx: 26, fidx: 38
-dead: false
-asm: mov R1, ID(34)
-reg: R1
-life-false: true
-idx: 27, fidx: 39
-dead: false
-asm: bl l7
-asm: mov ID(49), R0
-reg: ID(49)
-life-false: false
-idx: 29, fidx: 41
-dead: true
-asm: mov ID(35), ID(49)
-reg: ID(35)
-life-false: false
-idx: 30, fidx: 42
-dead: true
-asm: mov ID(50), ID(35)
-reg: ID(50)
-life-false: false
-idx: 31, fidx: 43
-dead: true
-asm: mov ID(21), ID(50)
-reg: ID(21)
-life-false: false
-idx: 32, fidx: 44
-dead: true
-asm: mov ID(51), #0
-reg: ID(51)
-life-false: false
-idx: 33, fidx: 45
-dead: true
-asm: mov ID(16), ID(51)
-reg: ID(16)
-life-false: false
-idx: 34, fidx: 46
-dead: true
-asm: b l9
-asm: l1: 
-asm: str R29, [SP, #16]
-reg: R29
-life-false: false
-idx: 37, fidx: 48
-dead: true
-asm: sub SP, SP, #16
-reg: SP
-life-false: true
-idx: 38, fidx: 49
-dead: false
-asm: mov ID(0), R0
-reg: ID(0)
-life-false: false
-idx: 39, fidx: 50
-dead: true
-asm: mov ID(1), R1
-reg: ID(1)
-life-false: false
-idx: 40, fidx: 51
-dead: true
-asm: mov ID(52), ID(0)
-reg: ID(52)
-life-false: false
-idx: 41, fidx: 52
-dead: true
-asm: mov R0, ID(52)
-reg: R0
-life-false: false
-idx: 42, fidx: 53
-dead: true
-asm: mov ID(54), R0
-reg: ID(54)
-life-false: false
-idx: 43, fidx: 54
-dead: true
-asm: mov ID(55), ID(1)
-reg: ID(55)
-life-false: false
-idx: 44, fidx: 55
-dead: true
-asm: add ID(53), ID(54), ID(55)
-reg: ID(53)
-life-false: false
-idx: 45, fidx: 56
-dead: true
-asm: mov R0, ID(53)
-reg: R0
-life-false: false
-idx: 46, fidx: 57
-dead: true
-asm: ret
-reg: SP
-dead: true
-asm: l2: 
-asm: str R29, [SP, #16]
-reg: R29
-life-false: true
-idx: 49, fidx: 59
-dead: false
-asm: sub SP, SP, #16
-reg: SP
-life-false: true
-idx: 50, fidx: 60
-dead: false
-asm: mov ID(2), R0
-reg: ID(2)
-life-false: false
-idx: 51, fidx: 61
-dead: true
-asm: mov ID(3), R1
-reg: ID(3)
-life-false: false
-idx: 52, fidx: 62
-dead: true
-asm: mov ID(56), ID(2)
-reg: ID(56)
-life-false: false
-idx: 53, fidx: 63
-dead: true
-asm: mov ID(23), ID(56)
-reg: ID(23)
-life-false: false
-idx: 54, fidx: 64
-dead: true
-asm: mov ID(58), ID(23)
-reg: ID(58)
-life-false: false
-idx: 55, fidx: 65
-dead: true
-asm: mov ID(59), ID(3)
-reg: ID(59)
-life-false: false
-idx: 56, fidx: 66
-dead: true
-asm: sub ID(57), ID(58), ID(59)
-reg: ID(57)
-life-false: false
-idx: 57, fidx: 67
-dead: true
-asm: mov R0, ID(57)
-reg: R0
-life-false: false
-idx: 58, fidx: 68
-dead: true
-asm: ret
-reg: SP
-dead: true
-asm: l3: 
-asm: str R29, [SP, #16]
-reg: R29
-life-false: true
-idx: 61, fidx: 70
-dead: false
-asm: sub SP, SP, #16
-reg: SP
-life-false: false
-idx: 62, fidx: 71
-dead: true
-asm: mov ID(4), R0
-reg: ID(4)
-life-false: false
-idx: 63, fidx: 72
-dead: true
-asm: mov ID(5), R1
-reg: ID(5)
-life-false: false
-idx: 64, fidx: 73
-dead: true
-asm: mov ID(60), ID(4)
-reg: ID(60)
-life-false: false
-idx: 65, fidx: 74
-dead: true
-asm: mov ID(24), ID(60)
-reg: ID(24)
-life-false: false
-idx: 66, fidx: 75
-dead: true
-asm: mov ID(62), ID(24)
-reg: ID(62)
-life-false: false
-idx: 67, fidx: 76
-dead: true
-asm: mov ID(63), ID(5)
-reg: ID(63)
-life-false: false
-idx: 68, fidx: 77
-dead: true
-asm: smull ID(61), ID(62), ID(63)
-reg: ID(61)
-life-false: false
-idx: 69, fidx: 78
-dead: true
-asm: mov R0, ID(61)
-reg: R0
-life-false: false
-idx: 70, fidx: 79
-dead: true
-asm: ret
-reg: SP
-dead: true
-asm: l4: 
-asm: str R29, [SP, #16]
-reg: R29
-life-false: true
-idx: 73, fidx: 81
-dead: false
-asm: sub SP, SP, #16
-reg: SP
-life-false: false
-idx: 74, fidx: 82
-dead: true
-asm: mov ID(6), R0
-reg: ID(6)
-life-false: false
-idx: 75, fidx: 83
-dead: true
-asm: mov ID(7), R1
-reg: ID(7)
-life-false: false
-idx: 76, fidx: 84
-dead: true
-asm: mov ID(64), ID(6)
-reg: ID(64)
-life-false: false
-idx: 77, fidx: 85
-dead: true
-asm: mov ID(25), ID(64)
-reg: ID(25)
-life-false: false
-idx: 78, fidx: 86
-dead: true
-asm: mov ID(66), ID(25)
-reg: ID(66)
-life-false: false
-idx: 79, fidx: 87
-dead: true
-asm: mov ID(67), ID(7)
-reg: ID(67)
-life-false: false
-idx: 80, fidx: 88
-dead: true
-asm: sdiv ID(65), ID(66), ID(67)
-reg: ID(65)
-life-false: false
-idx: 81, fidx: 89
-dead: true
-asm: mov R0, ID(65)
-reg: R0
-life-false: false
-idx: 82, fidx: 90
-dead: true
-asm: ret
-reg: SP
-dead: true
-asm: l5: 
-asm: str R29, [SP, #16]
-reg: R29
-life-false: true
-idx: 85, fidx: 92
-dead: false
-asm: sub SP, SP, #16
-reg: SP
-life-false: false
-idx: 86, fidx: 93
-dead: true
-asm: mov ID(8), R0
-reg: ID(8)
-life-false: false
-idx: 87, fidx: 94
-dead: true
-asm: mov ID(9), R1
-reg: ID(9)
-life-false: false
-idx: 88, fidx: 95
-dead: true
-asm: mov ID(68), ID(8)
-reg: ID(68)
-life-false: false
-idx: 89, fidx: 96
-dead: true
-asm: mov ID(26), ID(68)
-reg: ID(26)
-life-false: false
-idx: 90, fidx: 97
-dead: true
-asm: mov ID(70), ID(26)
-reg: ID(70)
-life-false: false
-idx: 91, fidx: 98
-dead: true
-asm: mov ID(71), ID(9)
-reg: ID(71)
-life-false: false
-idx: 92, fidx: 99
-dead: true
-asm: add ID(69), ID(70), ID(71)
-reg: ID(69)
-life-false: false
-idx: 93, fidx: 100
-dead: true
-asm: mov R0, ID(69)
-reg: R0
-life-false: false
-idx: 94, fidx: 101
-dead: true
-asm: ret
-reg: SP
-dead: true
-asm: l6: 
-asm: str R29, [SP, #16]
-reg: R29
-life-false: true
-idx: 97, fidx: 103
-dead: false
-asm: sub SP, SP, #16
-reg: SP
-life-false: false
-idx: 98, fidx: 104
-dead: true
-asm: mov ID(10), R0
-reg: ID(10)
-life-false: false
-idx: 99, fidx: 105
-dead: true
-asm: mov ID(11), R1
-reg: ID(11)
-life-false: false
-idx: 100, fidx: 106
-dead: true
-asm: mov ID(72), ID(10)
-reg: ID(72)
-life-false: false
-idx: 101, fidx: 107
-dead: true
-asm: mov ID(27), ID(72)
-reg: ID(27)
-life-false: false
-idx: 102, fidx: 108
-dead: true
-asm: mov ID(74), ID(27)
-reg: ID(74)
-life-false: false
-idx: 103, fidx: 109
-dead: true
-asm: mov ID(75), ID(11)
-reg: ID(75)
-life-false: false
-idx: 104, fidx: 110
-dead: true
-asm: sub ID(73), ID(74), ID(75)
-reg: ID(73)
-life-false: false
-idx: 105, fidx: 111
-dead: true
-asm: mov R0, ID(73)
-reg: R0
-life-false: false
-idx: 106, fidx: 112
-dead: true
-asm: ret
-reg: SP
-dead: true
-asm: l7: 
-asm: str R29, [SP, #16]
-reg: R29
-life-false: true
-idx: 109, fidx: 114
-dead: false
-asm: sub SP, SP, #16
-reg: SP
-life-false: false
-idx: 110, fidx: 115
-dead: true
-asm: mov ID(12), R0
-reg: ID(12)
-life-false: false
-idx: 111, fidx: 116
-dead: true
-asm: mov ID(13), R1
-reg: ID(13)
-life-false: false
-idx: 112, fidx: 117
-dead: true
-asm: mov ID(76), ID(12)
-reg: ID(76)
-life-false: false
-idx: 113, fidx: 118
-dead: true
-asm: mov ID(28), ID(76)
-reg: ID(28)
-life-false: false
-idx: 114, fidx: 119
-dead: true
-asm: mov ID(78), ID(28)
-reg: ID(78)
-life-false: false
-idx: 115, fidx: 120
-dead: true
-asm: mov ID(79), ID(13)
-reg: ID(79)
-life-false: false
-idx: 116, fidx: 121
-dead: true
-asm: smull ID(77), ID(78), ID(79)
-reg: ID(77)
-life-false: false
-idx: 117, fidx: 122
-dead: true
-asm: mov R0, ID(77)
-reg: R0
-life-false: true
-idx: 118, fidx: 123
-dead: false
-asm: ret
-reg: SP
-dead: true
-asm: l8: 
-asm: str R29, [SP, #16]
-reg: R29
-life-false: true
-idx: 121, fidx: 125
-dead: false
-asm: sub SP, SP, #16
-reg: SP
-life-false: false
-idx: 122, fidx: 126
-dead: true
-asm: mov ID(14), R0
-reg: ID(14)
-life-false: false
-idx: 123, fidx: 127
-dead: true
-asm: mov ID(15), R1
-reg: ID(15)
-life-false: true
-idx: 124, fidx: 128
-dead: false
-asm: mov ID(80), ID(14)
-reg: ID(80)
-life-false: false
-idx: 125, fidx: 129
-dead: true
-asm: mov ID(29), ID(80)
-reg: ID(29)
-life-false: false
-idx: 126, fidx: 130
-dead: true
-asm: mov ID(82), ID(29)
-reg: ID(82)
-life-false: false
-idx: 127, fidx: 131
-dead: true
-asm: mov ID(83), ID(15)
-reg: ID(83)
-life-false: false
-idx: 128, fidx: 132
-dead: true
-asm: sdiv ID(81), ID(82), ID(83)
-reg: ID(81)
-life-false: false
-idx: 129, fidx: 133
-dead: true
-asm: mov R0, ID(81)
-reg: R0
-life-false: false
-idx: 130, fidx: 134
-dead: true
-asm: ret
-reg: SP
-dead: true
-asm: l9: 
-asm: mov ID(84), ID(16)
-reg: ID(84)
-life-false: false
-idx: 133, fidx: 136
-dead: true
-asm: mov ID(36), ID(84)
-reg: ID(36)
-life-false: false
-idx: 134, fidx: 137
-dead: true
-asm: mov ID(87), ID(36)
-reg: ID(87)
-life-false: false
-idx: 135, fidx: 138
-dead: true
-asm: mov ID(88), #5
-reg: ID(88)
-life-false: false
-idx: 136, fidx: 139
-dead: true
-asm: cmp ID(87), ID(88)
-reg: ID(87)
-life-false: false
-idx: 137, fidx: 140
-dead: true
-asm: cset ID(86), LT
-reg: ID(86)
-life-false: false
-idx: 138, fidx: 141
-dead: true
-asm: mvn ID(85), ID(86)
-reg: ID(85)
-life-false: false
-idx: 139, fidx: 142
-dead: true
-asm: cbnz l11
-asm: l10: 
-asm: mov ID(89), ID(17)
-reg: ID(89)
-life-false: false
-idx: 142, fidx: 144
-dead: true
-asm: mov ID(37), ID(89)
-reg: ID(37)
-life-false: false
-idx: 143, fidx: 145
-dead: true
-asm: mov ID(91), ID(37)
-reg: ID(91)
-life-false: true
-idx: 144, fidx: 146
-dead: false
-asm: mov ID(92), #1
-reg: ID(92)
-life-false: false
-idx: 145, fidx: 147
-dead: true
-asm: add ID(90), ID(91), ID(92)
-reg: ID(90)
-life-false: false
-idx: 146, fidx: 148
-dead: true
-asm: mov ID(17), ID(90)
-reg: ID(17)
-life-false: false
-idx: 147, fidx: 149
-dead: true
-asm: mov ID(93), ID(16)
-reg: ID(93)
-life-false: false
-idx: 148, fidx: 150
-dead: true
-asm: mov ID(38), ID(93)
-reg: ID(38)
-life-false: false
-idx: 149, fidx: 151
-dead: true
-asm: mov ID(95), ID(38)
-reg: ID(95)
-life-false: true
-idx: 150, fidx: 152
-dead: false
-asm: mov ID(96), #1
-reg: ID(96)
-life-false: false
-idx: 151, fidx: 153
-dead: true
-asm: add ID(94), ID(95), ID(96)
-reg: ID(94)
-life-false: false
-idx: 152, fidx: 154
-dead: true
-asm: mov ID(16), ID(94)
-reg: ID(16)
-life-false: false
-idx: 153, fidx: 155
-dead: true
-asm: b l9
-asm: l11: 
-asm: mov ID(97), #0
-reg: ID(97)
-life-false: true
-idx: 156, fidx: 157
-dead: false
-asm: mov R0, ID(97)
-reg: R0
-life-false: false
-idx: 157, fidx: 158
-dead: true
-asm: ret
-reg: SP
-dead: true
-use: reg - SP, dead - false
-def: reg - R29, dead - false
-use: reg - SP, dead - false
-def: reg - SP, dead - false
-def: reg - ID(39), dead - true
-use: reg - ID(39), dead - true
-thread 'visualize' panicked at 'called `Option::unwrap()` on a `None` value', src/asm/allocate.rs:206:51
-note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+l0: 
+str R29, [SP, #-16]
+sub SP, SP, #-16
+mov ID(16), #5
+mov R0, ID(16)
+mov ID(17), #3
+mov ID(17), ID(17)
+mov ID(16), R0
+mov ID(16), ID(16)
+mov ID(31), ID(17)
+mov R1, ID(31)
+mov R0, ID(16)
+mov R1, R1
+bl l1
+Basic Block R0, SP, ID(17), R29
+mov R0, R0
+mov R0, R0
+mov R0, R0
+mov R0, R0
+mov ID(19), #2.5
+mov R0, ID(19)
+mov ID(20), #1.3
+mov R1, ID(20)
+mov ID(19), R0
+mov ID(19), ID(19)
+mov ID(20), R1
+mov ID(20), ID(20)
+mov R0, ID(19)
+mov R1, ID(20)
+bl l7
+Basic Block R0, ID(17), R29
+mov R0, R0
+mov R0, R0
+mov R0, R0
+mov R0, R0
+mov R0, #0
+mov R0, R0
+b l9
+Basic Block SP, R0, R1
+
+l1: 
+str R29, [SP, #-16]
+sub SP, SP, #-16
+mov R0, R0
+mov R1, R1
+mov R0, R0
+mov R0, R0
+mov R0, R0
+mov R1, R1
+add R0, R0, R1
+mov R0, R0
+ret
+Basic Block SP, R0, R1
+
+l2: 
+str R29, [SP, #-16]
+sub SP, SP, #-16
+mov R0, R0
+mov R1, R1
+mov R0, R0
+mov R0, R0
+mov R0, R0
+mov R1, R1
+sub R0, R0, R1
+mov R0, R0
+ret
+Basic Block SP, R0, R1
+
+l3: 
+str R29, [SP, #-16]
+sub SP, SP, #-16
+mov R0, R0
+mov R1, R1
+mov R0, R0
+mov R0, R0
+mov R0, R0
+mov R1, R1
+smull R0, R0, R1
+mov R0, R0
+ret
+Basic Block SP, R0, R1
+
+l4: 
+str R29, [SP, #-16]
+sub SP, SP, #-16
+mov R0, R0
+mov R1, R1
+mov R0, R0
+mov R0, R0
+mov R0, R0
+mov R1, R1
+sdiv R0, R0, R1
+mov R0, R0
+ret
+Basic Block SP, R0, R1
+
+l5: 
+str R29, [SP, #-16]
+sub SP, SP, #-16
+mov R0, R0
+mov R1, R1
+mov R0, R0
+mov R0, R0
+mov R0, R0
+mov R1, R1
+add R0, R0, R1
+mov R0, R0
+ret
+Basic Block SP, R0, R1
+
+l6: 
+str R29, [SP, #-16]
+sub SP, SP, #-16
+mov R0, R0
+mov R1, R1
+mov R0, R0
+mov R0, R0
+mov R0, R0
+mov R1, R1
+sub R0, R0, R1
+mov R0, R0
+ret
+Basic Block SP, R0, R1
+
+l7: 
+str R29, [SP, #-16]
+sub SP, SP, #-16
+mov R0, R0
+mov R1, R1
+mov R0, R0
+mov R0, R0
+mov R0, R0
+mov R1, R1
+smull R0, R0, R1
+mov R0, R0
+ret
+Basic Block SP, R0, R1
+
+l8: 
+str R29, [SP, #-16]
+sub SP, SP, #-16
+mov R0, R0
+mov R1, R1
+mov R0, R0
+mov R0, R0
+mov R0, R0
+mov R1, R1
+sdiv R0, R0, R1
+mov R0, R0
+ret
+Basic Block R0, ID(17), R29
+
+l9: 
+mov ID(36), R0
+mov ID(36), ID(36)
+mov ID(36), ID(36)
+mov ID(88), #5
+cmp ID(36), ID(88)
+cset ID(86), LT
+mvn ID(85), ID(86)
+cbnz l11
+Basic Block ID(17), R0
+
+l10: 
+mov ID(17), ID(17)
+mov ID(17), ID(17)
+mov ID(17), ID(17)
+mov ID(92), #1
+add ID(17), ID(17), ID(92)
+mov ID(17), ID(17)
+mov R0, R0
+mov R0, R0
+mov R0, R0
+mov ID(96), #1
+add R0, R0, ID(96)
+mov R0, R0
+b l9
+Basic Block R29
+
+l11: 
+mov R0, #0
+mov R0, R0
+ret
+
+l0: 
+str R29, [R29, #-16]
+sub R29, R29, #-16
+mov R0, #5
+mov R2, #3
+mov R1, R2
+bl l1
+mov R0, #2.5
+mov R1, #1.3
+bl l7
+mov R0, #0
+b l9
+
+l1: 
+str R29, [R29, #-16]
+sub R29, R29, #-16
+add R0, R0, R1
+ret
+
+l2: 
+str R29, [R29, #-16]
+sub R29, R29, #-16
+sub R0, R0, R1
+ret
+
+l3: 
+str R29, [R29, #-16]
+sub R29, R29, #-16
+smull R0, R0, R1
+ret
+
+l4: 
+str R29, [R29, #-16]
+sub R29, R29, #-16
+sdiv R0, R0, R1
+ret
+
+l5: 
+str R29, [R29, #-16]
+sub R29, R29, #-16
+add R0, R0, R1
+ret
+
+l6: 
+str R29, [R29, #-16]
+sub R29, R29, #-16
+sub R0, R0, R1
+ret
+
+l7: 
+str R29, [R29, #-16]
+sub R29, R29, #-16
+smull R0, R0, R1
+ret
+
+l8: 
+str R29, [R29, #-16]
+sub R29, R29, #-16
+sdiv R0, R0, R1
+ret
+
+l9: 
+mov R1, R0
+mov R1, #5
+cmp R1, R1
+cset R1, LT
+mvn R1, R1
+cbnz l11
+
+l10: 
+mov R1, #1
+add R2, R2, R1
+mov R1, #1
+add R0, R0, R1
+b l9
+
+l11: 
+mov R0, #0
+ret
 
 
-failures:
+
+
+
+
+
+
+successes:
     visualize
 
-test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+
+
+running 0 tests
+
+successes:
+
+successes:
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 

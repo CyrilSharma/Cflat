@@ -54,13 +54,13 @@ fn visualize() {
         ir3:     false,
         ir3cfg:  false,
         frames:  false,
-        asm1:    false,
+        asm1:    true,
         asm1cfg: false,
         live:    false,
         inter:   false,
-        coalasm: false,
+        coalasm: true,
         coalint: false,
-        coalcfg: true,
+        coalcfg: false,
         asm2:    true,
     };
     while Path::new(&format!("{dir}/input{i}.c")).exists() {

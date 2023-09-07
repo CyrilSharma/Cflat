@@ -33,6 +33,13 @@ impl DSU {
         self.parent[large] += self.parent[small];
         self.parent[small] = large as i32;
     }
+    // Forces r to become the child of f.
+    pub fn mergef(&mut self, l: i32, r: i32) {
+        let large = self.find(l) as usize;
+        let small = self.find(r) as usize;
+        self.parent[large] += self.parent[small];
+        self.parent[small] = large as i32;
+    }
 }
 struct Node {
     deg:   u32,
@@ -57,23 +64,40 @@ pub fn coalesce_graph(
         alist: &mut AdjList,
         amat:  &mut AdjMatrix
     ) {
+    // Things may get mapped multiple times.
+    // Use a dsu to keep track.
+    let mut dsu = DSU::new(alist.len() as i32);
     // You can also iterate until you reach a fixed point.
     for _ in 0..=1 {
-        // Things may get mapped multiple times.
-        // Use a dsu to keep track.
-        let mut dsu = DSU::new(alist.len() as i32);
         let mut f   = HashMap::new();
         for (ins, _, _) in live.iter() {
             let AA::Mov2(d, s) = ins else { continue };
-            let (d, s) = (
+            // println!("d: {}, s: {}", d.index(), s.index());
+            let (mut d, mut s) = (
                 dsu.find(d.index() as i32),
                 dsu.find(s.index() as i32)
             );
+            // println!("ad: {}, as: {}", d, s);
             if d == s { continue };
             let c = amat[d as usize].contains(&(s as usize));
             if c { continue };
+
+            // If one register is pre-colored, change the other
+            // To match it.
+            if d < GPRS as i32 && s < GPRS as i32 {
+                continue;
+            } else if d < GPRS as i32 && s >= GPRS as i32 {
+                dsu.mergef(d, s);
+            } else if d >= GPRS as i32 && s < GPRS as i32 {
+                dsu.mergef(s, d);
+            } else {
+                dsu.merge(d, s);
+            }
+            // If s -> d, swap the two.
+            if dsu.find(s) == d {
+                swap(&mut d, &mut s);
+            }
             // Map (d -> s)
-            // Small to Large merging could make this more efficient...
             let temp = std::mem::take(&mut alist[d as usize]);
             for node in &temp {
                 amat[s as usize].insert(*node);

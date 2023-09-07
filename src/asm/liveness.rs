@@ -4,7 +4,7 @@ use super::asm::{AA, Reg};
 use std::collections::{VecDeque, HashSet};
 pub struct Liveness;
 impl Liveness {
-    pub fn compute(mut cfg: CFG) -> Vec<(AA, Vec<bool>, Vec<bool>)> {
+    pub fn compute(cfg: CFG) -> Vec<(AA, Vec<bool>, Vec<bool>)> {
         let mut pred = vec![Vec::new();     cfg.nodes.len()];
         // It may not be necessary to decouple the two.
         let mut lin  = vec![Vec::new();     cfg.nodes.len()];
