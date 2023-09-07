@@ -18,1734 +18,1632 @@ test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 
 
 running 1 test
-test visualize ... ok
+test visualize ... FAILED
 
 successes:
+
+successes:
+
+failures:
 
 ---- visualize stdout ----
 FILE: tests/data/input0.c
-digraph interference_graph {
-    node0 [label="R0"]
-    node0 -> node62 [dir=both];
-    node0 -> node75 [dir=both];
-    node0 -> node65 [dir=both];
-    node0 -> node81 [dir=both];
-    node0 -> node32 [dir=both];
-    node0 -> node84 [dir=both];
-    node0 -> node86 [dir=both];
-    node0 -> node85 [dir=both];
-    node0 -> node34 [dir=both];
-    node0 -> node89 [dir=both];
-    node0 -> node36 [dir=both];
-    node0 -> node93 [dir=both];
-    node0 -> node38 [dir=both];
-    node0 -> node97 [dir=both];
-    node0 -> node40 [dir=both];
-    node0 -> node101 [dir=both];
-    node0 -> node42 [dir=both];
-    node0 -> node105 [dir=both];
-    node0 -> node44 [dir=both];
-    node0 -> node109 [dir=both];
-    node0 -> node46 [dir=both];
-    node0 -> node113 [dir=both];
-    node0 -> node129 [dir=both];
-    node1 [label="R1"]
-    node1 -> node63 [dir=both];
-    node1 -> node66 [dir=both];
-    node1 -> node33 [dir=both];
-    node1 -> node35 [dir=both];
-    node1 -> node37 [dir=both];
-    node1 -> node39 [dir=both];
-    node1 -> node41 [dir=both];
-    node1 -> node43 [dir=both];
-    node1 -> node45 [dir=both];
-    node1 -> node47 [dir=both];
-    node29 [label="R29"]
-    node29 -> node29 [dir=both];
-    node32 [label="PC"]
-    node32 -> node84 [dir=both];
-    node33 [label="ID(1)"]
-    node33 -> node87 [dir=both];
-    node34 [label="ID(2)"]
-    node34 -> node88 [dir=both];
-    node35 [label="ID(3)"]
-    node35 -> node91 [dir=both];
-    node36 [label="ID(4)"]
-    node36 -> node92 [dir=both];
-    node37 [label="ID(5)"]
-    node37 -> node95 [dir=both];
-    node38 [label="ID(6)"]
-    node38 -> node96 [dir=both];
-    node39 [label="ID(7)"]
-    node39 -> node99 [dir=both];
-    node40 [label="ID(8)"]
-    node40 -> node100 [dir=both];
-    node41 [label="ID(9)"]
-    node41 -> node103 [dir=both];
-    node42 [label="ID(10)"]
-    node42 -> node104 [dir=both];
-    node43 [label="ID(11)"]
-    node43 -> node107 [dir=both];
-    node44 [label="ID(12)"]
-    node44 -> node108 [dir=both];
-    node45 [label="ID(13)"]
-    node45 -> node111 [dir=both];
-    node46 [label="ID(14)"]
-    node46 -> node112 [dir=both];
-    node47 [label="ID(15)"]
-    node47 -> node115 [dir=both];
-    node48 [label="ID(16)"]
-    node48 -> node71 [dir=both];
-    node48 -> node73 [dir=both];
-    node48 -> node83 [dir=both];
-    node48 -> node116 [dir=both];
-    node48 -> node125 [dir=both];
-    node48 -> node126 [dir=both];
-    node49 [label="ID(17)"]
-    node49 -> node72 [dir=both];
-    node49 -> node74 [dir=both];
-    node49 -> node121 [dir=both];
-    node49 -> node122 [dir=both];
-    node50 [label="ID(18)"]
-    node50 -> node76 [dir=both];
-    node51 [label="ID(19)"]
-    node51 -> node77 [dir=both];
-    node51 -> node79 [dir=both];
-    node52 [label="ID(20)"]
-    node52 -> node78 [dir=both];
-    node52 -> node80 [dir=both];
-    node53 [label="ID(21)"]
-    node53 -> node82 [dir=both];
-    node55 [label="ID(23)"]
-    node55 -> node88 [dir=both];
-    node55 -> node90 [dir=both];
-    node56 [label="ID(24)"]
-    node56 -> node92 [dir=both];
-    node56 -> node94 [dir=both];
-    node57 [label="ID(25)"]
-    node57 -> node96 [dir=both];
-    node57 -> node98 [dir=both];
-    node58 [label="ID(26)"]
-    node58 -> node100 [dir=both];
-    node58 -> node102 [dir=both];
-    node59 [label="ID(27)"]
-    node59 -> node104 [dir=both];
-    node59 -> node106 [dir=both];
-    node60 [label="ID(28)"]
-    node60 -> node108 [dir=both];
-    node60 -> node110 [dir=both];
-    node61 [label="ID(29)"]
-    node61 -> node112 [dir=both];
-    node61 -> node114 [dir=both];
-    node62 [label="ID(30)"]
-    node62 -> node73 [dir=both];
-    node63 [label="ID(31)"]
-    node63 -> node74 [dir=both];
-    node64 [label="ID(32)"]
-    node64 -> node75 [dir=both];
-    node64 -> node76 [dir=both];
-    node65 [label="ID(33)"]
-    node65 -> node79 [dir=both];
-    node66 [label="ID(34)"]
-    node66 -> node80 [dir=both];
-    node67 [label="ID(35)"]
-    node67 -> node81 [dir=both];
-    node67 -> node82 [dir=both];
-    node68 [label="ID(36)"]
-    node68 -> node116 [dir=both];
-    node68 -> node119 [dir=both];
-    node69 [label="ID(37)"]
-    node69 -> node121 [dir=both];
-    node69 -> node123 [dir=both];
-    node70 [label="ID(38)"]
-    node70 -> node125 [dir=both];
-    node70 -> node127 [dir=both];
-    node71 [label="ID(39)"]
-    node72 [label="ID(40)"]
-    node73 [label="ID(41)"]
-    node74 [label="ID(42)"]
-    node75 [label="ID(43)"]
-    node76 [label="ID(44)"]
-    node77 [label="ID(45)"]
-    node78 [label="ID(46)"]
-    node79 [label="ID(47)"]
-    node80 [label="ID(48)"]
-    node81 [label="ID(49)"]
-    node82 [label="ID(50)"]
-    node83 [label="ID(51)"]
-    node84 [label="ID(52)"]
-    node85 [label="ID(53)"]
-    node85 -> node86 [dir=both];
-    node85 -> node87 [dir=both];
-    node86 [label="ID(54)"]
-    node87 [label="ID(55)"]
-    node88 [label="ID(56)"]
-    node89 [label="ID(57)"]
-    node89 -> node90 [dir=both];
-    node89 -> node91 [dir=both];
-    node90 [label="ID(58)"]
-    node91 [label="ID(59)"]
-    node92 [label="ID(60)"]
-    node93 [label="ID(61)"]
-    node93 -> node94 [dir=both];
-    node93 -> node95 [dir=both];
-    node94 [label="ID(62)"]
-    node95 [label="ID(63)"]
-    node96 [label="ID(64)"]
-    node97 [label="ID(65)"]
-    node97 -> node98 [dir=both];
-    node97 -> node99 [dir=both];
-    node98 [label="ID(66)"]
-    node99 [label="ID(67)"]
-    node100 [label="ID(68)"]
-    node101 [label="ID(69)"]
-    node101 -> node102 [dir=both];
-    node101 -> node103 [dir=both];
-    node102 [label="ID(70)"]
-    node103 [label="ID(71)"]
-    node104 [label="ID(72)"]
-    node105 [label="ID(73)"]
-    node105 -> node106 [dir=both];
-    node105 -> node107 [dir=both];
-    node106 [label="ID(74)"]
-    node107 [label="ID(75)"]
-    node108 [label="ID(76)"]
-    node109 [label="ID(77)"]
-    node109 -> node110 [dir=both];
-    node109 -> node111 [dir=both];
-    node110 [label="ID(78)"]
-    node111 [label="ID(79)"]
-    node112 [label="ID(80)"]
-    node113 [label="ID(81)"]
-    node113 -> node114 [dir=both];
-    node113 -> node115 [dir=both];
-    node114 [label="ID(82)"]
-    node115 [label="ID(83)"]
-    node116 [label="ID(84)"]
-    node117 [label="ID(85)"]
-    node117 -> node118 [dir=both];
-    node118 [label="ID(86)"]
-    node119 [label="ID(87)"]
-    node119 -> node120 [dir=both];
-    node120 [label="ID(88)"]
-    node121 [label="ID(89)"]
-    node122 [label="ID(90)"]
-    node122 -> node123 [dir=both];
-    node122 -> node124 [dir=both];
-    node123 [label="ID(91)"]
-    node124 [label="ID(92)"]
-    node125 [label="ID(93)"]
-    node126 [label="ID(94)"]
-    node126 -> node127 [dir=both];
-    node126 -> node128 [dir=both];
-    node127 [label="ID(95)"]
-    node128 [label="ID(96)"]
-    node129 [label="ID(97)"]
-}
-digraph interference_graph {
-    node0 [label="R0"]
-    node0 -> node62 [dir=both];
-    node0 -> node75 [dir=both];
-    node0 -> node65 [dir=both];
-    node0 -> node81 [dir=both];
-    node0 -> node32 [dir=both];
-    node0 -> node84 [dir=both];
-    node0 -> node86 [dir=both];
-    node0 -> node85 [dir=both];
-    node0 -> node34 [dir=both];
-    node0 -> node89 [dir=both];
-    node0 -> node36 [dir=both];
-    node0 -> node93 [dir=both];
-    node0 -> node38 [dir=both];
-    node0 -> node97 [dir=both];
-    node0 -> node40 [dir=both];
-    node0 -> node101 [dir=both];
-    node0 -> node42 [dir=both];
-    node0 -> node105 [dir=both];
-    node0 -> node44 [dir=both];
-    node0 -> node109 [dir=both];
-    node0 -> node46 [dir=both];
-    node0 -> node113 [dir=both];
-    node0 -> node129 [dir=both];
-    node1 [label="R1"]
-    node1 -> node63 [dir=both];
-    node1 -> node66 [dir=both];
-    node1 -> node33 [dir=both];
-    node1 -> node35 [dir=both];
-    node1 -> node37 [dir=both];
-    node1 -> node39 [dir=both];
-    node1 -> node41 [dir=both];
-    node1 -> node43 [dir=both];
-    node1 -> node45 [dir=both];
-    node1 -> node47 [dir=both];
-    node29 [label="R29"]
-    node29 -> node29 [dir=both];
-    node32 [label="PC"]
-    node32 -> node84 [dir=both];
-    node33 [label="ID(1)"]
-    node33 -> node87 [dir=both];
-    node34 [label="ID(2)"]
-    node34 -> node88 [dir=both];
-    node35 [label="ID(3)"]
-    node35 -> node91 [dir=both];
-    node36 [label="ID(4)"]
-    node36 -> node92 [dir=both];
-    node37 [label="ID(5)"]
-    node37 -> node95 [dir=both];
-    node38 [label="ID(6)"]
-    node38 -> node96 [dir=both];
-    node39 [label="ID(7)"]
-    node39 -> node99 [dir=both];
-    node40 [label="ID(8)"]
-    node40 -> node100 [dir=both];
-    node41 [label="ID(9)"]
-    node41 -> node103 [dir=both];
-    node42 [label="ID(10)"]
-    node42 -> node104 [dir=both];
-    node43 [label="ID(11)"]
-    node43 -> node107 [dir=both];
-    node44 [label="ID(12)"]
-    node44 -> node108 [dir=both];
-    node45 [label="ID(13)"]
-    node45 -> node111 [dir=both];
-    node46 [label="ID(14)"]
-    node46 -> node112 [dir=both];
-    node47 [label="ID(15)"]
-    node47 -> node115 [dir=both];
-    node48 [label="ID(16)"]
-    node48 -> node71 [dir=both];
-    node48 -> node73 [dir=both];
-    node48 -> node83 [dir=both];
-    node48 -> node116 [dir=both];
-    node48 -> node125 [dir=both];
-    node48 -> node126 [dir=both];
-    node49 [label="ID(17)"]
-    node49 -> node72 [dir=both];
-    node49 -> node74 [dir=both];
-    node49 -> node121 [dir=both];
-    node49 -> node122 [dir=both];
-    node50 [label="ID(18)"]
-    node50 -> node76 [dir=both];
-    node51 [label="ID(19)"]
-    node51 -> node77 [dir=both];
-    node51 -> node79 [dir=both];
-    node52 [label="ID(20)"]
-    node52 -> node78 [dir=both];
-    node52 -> node80 [dir=both];
-    node53 [label="ID(21)"]
-    node53 -> node82 [dir=both];
-    node55 [label="ID(23)"]
-    node55 -> node88 [dir=both];
-    node55 -> node90 [dir=both];
-    node56 [label="ID(24)"]
-    node56 -> node92 [dir=both];
-    node56 -> node94 [dir=both];
-    node57 [label="ID(25)"]
-    node57 -> node96 [dir=both];
-    node57 -> node98 [dir=both];
-    node58 [label="ID(26)"]
-    node58 -> node100 [dir=both];
-    node58 -> node102 [dir=both];
-    node59 [label="ID(27)"]
-    node59 -> node104 [dir=both];
-    node59 -> node106 [dir=both];
-    node60 [label="ID(28)"]
-    node60 -> node108 [dir=both];
-    node60 -> node110 [dir=both];
-    node61 [label="ID(29)"]
-    node61 -> node112 [dir=both];
-    node61 -> node114 [dir=both];
-    node62 [label="ID(30)"]
-    node62 -> node73 [dir=both];
-    node63 [label="ID(31)"]
-    node63 -> node74 [dir=both];
-    node64 [label="ID(32)"]
-    node64 -> node75 [dir=both];
-    node64 -> node76 [dir=both];
-    node65 [label="ID(33)"]
-    node65 -> node79 [dir=both];
-    node66 [label="ID(34)"]
-    node66 -> node80 [dir=both];
-    node67 [label="ID(35)"]
-    node67 -> node81 [dir=both];
-    node67 -> node82 [dir=both];
-    node68 [label="ID(36)"]
-    node68 -> node116 [dir=both];
-    node68 -> node119 [dir=both];
-    node69 [label="ID(37)"]
-    node69 -> node121 [dir=both];
-    node69 -> node123 [dir=both];
-    node70 [label="ID(38)"]
-    node70 -> node125 [dir=both];
-    node70 -> node127 [dir=both];
-    node71 [label="ID(39)"]
-    node72 [label="ID(40)"]
-    node73 [label="ID(41)"]
-    node74 [label="ID(42)"]
-    node75 [label="ID(43)"]
-    node76 [label="ID(44)"]
-    node77 [label="ID(45)"]
-    node78 [label="ID(46)"]
-    node79 [label="ID(47)"]
-    node80 [label="ID(48)"]
-    node81 [label="ID(49)"]
-    node82 [label="ID(50)"]
-    node83 [label="ID(51)"]
-    node84 [label="ID(52)"]
-    node85 [label="ID(53)"]
-    node85 -> node86 [dir=both];
-    node85 -> node87 [dir=both];
-    node86 [label="ID(54)"]
-    node87 [label="ID(55)"]
-    node88 [label="ID(56)"]
-    node89 [label="ID(57)"]
-    node89 -> node90 [dir=both];
-    node89 -> node91 [dir=both];
-    node90 [label="ID(58)"]
-    node91 [label="ID(59)"]
-    node92 [label="ID(60)"]
-    node93 [label="ID(61)"]
-    node93 -> node94 [dir=both];
-    node93 -> node95 [dir=both];
-    node94 [label="ID(62)"]
-    node95 [label="ID(63)"]
-    node96 [label="ID(64)"]
-    node97 [label="ID(65)"]
-    node97 -> node98 [dir=both];
-    node97 -> node99 [dir=both];
-    node98 [label="ID(66)"]
-    node99 [label="ID(67)"]
-    node100 [label="ID(68)"]
-    node101 [label="ID(69)"]
-    node101 -> node102 [dir=both];
-    node101 -> node103 [dir=both];
-    node102 [label="ID(70)"]
-    node103 [label="ID(71)"]
-    node104 [label="ID(72)"]
-    node105 [label="ID(73)"]
-    node105 -> node106 [dir=both];
-    node105 -> node107 [dir=both];
-    node106 [label="ID(74)"]
-    node107 [label="ID(75)"]
-    node108 [label="ID(76)"]
-    node109 [label="ID(77)"]
-    node109 -> node110 [dir=both];
-    node109 -> node111 [dir=both];
-    node110 [label="ID(78)"]
-    node111 [label="ID(79)"]
-    node112 [label="ID(80)"]
-    node113 [label="ID(81)"]
-    node113 -> node114 [dir=both];
-    node113 -> node115 [dir=both];
-    node114 [label="ID(82)"]
-    node115 [label="ID(83)"]
-    node116 [label="ID(84)"]
-    node117 [label="ID(85)"]
-    node117 -> node118 [dir=both];
-    node118 [label="ID(86)"]
-    node119 [label="ID(87)"]
-    node119 -> node120 [dir=both];
-    node120 [label="ID(88)"]
-    node121 [label="ID(89)"]
-    node122 [label="ID(90)"]
-    node122 -> node123 [dir=both];
-    node122 -> node124 [dir=both];
-    node123 [label="ID(91)"]
-    node124 [label="ID(92)"]
-    node125 [label="ID(93)"]
-    node126 [label="ID(94)"]
-    node126 -> node127 [dir=both];
-    node126 -> node128 [dir=both];
-    node127 [label="ID(95)"]
-    node128 [label="ID(96)"]
-    node129 [label="ID(97)"]
-}
+asm: l0: 
+asm: str R29, [SP, #16]
+reg: R29
+life-false: true
+idx: 1, fidx: 13
+dead: false
+asm: sub SP, SP, #16
+reg: SP
+life-false: true
+idx: 2, fidx: 14
+dead: false
+asm: mov ID(39), #5
+reg: ID(39)
+life-false: false
+idx: 3, fidx: 15
+dead: true
+asm: mov ID(16), ID(39)
+reg: ID(16)
+life-false: false
+idx: 4, fidx: 16
+dead: true
+asm: mov ID(40), #3
+reg: ID(40)
+life-false: false
+idx: 5, fidx: 17
+dead: true
+asm: mov ID(17), ID(40)
+reg: ID(17)
+life-false: true
+idx: 6, fidx: 18
+dead: false
+asm: mov ID(41), ID(16)
+reg: ID(41)
+life-false: false
+idx: 7, fidx: 19
+dead: true
+asm: mov ID(30), ID(41)
+reg: ID(30)
+life-false: false
+idx: 8, fidx: 20
+dead: true
+asm: mov ID(42), ID(17)
+reg: ID(42)
+life-false: false
+idx: 9, fidx: 21
+dead: true
+asm: mov ID(31), ID(42)
+reg: ID(31)
+life-false: false
+idx: 10, fidx: 22
+dead: true
+asm: mov R0, ID(30)
+reg: R0
+life-false: false
+idx: 11, fidx: 23
+dead: true
+asm: mov R1, ID(31)
+reg: R1
+life-false: false
+idx: 12, fidx: 24
+dead: true
+asm: bl l1
+asm: mov ID(43), R0
+reg: ID(43)
+life-false: false
+idx: 14, fidx: 26
+dead: true
+asm: mov ID(32), ID(43)
+reg: ID(32)
+life-false: false
+idx: 15, fidx: 27
+dead: true
+asm: mov ID(44), ID(32)
+reg: ID(44)
+life-false: false
+idx: 16, fidx: 28
+dead: true
+asm: mov ID(18), ID(44)
+reg: ID(18)
+life-false: false
+idx: 17, fidx: 29
+dead: true
+asm: mov ID(45), #1075838976
+reg: ID(45)
+life-false: false
+idx: 18, fidx: 30
+dead: true
+asm: mov ID(19), ID(45)
+reg: ID(19)
+life-false: false
+idx: 19, fidx: 31
+dead: true
+asm: mov ID(46), #1067869798
+reg: ID(46)
+life-false: false
+idx: 20, fidx: 32
+dead: true
+asm: mov ID(20), ID(46)
+reg: ID(20)
+life-false: false
+idx: 21, fidx: 33
+dead: true
+asm: mov ID(47), ID(19)
+reg: ID(47)
+life-false: false
+idx: 22, fidx: 34
+dead: true
+asm: mov ID(33), ID(47)
+reg: ID(33)
+life-false: false
+idx: 23, fidx: 35
+dead: true
+asm: mov ID(48), ID(20)
+reg: ID(48)
+life-false: false
+idx: 24, fidx: 36
+dead: true
+asm: mov ID(34), ID(48)
+reg: ID(34)
+life-false: false
+idx: 25, fidx: 37
+dead: true
+asm: mov R0, ID(33)
+reg: R0
+life-false: true
+idx: 26, fidx: 38
+dead: false
+asm: mov R1, ID(34)
+reg: R1
+life-false: true
+idx: 27, fidx: 39
+dead: false
+asm: bl l7
+asm: mov ID(49), R0
+reg: ID(49)
+life-false: false
+idx: 29, fidx: 41
+dead: true
+asm: mov ID(35), ID(49)
+reg: ID(35)
+life-false: false
+idx: 30, fidx: 42
+dead: true
+asm: mov ID(50), ID(35)
+reg: ID(50)
+life-false: false
+idx: 31, fidx: 43
+dead: true
+asm: mov ID(21), ID(50)
+reg: ID(21)
+life-false: false
+idx: 32, fidx: 44
+dead: true
+asm: mov ID(51), #0
+reg: ID(51)
+life-false: false
+idx: 33, fidx: 45
+dead: true
+asm: mov ID(16), ID(51)
+reg: ID(16)
+life-false: false
+idx: 34, fidx: 46
+dead: true
+asm: b l9
+asm: l1: 
+asm: str R29, [SP, #16]
+reg: R29
+life-false: false
+idx: 37, fidx: 48
+dead: true
+asm: sub SP, SP, #16
+reg: SP
+life-false: true
+idx: 38, fidx: 49
+dead: false
+asm: mov ID(0), R0
+reg: ID(0)
+life-false: false
+idx: 39, fidx: 50
+dead: true
+asm: mov ID(1), R1
+reg: ID(1)
+life-false: false
+idx: 40, fidx: 51
+dead: true
+asm: mov ID(52), ID(0)
+reg: ID(52)
+life-false: false
+idx: 41, fidx: 52
+dead: true
+asm: mov R0, ID(52)
+reg: R0
+life-false: false
+idx: 42, fidx: 53
+dead: true
+asm: mov ID(54), R0
+reg: ID(54)
+life-false: false
+idx: 43, fidx: 54
+dead: true
+asm: mov ID(55), ID(1)
+reg: ID(55)
+life-false: false
+idx: 44, fidx: 55
+dead: true
+asm: add ID(53), ID(54), ID(55)
+reg: ID(53)
+life-false: false
+idx: 45, fidx: 56
+dead: true
+asm: mov R0, ID(53)
+reg: R0
+life-false: false
+idx: 46, fidx: 57
+dead: true
+asm: ret
+reg: SP
+dead: true
+asm: l2: 
+asm: str R29, [SP, #16]
+reg: R29
+life-false: true
+idx: 49, fidx: 59
+dead: false
+asm: sub SP, SP, #16
+reg: SP
+life-false: true
+idx: 50, fidx: 60
+dead: false
+asm: mov ID(2), R0
+reg: ID(2)
+life-false: false
+idx: 51, fidx: 61
+dead: true
+asm: mov ID(3), R1
+reg: ID(3)
+life-false: false
+idx: 52, fidx: 62
+dead: true
+asm: mov ID(56), ID(2)
+reg: ID(56)
+life-false: false
+idx: 53, fidx: 63
+dead: true
+asm: mov ID(23), ID(56)
+reg: ID(23)
+life-false: false
+idx: 54, fidx: 64
+dead: true
+asm: mov ID(58), ID(23)
+reg: ID(58)
+life-false: false
+idx: 55, fidx: 65
+dead: true
+asm: mov ID(59), ID(3)
+reg: ID(59)
+life-false: false
+idx: 56, fidx: 66
+dead: true
+asm: sub ID(57), ID(58), ID(59)
+reg: ID(57)
+life-false: false
+idx: 57, fidx: 67
+dead: true
+asm: mov R0, ID(57)
+reg: R0
+life-false: false
+idx: 58, fidx: 68
+dead: true
+asm: ret
+reg: SP
+dead: true
+asm: l3: 
+asm: str R29, [SP, #16]
+reg: R29
+life-false: true
+idx: 61, fidx: 70
+dead: false
+asm: sub SP, SP, #16
+reg: SP
+life-false: false
+idx: 62, fidx: 71
+dead: true
+asm: mov ID(4), R0
+reg: ID(4)
+life-false: false
+idx: 63, fidx: 72
+dead: true
+asm: mov ID(5), R1
+reg: ID(5)
+life-false: false
+idx: 64, fidx: 73
+dead: true
+asm: mov ID(60), ID(4)
+reg: ID(60)
+life-false: false
+idx: 65, fidx: 74
+dead: true
+asm: mov ID(24), ID(60)
+reg: ID(24)
+life-false: false
+idx: 66, fidx: 75
+dead: true
+asm: mov ID(62), ID(24)
+reg: ID(62)
+life-false: false
+idx: 67, fidx: 76
+dead: true
+asm: mov ID(63), ID(5)
+reg: ID(63)
+life-false: false
+idx: 68, fidx: 77
+dead: true
+asm: smull ID(61), ID(62), ID(63)
+reg: ID(61)
+life-false: false
+idx: 69, fidx: 78
+dead: true
+asm: mov R0, ID(61)
+reg: R0
+life-false: false
+idx: 70, fidx: 79
+dead: true
+asm: ret
+reg: SP
+dead: true
+asm: l4: 
+asm: str R29, [SP, #16]
+reg: R29
+life-false: true
+idx: 73, fidx: 81
+dead: false
+asm: sub SP, SP, #16
+reg: SP
+life-false: false
+idx: 74, fidx: 82
+dead: true
+asm: mov ID(6), R0
+reg: ID(6)
+life-false: false
+idx: 75, fidx: 83
+dead: true
+asm: mov ID(7), R1
+reg: ID(7)
+life-false: false
+idx: 76, fidx: 84
+dead: true
+asm: mov ID(64), ID(6)
+reg: ID(64)
+life-false: false
+idx: 77, fidx: 85
+dead: true
+asm: mov ID(25), ID(64)
+reg: ID(25)
+life-false: false
+idx: 78, fidx: 86
+dead: true
+asm: mov ID(66), ID(25)
+reg: ID(66)
+life-false: false
+idx: 79, fidx: 87
+dead: true
+asm: mov ID(67), ID(7)
+reg: ID(67)
+life-false: false
+idx: 80, fidx: 88
+dead: true
+asm: sdiv ID(65), ID(66), ID(67)
+reg: ID(65)
+life-false: false
+idx: 81, fidx: 89
+dead: true
+asm: mov R0, ID(65)
+reg: R0
+life-false: false
+idx: 82, fidx: 90
+dead: true
+asm: ret
+reg: SP
+dead: true
+asm: l5: 
+asm: str R29, [SP, #16]
+reg: R29
+life-false: true
+idx: 85, fidx: 92
+dead: false
+asm: sub SP, SP, #16
+reg: SP
+life-false: false
+idx: 86, fidx: 93
+dead: true
+asm: mov ID(8), R0
+reg: ID(8)
+life-false: false
+idx: 87, fidx: 94
+dead: true
+asm: mov ID(9), R1
+reg: ID(9)
+life-false: false
+idx: 88, fidx: 95
+dead: true
+asm: mov ID(68), ID(8)
+reg: ID(68)
+life-false: false
+idx: 89, fidx: 96
+dead: true
+asm: mov ID(26), ID(68)
+reg: ID(26)
+life-false: false
+idx: 90, fidx: 97
+dead: true
+asm: mov ID(70), ID(26)
+reg: ID(70)
+life-false: false
+idx: 91, fidx: 98
+dead: true
+asm: mov ID(71), ID(9)
+reg: ID(71)
+life-false: false
+idx: 92, fidx: 99
+dead: true
+asm: add ID(69), ID(70), ID(71)
+reg: ID(69)
+life-false: false
+idx: 93, fidx: 100
+dead: true
+asm: mov R0, ID(69)
+reg: R0
+life-false: false
+idx: 94, fidx: 101
+dead: true
+asm: ret
+reg: SP
+dead: true
+asm: l6: 
+asm: str R29, [SP, #16]
+reg: R29
+life-false: true
+idx: 97, fidx: 103
+dead: false
+asm: sub SP, SP, #16
+reg: SP
+life-false: false
+idx: 98, fidx: 104
+dead: true
+asm: mov ID(10), R0
+reg: ID(10)
+life-false: false
+idx: 99, fidx: 105
+dead: true
+asm: mov ID(11), R1
+reg: ID(11)
+life-false: false
+idx: 100, fidx: 106
+dead: true
+asm: mov ID(72), ID(10)
+reg: ID(72)
+life-false: false
+idx: 101, fidx: 107
+dead: true
+asm: mov ID(27), ID(72)
+reg: ID(27)
+life-false: false
+idx: 102, fidx: 108
+dead: true
+asm: mov ID(74), ID(27)
+reg: ID(74)
+life-false: false
+idx: 103, fidx: 109
+dead: true
+asm: mov ID(75), ID(11)
+reg: ID(75)
+life-false: false
+idx: 104, fidx: 110
+dead: true
+asm: sub ID(73), ID(74), ID(75)
+reg: ID(73)
+life-false: false
+idx: 105, fidx: 111
+dead: true
+asm: mov R0, ID(73)
+reg: R0
+life-false: false
+idx: 106, fidx: 112
+dead: true
+asm: ret
+reg: SP
+dead: true
+asm: l7: 
+asm: str R29, [SP, #16]
+reg: R29
+life-false: true
+idx: 109, fidx: 114
+dead: false
+asm: sub SP, SP, #16
+reg: SP
+life-false: false
+idx: 110, fidx: 115
+dead: true
+asm: mov ID(12), R0
+reg: ID(12)
+life-false: false
+idx: 111, fidx: 116
+dead: true
+asm: mov ID(13), R1
+reg: ID(13)
+life-false: false
+idx: 112, fidx: 117
+dead: true
+asm: mov ID(76), ID(12)
+reg: ID(76)
+life-false: false
+idx: 113, fidx: 118
+dead: true
+asm: mov ID(28), ID(76)
+reg: ID(28)
+life-false: false
+idx: 114, fidx: 119
+dead: true
+asm: mov ID(78), ID(28)
+reg: ID(78)
+life-false: false
+idx: 115, fidx: 120
+dead: true
+asm: mov ID(79), ID(13)
+reg: ID(79)
+life-false: false
+idx: 116, fidx: 121
+dead: true
+asm: smull ID(77), ID(78), ID(79)
+reg: ID(77)
+life-false: false
+idx: 117, fidx: 122
+dead: true
+asm: mov R0, ID(77)
+reg: R0
+life-false: true
+idx: 118, fidx: 123
+dead: false
+asm: ret
+reg: SP
+dead: true
+asm: l8: 
+asm: str R29, [SP, #16]
+reg: R29
+life-false: true
+idx: 121, fidx: 125
+dead: false
+asm: sub SP, SP, #16
+reg: SP
+life-false: false
+idx: 122, fidx: 126
+dead: true
+asm: mov ID(14), R0
+reg: ID(14)
+life-false: false
+idx: 123, fidx: 127
+dead: true
+asm: mov ID(15), R1
+reg: ID(15)
+life-false: true
+idx: 124, fidx: 128
+dead: false
+asm: mov ID(80), ID(14)
+reg: ID(80)
+life-false: false
+idx: 125, fidx: 129
+dead: true
+asm: mov ID(29), ID(80)
+reg: ID(29)
+life-false: false
+idx: 126, fidx: 130
+dead: true
+asm: mov ID(82), ID(29)
+reg: ID(82)
+life-false: false
+idx: 127, fidx: 131
+dead: true
+asm: mov ID(83), ID(15)
+reg: ID(83)
+life-false: false
+idx: 128, fidx: 132
+dead: true
+asm: sdiv ID(81), ID(82), ID(83)
+reg: ID(81)
+life-false: false
+idx: 129, fidx: 133
+dead: true
+asm: mov R0, ID(81)
+reg: R0
+life-false: false
+idx: 130, fidx: 134
+dead: true
+asm: ret
+reg: SP
+dead: true
+asm: l9: 
+asm: mov ID(84), ID(16)
+reg: ID(84)
+life-false: false
+idx: 133, fidx: 136
+dead: true
+asm: mov ID(36), ID(84)
+reg: ID(36)
+life-false: false
+idx: 134, fidx: 137
+dead: true
+asm: mov ID(87), ID(36)
+reg: ID(87)
+life-false: false
+idx: 135, fidx: 138
+dead: true
+asm: mov ID(88), #5
+reg: ID(88)
+life-false: false
+idx: 136, fidx: 139
+dead: true
+asm: cmp ID(87), ID(88)
+reg: ID(87)
+life-false: false
+idx: 137, fidx: 140
+dead: true
+asm: cset ID(86), LT
+reg: ID(86)
+life-false: false
+idx: 138, fidx: 141
+dead: true
+asm: mvn ID(85), ID(86)
+reg: ID(85)
+life-false: false
+idx: 139, fidx: 142
+dead: true
+asm: cbnz l11
+asm: l10: 
+asm: mov ID(89), ID(17)
+reg: ID(89)
+life-false: false
+idx: 142, fidx: 144
+dead: true
+asm: mov ID(37), ID(89)
+reg: ID(37)
+life-false: false
+idx: 143, fidx: 145
+dead: true
+asm: mov ID(91), ID(37)
+reg: ID(91)
+life-false: true
+idx: 144, fidx: 146
+dead: false
+asm: mov ID(92), #1
+reg: ID(92)
+life-false: false
+idx: 145, fidx: 147
+dead: true
+asm: add ID(90), ID(91), ID(92)
+reg: ID(90)
+life-false: false
+idx: 146, fidx: 148
+dead: true
+asm: mov ID(17), ID(90)
+reg: ID(17)
+life-false: false
+idx: 147, fidx: 149
+dead: true
+asm: mov ID(93), ID(16)
+reg: ID(93)
+life-false: false
+idx: 148, fidx: 150
+dead: true
+asm: mov ID(38), ID(93)
+reg: ID(38)
+life-false: false
+idx: 149, fidx: 151
+dead: true
+asm: mov ID(95), ID(38)
+reg: ID(95)
+life-false: true
+idx: 150, fidx: 152
+dead: false
+asm: mov ID(96), #1
+reg: ID(96)
+life-false: false
+idx: 151, fidx: 153
+dead: true
+asm: add ID(94), ID(95), ID(96)
+reg: ID(94)
+life-false: false
+idx: 152, fidx: 154
+dead: true
+asm: mov ID(16), ID(94)
+reg: ID(16)
+life-false: false
+idx: 153, fidx: 155
+dead: true
+asm: b l9
+asm: l11: 
+asm: mov ID(97), #0
+reg: ID(97)
+life-false: true
+idx: 156, fidx: 157
+dead: false
+asm: mov R0, ID(97)
+reg: R0
+life-false: false
+idx: 157, fidx: 158
+dead: true
+asm: ret
+reg: SP
+dead: true
+Basic Block SP
+
+l0: 
+str R29, [SP, #16]
+sub SP, SP, #16
+mov ID(39), #5
+mov ID(16), ID(39)
+mov ID(40), #3
+mov ID(17), ID(40)
+mov ID(41), ID(16)
+mov ID(30), ID(41)
+mov ID(42), ID(17)
+mov ID(31), ID(42)
+mov R0, ID(30)
+mov R1, ID(31)
+bl l1
+Basic Block R0, SP, ID(17), R29
+mov ID(43), R0
+mov ID(32), ID(43)
+mov ID(44), ID(32)
+mov ID(18), ID(44)
+mov ID(45), #1075838976
+mov ID(19), ID(45)
+mov ID(46), #1067869798
+mov ID(20), ID(46)
+mov ID(47), ID(19)
+mov ID(33), ID(47)
+mov ID(48), ID(20)
+mov ID(34), ID(48)
+mov R0, ID(33)
+mov R1, ID(34)
+bl l7
+Basic Block R0, ID(17), R29
+mov ID(49), R0
+mov ID(35), ID(49)
+mov ID(50), ID(35)
+mov ID(21), ID(50)
+mov ID(51), #0
+mov ID(16), ID(51)
+b l9
+Basic Block SP, R0, R1
+
+l1: 
+str R29, [SP, #16]
+sub SP, SP, #16
+mov ID(0), R0
+mov ID(1), R1
+mov ID(52), ID(0)
+mov R0, ID(52)
+mov ID(54), R0
+mov ID(55), ID(1)
+add ID(53), ID(54), ID(55)
+mov R0, ID(53)
+ret
+Basic Block SP, R0, R1
+
+l2: 
+str R29, [SP, #16]
+sub SP, SP, #16
+mov ID(2), R0
+mov ID(3), R1
+mov ID(56), ID(2)
+mov ID(23), ID(56)
+mov ID(58), ID(23)
+mov ID(59), ID(3)
+sub ID(57), ID(58), ID(59)
+mov R0, ID(57)
+ret
+Basic Block SP, R0, R1
+
+l3: 
+str R29, [SP, #16]
+sub SP, SP, #16
+mov ID(4), R0
+mov ID(5), R1
+mov ID(60), ID(4)
+mov ID(24), ID(60)
+mov ID(62), ID(24)
+mov ID(63), ID(5)
+smull ID(61), ID(62), ID(63)
+mov R0, ID(61)
+ret
+Basic Block SP, R0, R1
+
+l4: 
+str R29, [SP, #16]
+sub SP, SP, #16
+mov ID(6), R0
+mov ID(7), R1
+mov ID(64), ID(6)
+mov ID(25), ID(64)
+mov ID(66), ID(25)
+mov ID(67), ID(7)
+sdiv ID(65), ID(66), ID(67)
+mov R0, ID(65)
+ret
+Basic Block SP, R0, R1
+
+l5: 
+str R29, [SP, #16]
+sub SP, SP, #16
+mov ID(8), R0
+mov ID(9), R1
+mov ID(68), ID(8)
+mov ID(26), ID(68)
+mov ID(70), ID(26)
+mov ID(71), ID(9)
+add ID(69), ID(70), ID(71)
+mov R0, ID(69)
+ret
+Basic Block SP, R0, R1
+
+l6: 
+str R29, [SP, #16]
+sub SP, SP, #16
+mov ID(10), R0
+mov ID(11), R1
+mov ID(72), ID(10)
+mov ID(27), ID(72)
+mov ID(74), ID(27)
+mov ID(75), ID(11)
+sub ID(73), ID(74), ID(75)
+mov R0, ID(73)
+ret
+Basic Block SP, R0, R1
+
+l7: 
+str R29, [SP, #16]
+sub SP, SP, #16
+mov ID(12), R0
+mov ID(13), R1
+mov ID(76), ID(12)
+mov ID(28), ID(76)
+mov ID(78), ID(28)
+mov ID(79), ID(13)
+smull ID(77), ID(78), ID(79)
+mov R0, ID(77)
+ret
+Basic Block SP, R0, R1
+
+l8: 
+str R29, [SP, #16]
+sub SP, SP, #16
+mov ID(14), R0
+mov ID(15), R1
+mov ID(80), ID(14)
+mov ID(29), ID(80)
+mov ID(82), ID(29)
+mov ID(83), ID(15)
+sdiv ID(81), ID(82), ID(83)
+mov R0, ID(81)
+ret
+Basic Block ID(16), ID(17), R29
+
+l9: 
+mov ID(84), ID(16)
+mov ID(36), ID(84)
+mov ID(87), ID(36)
+mov ID(88), #5
+cmp ID(87), ID(88)
+cset ID(86), LT
+mvn ID(85), ID(86)
+cbnz l11
+Basic Block ID(17), ID(16)
+
+l10: 
+mov ID(89), ID(17)
+mov ID(37), ID(89)
+mov ID(91), ID(37)
+mov ID(92), #1
+add ID(90), ID(91), ID(92)
+mov ID(17), ID(90)
+mov ID(93), ID(16)
+mov ID(38), ID(93)
+mov ID(95), ID(38)
+mov ID(96), #1
+add ID(94), ID(95), ID(96)
+mov ID(16), ID(94)
+b l9
+Basic Block R29
+
+l11: 
+mov ID(97), #0
+mov R0, ID(97)
+ret
+
+asm: l0: 
+asm: str R29, [SP, #16]
+reg: R29
+life-false: true
+idx: 1, fidx: 13
+dead: false
+asm: sub SP, SP, #16
+reg: SP
+life-false: true
+idx: 2, fidx: 14
+dead: false
+asm: mov ID(39), #5
+reg: ID(39)
+life-false: false
+idx: 3, fidx: 15
+dead: true
+asm: mov ID(16), ID(39)
+reg: ID(16)
+life-false: false
+idx: 4, fidx: 16
+dead: true
+asm: mov ID(40), #3
+reg: ID(40)
+life-false: false
+idx: 5, fidx: 17
+dead: true
+asm: mov ID(17), ID(40)
+reg: ID(17)
+life-false: true
+idx: 6, fidx: 18
+dead: false
+asm: mov ID(41), ID(16)
+reg: ID(41)
+life-false: false
+idx: 7, fidx: 19
+dead: true
+asm: mov ID(30), ID(41)
+reg: ID(30)
+life-false: false
+idx: 8, fidx: 20
+dead: true
+asm: mov ID(42), ID(17)
+reg: ID(42)
+life-false: false
+idx: 9, fidx: 21
+dead: true
+asm: mov ID(31), ID(42)
+reg: ID(31)
+life-false: false
+idx: 10, fidx: 22
+dead: true
+asm: mov R0, ID(30)
+reg: R0
+life-false: false
+idx: 11, fidx: 23
+dead: true
+asm: mov R1, ID(31)
+reg: R1
+life-false: false
+idx: 12, fidx: 24
+dead: true
+asm: bl l1
+asm: mov ID(43), R0
+reg: ID(43)
+life-false: false
+idx: 14, fidx: 26
+dead: true
+asm: mov ID(32), ID(43)
+reg: ID(32)
+life-false: false
+idx: 15, fidx: 27
+dead: true
+asm: mov ID(44), ID(32)
+reg: ID(44)
+life-false: false
+idx: 16, fidx: 28
+dead: true
+asm: mov ID(18), ID(44)
+reg: ID(18)
+life-false: false
+idx: 17, fidx: 29
+dead: true
+asm: mov ID(45), #1075838976
+reg: ID(45)
+life-false: false
+idx: 18, fidx: 30
+dead: true
+asm: mov ID(19), ID(45)
+reg: ID(19)
+life-false: false
+idx: 19, fidx: 31
+dead: true
+asm: mov ID(46), #1067869798
+reg: ID(46)
+life-false: false
+idx: 20, fidx: 32
+dead: true
+asm: mov ID(20), ID(46)
+reg: ID(20)
+life-false: false
+idx: 21, fidx: 33
+dead: true
+asm: mov ID(47), ID(19)
+reg: ID(47)
+life-false: false
+idx: 22, fidx: 34
+dead: true
+asm: mov ID(33), ID(47)
+reg: ID(33)
+life-false: false
+idx: 23, fidx: 35
+dead: true
+asm: mov ID(48), ID(20)
+reg: ID(48)
+life-false: false
+idx: 24, fidx: 36
+dead: true
+asm: mov ID(34), ID(48)
+reg: ID(34)
+life-false: false
+idx: 25, fidx: 37
+dead: true
+asm: mov R0, ID(33)
+reg: R0
+life-false: true
+idx: 26, fidx: 38
+dead: false
+asm: mov R1, ID(34)
+reg: R1
+life-false: true
+idx: 27, fidx: 39
+dead: false
+asm: bl l7
+asm: mov ID(49), R0
+reg: ID(49)
+life-false: false
+idx: 29, fidx: 41
+dead: true
+asm: mov ID(35), ID(49)
+reg: ID(35)
+life-false: false
+idx: 30, fidx: 42
+dead: true
+asm: mov ID(50), ID(35)
+reg: ID(50)
+life-false: false
+idx: 31, fidx: 43
+dead: true
+asm: mov ID(21), ID(50)
+reg: ID(21)
+life-false: false
+idx: 32, fidx: 44
+dead: true
+asm: mov ID(51), #0
+reg: ID(51)
+life-false: false
+idx: 33, fidx: 45
+dead: true
+asm: mov ID(16), ID(51)
+reg: ID(16)
+life-false: false
+idx: 34, fidx: 46
+dead: true
+asm: b l9
+asm: l1: 
+asm: str R29, [SP, #16]
+reg: R29
+life-false: false
+idx: 37, fidx: 48
+dead: true
+asm: sub SP, SP, #16
+reg: SP
+life-false: true
+idx: 38, fidx: 49
+dead: false
+asm: mov ID(0), R0
+reg: ID(0)
+life-false: false
+idx: 39, fidx: 50
+dead: true
+asm: mov ID(1), R1
+reg: ID(1)
+life-false: false
+idx: 40, fidx: 51
+dead: true
+asm: mov ID(52), ID(0)
+reg: ID(52)
+life-false: false
+idx: 41, fidx: 52
+dead: true
+asm: mov R0, ID(52)
+reg: R0
+life-false: false
+idx: 42, fidx: 53
+dead: true
+asm: mov ID(54), R0
+reg: ID(54)
+life-false: false
+idx: 43, fidx: 54
+dead: true
+asm: mov ID(55), ID(1)
+reg: ID(55)
+life-false: false
+idx: 44, fidx: 55
+dead: true
+asm: add ID(53), ID(54), ID(55)
+reg: ID(53)
+life-false: false
+idx: 45, fidx: 56
+dead: true
+asm: mov R0, ID(53)
+reg: R0
+life-false: false
+idx: 46, fidx: 57
+dead: true
+asm: ret
+reg: SP
+dead: true
+asm: l2: 
+asm: str R29, [SP, #16]
+reg: R29
+life-false: true
+idx: 49, fidx: 59
+dead: false
+asm: sub SP, SP, #16
+reg: SP
+life-false: true
+idx: 50, fidx: 60
+dead: false
+asm: mov ID(2), R0
+reg: ID(2)
+life-false: false
+idx: 51, fidx: 61
+dead: true
+asm: mov ID(3), R1
+reg: ID(3)
+life-false: false
+idx: 52, fidx: 62
+dead: true
+asm: mov ID(56), ID(2)
+reg: ID(56)
+life-false: false
+idx: 53, fidx: 63
+dead: true
+asm: mov ID(23), ID(56)
+reg: ID(23)
+life-false: false
+idx: 54, fidx: 64
+dead: true
+asm: mov ID(58), ID(23)
+reg: ID(58)
+life-false: false
+idx: 55, fidx: 65
+dead: true
+asm: mov ID(59), ID(3)
+reg: ID(59)
+life-false: false
+idx: 56, fidx: 66
+dead: true
+asm: sub ID(57), ID(58), ID(59)
+reg: ID(57)
+life-false: false
+idx: 57, fidx: 67
+dead: true
+asm: mov R0, ID(57)
+reg: R0
+life-false: false
+idx: 58, fidx: 68
+dead: true
+asm: ret
+reg: SP
+dead: true
+asm: l3: 
+asm: str R29, [SP, #16]
+reg: R29
+life-false: true
+idx: 61, fidx: 70
+dead: false
+asm: sub SP, SP, #16
+reg: SP
+life-false: false
+idx: 62, fidx: 71
+dead: true
+asm: mov ID(4), R0
+reg: ID(4)
+life-false: false
+idx: 63, fidx: 72
+dead: true
+asm: mov ID(5), R1
+reg: ID(5)
+life-false: false
+idx: 64, fidx: 73
+dead: true
+asm: mov ID(60), ID(4)
+reg: ID(60)
+life-false: false
+idx: 65, fidx: 74
+dead: true
+asm: mov ID(24), ID(60)
+reg: ID(24)
+life-false: false
+idx: 66, fidx: 75
+dead: true
+asm: mov ID(62), ID(24)
+reg: ID(62)
+life-false: false
+idx: 67, fidx: 76
+dead: true
+asm: mov ID(63), ID(5)
+reg: ID(63)
+life-false: false
+idx: 68, fidx: 77
+dead: true
+asm: smull ID(61), ID(62), ID(63)
+reg: ID(61)
+life-false: false
+idx: 69, fidx: 78
+dead: true
+asm: mov R0, ID(61)
+reg: R0
+life-false: false
+idx: 70, fidx: 79
+dead: true
+asm: ret
+reg: SP
+dead: true
+asm: l4: 
+asm: str R29, [SP, #16]
+reg: R29
+life-false: true
+idx: 73, fidx: 81
+dead: false
+asm: sub SP, SP, #16
+reg: SP
+life-false: false
+idx: 74, fidx: 82
+dead: true
+asm: mov ID(6), R0
+reg: ID(6)
+life-false: false
+idx: 75, fidx: 83
+dead: true
+asm: mov ID(7), R1
+reg: ID(7)
+life-false: false
+idx: 76, fidx: 84
+dead: true
+asm: mov ID(64), ID(6)
+reg: ID(64)
+life-false: false
+idx: 77, fidx: 85
+dead: true
+asm: mov ID(25), ID(64)
+reg: ID(25)
+life-false: false
+idx: 78, fidx: 86
+dead: true
+asm: mov ID(66), ID(25)
+reg: ID(66)
+life-false: false
+idx: 79, fidx: 87
+dead: true
+asm: mov ID(67), ID(7)
+reg: ID(67)
+life-false: false
+idx: 80, fidx: 88
+dead: true
+asm: sdiv ID(65), ID(66), ID(67)
+reg: ID(65)
+life-false: false
+idx: 81, fidx: 89
+dead: true
+asm: mov R0, ID(65)
+reg: R0
+life-false: false
+idx: 82, fidx: 90
+dead: true
+asm: ret
+reg: SP
+dead: true
+asm: l5: 
+asm: str R29, [SP, #16]
+reg: R29
+life-false: true
+idx: 85, fidx: 92
+dead: false
+asm: sub SP, SP, #16
+reg: SP
+life-false: false
+idx: 86, fidx: 93
+dead: true
+asm: mov ID(8), R0
+reg: ID(8)
+life-false: false
+idx: 87, fidx: 94
+dead: true
+asm: mov ID(9), R1
+reg: ID(9)
+life-false: false
+idx: 88, fidx: 95
+dead: true
+asm: mov ID(68), ID(8)
+reg: ID(68)
+life-false: false
+idx: 89, fidx: 96
+dead: true
+asm: mov ID(26), ID(68)
+reg: ID(26)
+life-false: false
+idx: 90, fidx: 97
+dead: true
+asm: mov ID(70), ID(26)
+reg: ID(70)
+life-false: false
+idx: 91, fidx: 98
+dead: true
+asm: mov ID(71), ID(9)
+reg: ID(71)
+life-false: false
+idx: 92, fidx: 99
+dead: true
+asm: add ID(69), ID(70), ID(71)
+reg: ID(69)
+life-false: false
+idx: 93, fidx: 100
+dead: true
+asm: mov R0, ID(69)
+reg: R0
+life-false: false
+idx: 94, fidx: 101
+dead: true
+asm: ret
+reg: SP
+dead: true
+asm: l6: 
+asm: str R29, [SP, #16]
+reg: R29
+life-false: true
+idx: 97, fidx: 103
+dead: false
+asm: sub SP, SP, #16
+reg: SP
+life-false: false
+idx: 98, fidx: 104
+dead: true
+asm: mov ID(10), R0
+reg: ID(10)
+life-false: false
+idx: 99, fidx: 105
+dead: true
+asm: mov ID(11), R1
+reg: ID(11)
+life-false: false
+idx: 100, fidx: 106
+dead: true
+asm: mov ID(72), ID(10)
+reg: ID(72)
+life-false: false
+idx: 101, fidx: 107
+dead: true
+asm: mov ID(27), ID(72)
+reg: ID(27)
+life-false: false
+idx: 102, fidx: 108
+dead: true
+asm: mov ID(74), ID(27)
+reg: ID(74)
+life-false: false
+idx: 103, fidx: 109
+dead: true
+asm: mov ID(75), ID(11)
+reg: ID(75)
+life-false: false
+idx: 104, fidx: 110
+dead: true
+asm: sub ID(73), ID(74), ID(75)
+reg: ID(73)
+life-false: false
+idx: 105, fidx: 111
+dead: true
+asm: mov R0, ID(73)
+reg: R0
+life-false: false
+idx: 106, fidx: 112
+dead: true
+asm: ret
+reg: SP
+dead: true
+asm: l7: 
+asm: str R29, [SP, #16]
+reg: R29
+life-false: true
+idx: 109, fidx: 114
+dead: false
+asm: sub SP, SP, #16
+reg: SP
+life-false: false
+idx: 110, fidx: 115
+dead: true
+asm: mov ID(12), R0
+reg: ID(12)
+life-false: false
+idx: 111, fidx: 116
+dead: true
+asm: mov ID(13), R1
+reg: ID(13)
+life-false: false
+idx: 112, fidx: 117
+dead: true
+asm: mov ID(76), ID(12)
+reg: ID(76)
+life-false: false
+idx: 113, fidx: 118
+dead: true
+asm: mov ID(28), ID(76)
+reg: ID(28)
+life-false: false
+idx: 114, fidx: 119
+dead: true
+asm: mov ID(78), ID(28)
+reg: ID(78)
+life-false: false
+idx: 115, fidx: 120
+dead: true
+asm: mov ID(79), ID(13)
+reg: ID(79)
+life-false: false
+idx: 116, fidx: 121
+dead: true
+asm: smull ID(77), ID(78), ID(79)
+reg: ID(77)
+life-false: false
+idx: 117, fidx: 122
+dead: true
+asm: mov R0, ID(77)
+reg: R0
+life-false: true
+idx: 118, fidx: 123
+dead: false
+asm: ret
+reg: SP
+dead: true
+asm: l8: 
+asm: str R29, [SP, #16]
+reg: R29
+life-false: true
+idx: 121, fidx: 125
+dead: false
+asm: sub SP, SP, #16
+reg: SP
+life-false: false
+idx: 122, fidx: 126
+dead: true
+asm: mov ID(14), R0
+reg: ID(14)
+life-false: false
+idx: 123, fidx: 127
+dead: true
+asm: mov ID(15), R1
+reg: ID(15)
+life-false: true
+idx: 124, fidx: 128
+dead: false
+asm: mov ID(80), ID(14)
+reg: ID(80)
+life-false: false
+idx: 125, fidx: 129
+dead: true
+asm: mov ID(29), ID(80)
+reg: ID(29)
+life-false: false
+idx: 126, fidx: 130
+dead: true
+asm: mov ID(82), ID(29)
+reg: ID(82)
+life-false: false
+idx: 127, fidx: 131
+dead: true
+asm: mov ID(83), ID(15)
+reg: ID(83)
+life-false: false
+idx: 128, fidx: 132
+dead: true
+asm: sdiv ID(81), ID(82), ID(83)
+reg: ID(81)
+life-false: false
+idx: 129, fidx: 133
+dead: true
+asm: mov R0, ID(81)
+reg: R0
+life-false: false
+idx: 130, fidx: 134
+dead: true
+asm: ret
+reg: SP
+dead: true
+asm: l9: 
+asm: mov ID(84), ID(16)
+reg: ID(84)
+life-false: false
+idx: 133, fidx: 136
+dead: true
+asm: mov ID(36), ID(84)
+reg: ID(36)
+life-false: false
+idx: 134, fidx: 137
+dead: true
+asm: mov ID(87), ID(36)
+reg: ID(87)
+life-false: false
+idx: 135, fidx: 138
+dead: true
+asm: mov ID(88), #5
+reg: ID(88)
+life-false: false
+idx: 136, fidx: 139
+dead: true
+asm: cmp ID(87), ID(88)
+reg: ID(87)
+life-false: false
+idx: 137, fidx: 140
+dead: true
+asm: cset ID(86), LT
+reg: ID(86)
+life-false: false
+idx: 138, fidx: 141
+dead: true
+asm: mvn ID(85), ID(86)
+reg: ID(85)
+life-false: false
+idx: 139, fidx: 142
+dead: true
+asm: cbnz l11
+asm: l10: 
+asm: mov ID(89), ID(17)
+reg: ID(89)
+life-false: false
+idx: 142, fidx: 144
+dead: true
+asm: mov ID(37), ID(89)
+reg: ID(37)
+life-false: false
+idx: 143, fidx: 145
+dead: true
+asm: mov ID(91), ID(37)
+reg: ID(91)
+life-false: true
+idx: 144, fidx: 146
+dead: false
+asm: mov ID(92), #1
+reg: ID(92)
+life-false: false
+idx: 145, fidx: 147
+dead: true
+asm: add ID(90), ID(91), ID(92)
+reg: ID(90)
+life-false: false
+idx: 146, fidx: 148
+dead: true
+asm: mov ID(17), ID(90)
+reg: ID(17)
+life-false: false
+idx: 147, fidx: 149
+dead: true
+asm: mov ID(93), ID(16)
+reg: ID(93)
+life-false: false
+idx: 148, fidx: 150
+dead: true
+asm: mov ID(38), ID(93)
+reg: ID(38)
+life-false: false
+idx: 149, fidx: 151
+dead: true
+asm: mov ID(95), ID(38)
+reg: ID(95)
+life-false: true
+idx: 150, fidx: 152
+dead: false
+asm: mov ID(96), #1
+reg: ID(96)
+life-false: false
+idx: 151, fidx: 153
+dead: true
+asm: add ID(94), ID(95), ID(96)
+reg: ID(94)
+life-false: false
+idx: 152, fidx: 154
+dead: true
+asm: mov ID(16), ID(94)
+reg: ID(16)
+life-false: false
+idx: 153, fidx: 155
+dead: true
+asm: b l9
+asm: l11: 
+asm: mov ID(97), #0
+reg: ID(97)
+life-false: true
+idx: 156, fidx: 157
+dead: false
+asm: mov R0, ID(97)
+reg: R0
+life-false: false
+idx: 157, fidx: 158
+dead: true
+asm: ret
+reg: SP
+dead: true
+use: reg - SP, dead - false
+def: reg - R29, dead - false
+use: reg - SP, dead - false
+def: reg - SP, dead - false
+def: reg - ID(39), dead - true
+use: reg - ID(39), dead - true
+thread 'visualize' panicked at 'called `Option::unwrap()` on a `None` value', src/asm/allocate.rs:206:51
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 
 
-
-
-
-
-FILE: tests/data/input1.c
-digraph interference_graph {
-    node0 [label="R0"]
-    node0 -> node37 [dir=both];
-    node0 -> node44 [dir=both];
-    node0 -> node45 [dir=both];
-    node0 -> node32 [dir=both];
-    node0 -> node46 [dir=both];
-    node0 -> node48 [dir=both];
-    node1 [label="R1"]
-    node1 -> node38 [dir=both];
-    node1 -> node33 [dir=both];
-    node29 [label="R29"]
-    node29 -> node29 [dir=both];
-    node29 -> node41 [dir=both];
-    node32 [label="PC"]
-    node32 -> node47 [dir=both];
-    node33 [label="ID(1)"]
-    node33 -> node48 [dir=both];
-    node34 [label="ID(2)"]
-    node34 -> node40 [dir=both];
-    node35 [label="ID(3)"]
-    node35 -> node41 [dir=both];
-    node35 -> node42 [dir=both];
-    node37 [label="ID(5)"]
-    node37 -> node42 [dir=both];
-    node38 [label="ID(6)"]
-    node38 -> node43 [dir=both];
-    node39 [label="ID(7)"]
-    node39 -> node44 [dir=both];
-    node40 [label="ID(8)"]
-    node41 [label="ID(9)"]
-    node42 [label="ID(10)"]
-    node43 [label="ID(11)"]
-    node44 [label="ID(12)"]
-    node45 [label="ID(13)"]
-    node46 [label="ID(14)"]
-    node46 -> node47 [dir=both];
-    node47 [label="ID(15)"]
-    node48 [label="ID(16)"]
-}
-digraph interference_graph {
-    node0 [label="R0"]
-    node0 -> node37 [dir=both];
-    node0 -> node44 [dir=both];
-    node0 -> node45 [dir=both];
-    node0 -> node32 [dir=both];
-    node0 -> node46 [dir=both];
-    node0 -> node48 [dir=both];
-    node1 [label="R1"]
-    node1 -> node38 [dir=both];
-    node1 -> node33 [dir=both];
-    node29 [label="R29"]
-    node29 -> node29 [dir=both];
-    node29 -> node41 [dir=both];
-    node32 [label="PC"]
-    node32 -> node47 [dir=both];
-    node33 [label="ID(1)"]
-    node33 -> node48 [dir=both];
-    node34 [label="ID(2)"]
-    node34 -> node40 [dir=both];
-    node35 [label="ID(3)"]
-    node35 -> node41 [dir=both];
-    node35 -> node42 [dir=both];
-    node37 [label="ID(5)"]
-    node37 -> node42 [dir=both];
-    node38 [label="ID(6)"]
-    node38 -> node43 [dir=both];
-    node39 [label="ID(7)"]
-    node39 -> node44 [dir=both];
-    node40 [label="ID(8)"]
-    node41 [label="ID(9)"]
-    node42 [label="ID(10)"]
-    node43 [label="ID(11)"]
-    node44 [label="ID(12)"]
-    node45 [label="ID(13)"]
-    node46 [label="ID(14)"]
-    node46 -> node47 [dir=both];
-    node47 [label="ID(15)"]
-    node48 [label="ID(16)"]
-}
-
-
-
-
-
-
-FILE: tests/data/input2.c
-digraph interference_graph {
-    node0 [label="R0"]
-    node0 -> node41 [dir=both];
-    node0 -> node48 [dir=both];
-    node0 -> node62 [dir=both];
-    node0 -> node32 [dir=both];
-    node0 -> node63 [dir=both];
-    node0 -> node67 [dir=both];
-    node29 [label="R29"]
-    node29 -> node29 [dir=both];
-    node29 -> node47 [dir=both];
-    node32 [label="PC"]
-    node32 -> node64 [dir=both];
-    node32 -> node66 [dir=both];
-    node32 -> node71 [dir=both];
-    node32 -> node73 [dir=both];
-    node32 -> node78 [dir=both];
-    node32 -> node80 [dir=both];
-    node33 [label="ID(1)"]
-    node33 -> node46 [dir=both];
-    node33 -> node49 [dir=both];
-    node33 -> node50 [dir=both];
-    node33 -> node53 [dir=both];
-    node33 -> node58 [dir=both];
-    node33 -> node59 [dir=both];
-    node34 [label="ID(2)"]
-    node34 -> node53 [dir=both];
-    node34 -> node54 [dir=both];
-    node34 -> node57 [dir=both];
-    node34 -> node55 [dir=both];
-    node34 -> node61 [dir=both];
-    node36 [label="ID(4)"]
-    node36 -> node65 [dir=both];
-    node36 -> node68 [dir=both];
-    node37 [label="ID(5)"]
-    node37 -> node70 [dir=both];
-    node37 -> node74 [dir=both];
-    node38 [label="ID(6)"]
-    node38 -> node72 [dir=both];
-    node38 -> node75 [dir=both];
-    node39 [label="ID(7)"]
-    node39 -> node77 [dir=both];
-    node39 -> node81 [dir=both];
-    node40 [label="ID(8)"]
-    node40 -> node79 [dir=both];
-    node40 -> node82 [dir=both];
-    node41 [label="ID(9)"]
-    node41 -> node47 [dir=both];
-    node42 [label="ID(10)"]
-    node42 -> node48 [dir=both];
-    node43 [label="ID(11)"]
-    node43 -> node49 [dir=both];
-    node43 -> node51 [dir=both];
-    node44 [label="ID(12)"]
-    node44 -> node54 [dir=both];
-    node44 -> node56 [dir=both];
-    node45 [label="ID(13)"]
-    node45 -> node58 [dir=both];
-    node45 -> node60 [dir=both];
-    node46 [label="ID(14)"]
-    node47 [label="ID(15)"]
-    node48 [label="ID(16)"]
-    node49 [label="ID(17)"]
-    node50 [label="ID(18)"]
-    node50 -> node51 [dir=both];
-    node50 -> node52 [dir=both];
-    node51 [label="ID(19)"]
-    node52 [label="ID(20)"]
-    node53 [label="ID(21)"]
-    node54 [label="ID(22)"]
-    node55 [label="ID(23)"]
-    node55 -> node56 [dir=both];
-    node55 -> node57 [dir=both];
-    node56 [label="ID(24)"]
-    node57 [label="ID(25)"]
-    node58 [label="ID(26)"]
-    node59 [label="ID(27)"]
-    node59 -> node60 [dir=both];
-    node59 -> node61 [dir=both];
-    node60 [label="ID(28)"]
-    node61 [label="ID(29)"]
-    node62 [label="ID(30)"]
-    node63 [label="ID(31)"]
-    node63 -> node64 [dir=both];
-    node64 [label="ID(32)"]
-    node65 [label="ID(33)"]
-    node65 -> node66 [dir=both];
-    node66 [label="ID(34)"]
-    node67 [label="ID(35)"]
-    node67 -> node68 [dir=both];
-    node67 -> node69 [dir=both];
-    node68 [label="ID(36)"]
-    node69 [label="ID(37)"]
-    node70 [label="ID(38)"]
-    node70 -> node71 [dir=both];
-    node71 [label="ID(39)"]
-    node72 [label="ID(40)"]
-    node72 -> node73 [dir=both];
-    node73 [label="ID(41)"]
-    node74 [label="ID(42)"]
-    node74 -> node75 [dir=both];
-    node74 -> node76 [dir=both];
-    node75 [label="ID(43)"]
-    node76 [label="ID(44)"]
-    node77 [label="ID(45)"]
-    node77 -> node78 [dir=both];
-    node78 [label="ID(46)"]
-    node79 [label="ID(47)"]
-    node79 -> node80 [dir=both];
-    node80 [label="ID(48)"]
-    node81 [label="ID(49)"]
-    node81 -> node82 [dir=both];
-    node81 -> node83 [dir=both];
-    node82 [label="ID(50)"]
-    node83 [label="ID(51)"]
-}
-digraph interference_graph {
-    node0 [label="R0"]
-    node0 -> node41 [dir=both];
-    node0 -> node48 [dir=both];
-    node0 -> node62 [dir=both];
-    node0 -> node32 [dir=both];
-    node0 -> node63 [dir=both];
-    node0 -> node67 [dir=both];
-    node29 [label="R29"]
-    node29 -> node29 [dir=both];
-    node29 -> node47 [dir=both];
-    node32 [label="PC"]
-    node32 -> node64 [dir=both];
-    node32 -> node66 [dir=both];
-    node32 -> node71 [dir=both];
-    node32 -> node73 [dir=both];
-    node32 -> node78 [dir=both];
-    node32 -> node80 [dir=both];
-    node33 [label="ID(1)"]
-    node33 -> node46 [dir=both];
-    node33 -> node49 [dir=both];
-    node33 -> node50 [dir=both];
-    node33 -> node53 [dir=both];
-    node33 -> node58 [dir=both];
-    node33 -> node59 [dir=both];
-    node34 [label="ID(2)"]
-    node34 -> node53 [dir=both];
-    node34 -> node54 [dir=both];
-    node34 -> node57 [dir=both];
-    node34 -> node55 [dir=both];
-    node34 -> node61 [dir=both];
-    node36 [label="ID(4)"]
-    node36 -> node65 [dir=both];
-    node36 -> node68 [dir=both];
-    node37 [label="ID(5)"]
-    node37 -> node70 [dir=both];
-    node37 -> node74 [dir=both];
-    node38 [label="ID(6)"]
-    node38 -> node72 [dir=both];
-    node38 -> node75 [dir=both];
-    node39 [label="ID(7)"]
-    node39 -> node77 [dir=both];
-    node39 -> node81 [dir=both];
-    node40 [label="ID(8)"]
-    node40 -> node79 [dir=both];
-    node40 -> node82 [dir=both];
-    node41 [label="ID(9)"]
-    node41 -> node47 [dir=both];
-    node42 [label="ID(10)"]
-    node42 -> node48 [dir=both];
-    node43 [label="ID(11)"]
-    node43 -> node49 [dir=both];
-    node43 -> node51 [dir=both];
-    node44 [label="ID(12)"]
-    node44 -> node54 [dir=both];
-    node44 -> node56 [dir=both];
-    node45 [label="ID(13)"]
-    node45 -> node58 [dir=both];
-    node45 -> node60 [dir=both];
-    node46 [label="ID(14)"]
-    node47 [label="ID(15)"]
-    node48 [label="ID(16)"]
-    node49 [label="ID(17)"]
-    node50 [label="ID(18)"]
-    node50 -> node51 [dir=both];
-    node50 -> node52 [dir=both];
-    node51 [label="ID(19)"]
-    node52 [label="ID(20)"]
-    node53 [label="ID(21)"]
-    node54 [label="ID(22)"]
-    node55 [label="ID(23)"]
-    node55 -> node56 [dir=both];
-    node55 -> node57 [dir=both];
-    node56 [label="ID(24)"]
-    node57 [label="ID(25)"]
-    node58 [label="ID(26)"]
-    node59 [label="ID(27)"]
-    node59 -> node60 [dir=both];
-    node59 -> node61 [dir=both];
-    node60 [label="ID(28)"]
-    node61 [label="ID(29)"]
-    node62 [label="ID(30)"]
-    node63 [label="ID(31)"]
-    node63 -> node64 [dir=both];
-    node64 [label="ID(32)"]
-    node65 [label="ID(33)"]
-    node65 -> node66 [dir=both];
-    node66 [label="ID(34)"]
-    node67 [label="ID(35)"]
-    node67 -> node68 [dir=both];
-    node67 -> node69 [dir=both];
-    node68 [label="ID(36)"]
-    node69 [label="ID(37)"]
-    node70 [label="ID(38)"]
-    node70 -> node71 [dir=both];
-    node71 [label="ID(39)"]
-    node72 [label="ID(40)"]
-    node72 -> node73 [dir=both];
-    node73 [label="ID(41)"]
-    node74 [label="ID(42)"]
-    node74 -> node75 [dir=both];
-    node74 -> node76 [dir=both];
-    node75 [label="ID(43)"]
-    node76 [label="ID(44)"]
-    node77 [label="ID(45)"]
-    node77 -> node78 [dir=both];
-    node78 [label="ID(46)"]
-    node79 [label="ID(47)"]
-    node79 -> node80 [dir=both];
-    node80 [label="ID(48)"]
-    node81 [label="ID(49)"]
-    node81 -> node82 [dir=both];
-    node81 -> node83 [dir=both];
-    node82 [label="ID(50)"]
-    node83 [label="ID(51)"]
-}
-
-
-
-
-
-
-FILE: tests/data/input3.c
-digraph interference_graph {
-    node0 [label="R0"]
-    node0 -> node45 [dir=both];
-    node0 -> node57 [dir=both];
-    node0 -> node48 [dir=both];
-    node0 -> node63 [dir=both];
-    node0 -> node32 [dir=both];
-    node0 -> node69 [dir=both];
-    node0 -> node71 [dir=both];
-    node0 -> node70 [dir=both];
-    node0 -> node34 [dir=both];
-    node0 -> node78 [dir=both];
-    node0 -> node80 [dir=both];
-    node0 -> node87 [dir=both];
-    node1 [label="R1"]
-    node1 -> node46 [dir=both];
-    node1 -> node49 [dir=both];
-    node1 -> node33 [dir=both];
-    node1 -> node35 [dir=both];
-    node29 [label="R29"]
-    node29 -> node29 [dir=both];
-    node32 [label="PC"]
-    node32 -> node69 [dir=both];
-    node33 [label="ID(1)"]
-    node33 -> node72 [dir=both];
-    node34 [label="ID(2)"]
-    node34 -> node79 [dir=both];
-    node35 [label="ID(3)"]
-    node35 -> node73 [dir=both];
-    node35 -> node82 [dir=both];
-    node36 [label="ID(4)"]
-    node36 -> node53 [dir=both];
-    node36 -> node55 [dir=both];
-    node37 [label="ID(5)"]
-    node37 -> node54 [dir=both];
-    node37 -> node56 [dir=both];
-    node38 [label="ID(6)"]
-    node38 -> node58 [dir=both];
-    node39 [label="ID(7)"]
-    node39 -> node59 [dir=both];
-    node39 -> node61 [dir=both];
-    node40 [label="ID(8)"]
-    node40 -> node60 [dir=both];
-    node40 -> node62 [dir=both];
-    node40 -> node83 [dir=both];
-    node40 -> node84 [dir=both];
-    node41 [label="ID(9)"]
-    node41 -> node64 [dir=both];
-    node41 -> node65 [dir=both];
-    node43 [label="ID(11)"]
-    node43 -> node73 [dir=both];
-    node43 -> node76 [dir=both];
-    node44 [label="ID(12)"]
-    node44 -> node79 [dir=both];
-    node44 -> node81 [dir=both];
-    node45 [label="ID(13)"]
-    node45 -> node55 [dir=both];
-    node46 [label="ID(14)"]
-    node46 -> node56 [dir=both];
-    node47 [label="ID(15)"]
-    node47 -> node57 [dir=both];
-    node47 -> node58 [dir=both];
-    node48 [label="ID(16)"]
-    node48 -> node61 [dir=both];
-    node49 [label="ID(17)"]
-    node49 -> node62 [dir=both];
-    node50 [label="ID(18)"]
-    node50 -> node63 [dir=both];
-    node50 -> node64 [dir=both];
-    node51 [label="ID(19)"]
-    node51 -> node65 [dir=both];
-    node51 -> node67 [dir=both];
-    node52 [label="ID(20)"]
-    node52 -> node83 [dir=both];
-    node52 -> node85 [dir=both];
-    node53 [label="ID(21)"]
-    node54 [label="ID(22)"]
-    node55 [label="ID(23)"]
-    node56 [label="ID(24)"]
-    node57 [label="ID(25)"]
-    node58 [label="ID(26)"]
-    node59 [label="ID(27)"]
-    node60 [label="ID(28)"]
-    node61 [label="ID(29)"]
-    node62 [label="ID(30)"]
-    node63 [label="ID(31)"]
-    node64 [label="ID(32)"]
-    node65 [label="ID(33)"]
-    node67 [label="ID(35)"]
-    node67 -> node68 [dir=both];
-    node68 [label="ID(36)"]
-    node69 [label="ID(37)"]
-    node70 [label="ID(38)"]
-    node70 -> node71 [dir=both];
-    node70 -> node72 [dir=both];
-    node71 [label="ID(39)"]
-    node72 [label="ID(40)"]
-    node73 [label="ID(41)"]
-    node74 [label="ID(42)"]
-    node74 -> node75 [dir=both];
-    node75 [label="ID(43)"]
-    node76 [label="ID(44)"]
-    node76 -> node77 [dir=both];
-    node77 [label="ID(45)"]
-    node78 [label="ID(46)"]
-    node79 [label="ID(47)"]
-    node80 [label="ID(48)"]
-    node80 -> node81 [dir=both];
-    node80 -> node82 [dir=both];
-    node81 [label="ID(49)"]
-    node82 [label="ID(50)"]
-    node83 [label="ID(51)"]
-    node84 [label="ID(52)"]
-    node84 -> node85 [dir=both];
-    node84 -> node86 [dir=both];
-    node85 [label="ID(53)"]
-    node86 [label="ID(54)"]
-    node87 [label="ID(55)"]
-}
-digraph interference_graph {
-    node0 [label="R0"]
-    node0 -> node45 [dir=both];
-    node0 -> node57 [dir=both];
-    node0 -> node48 [dir=both];
-    node0 -> node63 [dir=both];
-    node0 -> node32 [dir=both];
-    node0 -> node69 [dir=both];
-    node0 -> node71 [dir=both];
-    node0 -> node70 [dir=both];
-    node0 -> node34 [dir=both];
-    node0 -> node78 [dir=both];
-    node0 -> node80 [dir=both];
-    node0 -> node87 [dir=both];
-    node1 [label="R1"]
-    node1 -> node46 [dir=both];
-    node1 -> node49 [dir=both];
-    node1 -> node33 [dir=both];
-    node1 -> node35 [dir=both];
-    node29 [label="R29"]
-    node29 -> node29 [dir=both];
-    node32 [label="PC"]
-    node32 -> node69 [dir=both];
-    node33 [label="ID(1)"]
-    node33 -> node72 [dir=both];
-    node34 [label="ID(2)"]
-    node34 -> node79 [dir=both];
-    node35 [label="ID(3)"]
-    node35 -> node73 [dir=both];
-    node35 -> node82 [dir=both];
-    node36 [label="ID(4)"]
-    node36 -> node53 [dir=both];
-    node36 -> node55 [dir=both];
-    node37 [label="ID(5)"]
-    node37 -> node54 [dir=both];
-    node37 -> node56 [dir=both];
-    node38 [label="ID(6)"]
-    node38 -> node58 [dir=both];
-    node39 [label="ID(7)"]
-    node39 -> node59 [dir=both];
-    node39 -> node61 [dir=both];
-    node40 [label="ID(8)"]
-    node40 -> node60 [dir=both];
-    node40 -> node62 [dir=both];
-    node40 -> node83 [dir=both];
-    node40 -> node84 [dir=both];
-    node41 [label="ID(9)"]
-    node41 -> node64 [dir=both];
-    node41 -> node65 [dir=both];
-    node43 [label="ID(11)"]
-    node43 -> node73 [dir=both];
-    node43 -> node76 [dir=both];
-    node44 [label="ID(12)"]
-    node44 -> node79 [dir=both];
-    node44 -> node81 [dir=both];
-    node45 [label="ID(13)"]
-    node45 -> node55 [dir=both];
-    node46 [label="ID(14)"]
-    node46 -> node56 [dir=both];
-    node47 [label="ID(15)"]
-    node47 -> node57 [dir=both];
-    node47 -> node58 [dir=both];
-    node48 [label="ID(16)"]
-    node48 -> node61 [dir=both];
-    node49 [label="ID(17)"]
-    node49 -> node62 [dir=both];
-    node50 [label="ID(18)"]
-    node50 -> node63 [dir=both];
-    node50 -> node64 [dir=both];
-    node51 [label="ID(19)"]
-    node51 -> node65 [dir=both];
-    node51 -> node67 [dir=both];
-    node52 [label="ID(20)"]
-    node52 -> node83 [dir=both];
-    node52 -> node85 [dir=both];
-    node53 [label="ID(21)"]
-    node54 [label="ID(22)"]
-    node55 [label="ID(23)"]
-    node56 [label="ID(24)"]
-    node57 [label="ID(25)"]
-    node58 [label="ID(26)"]
-    node59 [label="ID(27)"]
-    node60 [label="ID(28)"]
-    node61 [label="ID(29)"]
-    node62 [label="ID(30)"]
-    node63 [label="ID(31)"]
-    node64 [label="ID(32)"]
-    node65 [label="ID(33)"]
-    node67 [label="ID(35)"]
-    node67 -> node68 [dir=both];
-    node68 [label="ID(36)"]
-    node69 [label="ID(37)"]
-    node70 [label="ID(38)"]
-    node70 -> node71 [dir=both];
-    node70 -> node72 [dir=both];
-    node71 [label="ID(39)"]
-    node72 [label="ID(40)"]
-    node73 [label="ID(41)"]
-    node74 [label="ID(42)"]
-    node74 -> node75 [dir=both];
-    node75 [label="ID(43)"]
-    node76 [label="ID(44)"]
-    node76 -> node77 [dir=both];
-    node77 [label="ID(45)"]
-    node78 [label="ID(46)"]
-    node79 [label="ID(47)"]
-    node80 [label="ID(48)"]
-    node80 -> node81 [dir=both];
-    node80 -> node82 [dir=both];
-    node81 [label="ID(49)"]
-    node82 [label="ID(50)"]
-    node83 [label="ID(51)"]
-    node84 [label="ID(52)"]
-    node84 -> node85 [dir=both];
-    node84 -> node86 [dir=both];
-    node85 [label="ID(53)"]
-    node86 [label="ID(54)"]
-    node87 [label="ID(55)"]
-}
-
-
-
-
-
-
-FILE: tests/data/input4.c
-digraph interference_graph {
-    node0 [label="R0"]
-    node0 -> node67 [dir=both];
-    node0 -> node76 [dir=both];
-    node0 -> node32 [dir=both];
-    node0 -> node79 [dir=both];
-    node0 -> node81 [dir=both];
-    node0 -> node33 [dir=both];
-    node0 -> node35 [dir=both];
-    node0 -> node36 [dir=both];
-    node0 -> node92 [dir=both];
-    node0 -> node42 [dir=both];
-    node0 -> node97 [dir=both];
-    node0 -> node99 [dir=both];
-    node0 -> node134 [dir=both];
-    node0 -> node56 [dir=both];
-    node0 -> node140 [dir=both];
-    node0 -> node141 [dir=both];
-    node0 -> node148 [dir=both];
-    node0 -> node61 [dir=both];
-    node0 -> node153 [dir=both];
-    node0 -> node64 [dir=both];
-    node0 -> node159 [dir=both];
-    node0 -> node160 [dir=both];
-    node0 -> node72 [dir=both];
-    node0 -> node177 [dir=both];
-    node0 -> node178 [dir=both];
-    node29 [label="R29"]
-    node29 -> node29 [dir=both];
-    node32 [label="PC"]
-    node32 -> node79 [dir=both];
-    node32 -> node92 [dir=both];
-    node32 -> node93 [dir=both];
-    node32 -> node101 [dir=both];
-    node33 [label="ID(1)"]
-    node33 -> node106 [dir=both];
-    node33 -> node123 [dir=both];
-    node34 [label="ID(2)"]
-    node34 -> node83 [dir=both];
-    node34 -> node102 [dir=both];
-    node34 -> node107 [dir=both];
-    node34 -> node114 [dir=both];
-    node34 -> node115 [dir=both];
-    node34 -> node118 [dir=both];
-    node34 -> node119 [dir=both];
-    node34 -> node122 [dir=both];
-    node34 -> node130 [dir=both];
-    node34 -> node131 [dir=both];
-    node35 [label="ID(3)"]
-    node35 -> node84 [dir=both];
-    node35 -> node135 [dir=both];
-    node35 -> node136 [dir=both];
-    node35 -> node144 [dir=both];
-    node36 [label="ID(4)"]
-    node36 -> node88 [dir=both];
-    node36 -> node148 [dir=both];
-    node36 -> node149 [dir=both];
-    node36 -> node155 [dir=both];
-    node37 [label="ID(5)"]
-    node37 -> node74 [dir=both];
-    node37 -> node167 [dir=both];
-    node38 [label="ID(6)"]
-    node38 -> node77 [dir=both];
-    node39 [label="ID(7)"]
-    node39 -> node78 [dir=both];
-    node39 -> node163 [dir=both];
-    node39 -> node168 [dir=both];
-    node39 -> node169 [dir=both];
-    node39 -> node172 [dir=both];
-    node39 -> node173 [dir=both];
-    node41 [label="ID(9)"]
-    node41 -> node93 [dir=both];
-    node41 -> node95 [dir=both];
-    node42 [label="ID(10)"]
-    node42 -> node94 [dir=both];
-    node43 [label="ID(11)"]
-    node43 -> node97 [dir=both];
-    node43 -> node98 [dir=both];
-    node44 [label="ID(12)"]
-    node44 -> node98 [dir=both];
-    node44 -> node100 [dir=both];
-    node45 [label="ID(13)"]
-    node45 -> node102 [dir=both];
-    node45 -> node105 [dir=both];
-    node46 [label="ID(14)"]
-    node46 -> node107 [dir=both];
-    node46 -> node109 [dir=both];
-    node47 [label="ID(15)"]
-    node47 -> node108 [dir=both];
-    node47 -> node112 [dir=both];
-    node48 [label="ID(16)"]
-    node48 -> node114 [dir=both];
-    node48 -> node116 [dir=both];
-    node49 [label="ID(17)"]
-    node49 -> node118 [dir=both];
-    node49 -> node120 [dir=both];
-    node50 [label="ID(18)"]
-    node50 -> node123 [dir=both];
-    node50 -> node128 [dir=both];
-    node51 [label="ID(19)"]
-    node51 -> node122 [dir=both];
-    node51 -> node126 [dir=both];
-    node52 [label="ID(20)"]
-    node52 -> node130 [dir=both];
-    node52 -> node132 [dir=both];
-    node53 [label="ID(21)"]
-    node53 -> node84 [dir=both];
-    node53 -> node86 [dir=both];
-    node54 [label="ID(22)"]
-    node54 -> node144 [dir=both];
-    node54 -> node146 [dir=both];
-    node55 [label="ID(23)"]
-    node55 -> node136 [dir=both];
-    node55 -> node138 [dir=both];
-    node56 [label="ID(24)"]
-    node56 -> node137 [dir=both];
-    node57 [label="ID(25)"]
-    node57 -> node140 [dir=both];
-    node57 -> node143 [dir=both];
-    node58 [label="ID(26)"]
-    node58 -> node135 [dir=both];
-    node58 -> node142 [dir=both];
-    node59 [label="ID(27)"]
-    node59 -> node88 [dir=both];
-    node59 -> node90 [dir=both];
-    node60 [label="ID(28)"]
-    node60 -> node149 [dir=both];
-    node60 -> node151 [dir=both];
-    node61 [label="ID(29)"]
-    node61 -> node150 [dir=both];
-    node62 [label="ID(30)"]
-    node62 -> node153 [dir=both];
-    node62 -> node154 [dir=both];
-    node63 [label="ID(31)"]
-    node63 -> node155 [dir=both];
-    node63 -> node157 [dir=both];
-    node64 [label="ID(32)"]
-    node64 -> node156 [dir=both];
-    node65 [label="ID(33)"]
-    node65 -> node159 [dir=both];
-    node65 -> node162 [dir=both];
-    node66 [label="ID(34)"]
-    node66 -> node154 [dir=both];
-    node66 -> node161 [dir=both];
-    node67 [label="ID(35)"]
-    node67 -> node75 [dir=both];
-    node68 [label="ID(36)"]
-    node68 -> node76 [dir=both];
-    node68 -> node77 [dir=both];
-    node69 [label="ID(37)"]
-    node69 -> node163 [dir=both];
-    node69 -> node166 [dir=both];
-    node70 [label="ID(38)"]
-    node70 -> node168 [dir=both];
-    node70 -> node170 [dir=both];
-    node71 [label="ID(39)"]
-    node71 -> node172 [dir=both];
-    node71 -> node174 [dir=both];
-    node72 [label="ID(40)"]
-    node72 -> node176 [dir=both];
-    node73 [label="ID(41)"]
-    node73 -> node177 [dir=both];
-    node74 [label="ID(42)"]
-    node75 [label="ID(43)"]
-    node76 [label="ID(44)"]
-    node77 [label="ID(45)"]
-    node78 [label="ID(46)"]
-    node79 [label="ID(47)"]
-    node81 [label="ID(49)"]
-    node81 -> node82 [dir=both];
-    node82 [label="ID(50)"]
-    node83 [label="ID(51)"]
-    node84 [label="ID(52)"]
-    node86 [label="ID(54)"]
-    node86 -> node87 [dir=both];
-    node87 [label="ID(55)"]
-    node88 [label="ID(56)"]
-    node90 [label="ID(58)"]
-    node90 -> node91 [dir=both];
-    node91 [label="ID(59)"]
-    node92 [label="ID(60)"]
-    node93 [label="ID(61)"]
-    node94 [label="ID(62)"]
-    node94 -> node95 [dir=both];
-    node94 -> node96 [dir=both];
-    node95 [label="ID(63)"]
-    node96 [label="ID(64)"]
-    node97 [label="ID(65)"]
-    node98 [label="ID(66)"]
-    node99 [label="ID(67)"]
-    node99 -> node100 [dir=both];
-    node99 -> node101 [dir=both];
-    node100 [label="ID(68)"]
-    node101 [label="ID(69)"]
-    node102 [label="ID(70)"]
-    node103 [label="ID(71)"]
-    node103 -> node104 [dir=both];
-    node104 [label="ID(72)"]
-    node105 [label="ID(73)"]
-    node105 -> node106 [dir=both];
-    node106 [label="ID(74)"]
-    node107 [label="ID(75)"]
-    node108 [label="ID(76)"]
-    node108 -> node109 [dir=both];
-    node108 -> node110 [dir=both];
-    node109 [label="ID(77)"]
-    node110 [label="ID(78)"]
-    node112 [label="ID(80)"]
-    node112 -> node113 [dir=both];
-    node113 [label="ID(81)"]
-    node114 [label="ID(82)"]
-    node115 [label="ID(83)"]
-    node115 -> node116 [dir=both];
-    node115 -> node117 [dir=both];
-    node116 [label="ID(84)"]
-    node117 [label="ID(85)"]
-    node118 [label="ID(86)"]
-    node119 [label="ID(87)"]
-    node119 -> node120 [dir=both];
-    node119 -> node121 [dir=both];
-    node120 [label="ID(88)"]
-    node121 [label="ID(89)"]
-    node122 [label="ID(90)"]
-    node123 [label="ID(91)"]
-    node124 [label="ID(92)"]
-    node124 -> node125 [dir=both];
-    node125 [label="ID(93)"]
-    node126 [label="ID(94)"]
-    node126 -> node127 [dir=both];
-    node127 [label="ID(95)"]
-    node127 -> node128 [dir=both];
-    node127 -> node129 [dir=both];
-    node128 [label="ID(96)"]
-    node129 [label="ID(97)"]
-    node130 [label="ID(98)"]
-    node131 [label="ID(99)"]
-    node131 -> node132 [dir=both];
-    node131 -> node133 [dir=both];
-    node132 [label="ID(100)"]
-    node133 [label="ID(101)"]
-    node134 [label="ID(102)"]
-    node135 [label="ID(103)"]
-    node136 [label="ID(104)"]
-    node137 [label="ID(105)"]
-    node137 -> node138 [dir=both];
-    node137 -> node139 [dir=both];
-    node138 [label="ID(106)"]
-    node139 [label="ID(107)"]
-    node140 [label="ID(108)"]
-    node141 [label="ID(109)"]
-    node141 -> node142 [dir=both];
-    node141 -> node143 [dir=both];
-    node142 [label="ID(110)"]
-    node143 [label="ID(111)"]
-    node144 [label="ID(112)"]
-    node146 [label="ID(114)"]
-    node146 -> node147 [dir=both];
-    node147 [label="ID(115)"]
-    node148 [label="ID(116)"]
-    node149 [label="ID(117)"]
-    node150 [label="ID(118)"]
-    node150 -> node151 [dir=both];
-    node150 -> node152 [dir=both];
-    node151 [label="ID(119)"]
-    node152 [label="ID(120)"]
-    node153 [label="ID(121)"]
-    node154 [label="ID(122)"]
-    node155 [label="ID(123)"]
-    node156 [label="ID(124)"]
-    node156 -> node157 [dir=both];
-    node156 -> node158 [dir=both];
-    node157 [label="ID(125)"]
-    node158 [label="ID(126)"]
-    node159 [label="ID(127)"]
-    node160 [label="ID(128)"]
-    node160 -> node161 [dir=both];
-    node160 -> node162 [dir=both];
-    node161 [label="ID(129)"]
-    node162 [label="ID(130)"]
-    node163 [label="ID(131)"]
-    node164 [label="ID(132)"]
-    node164 -> node165 [dir=both];
-    node165 [label="ID(133)"]
-    node166 [label="ID(134)"]
-    node166 -> node167 [dir=both];
-    node167 [label="ID(135)"]
-    node168 [label="ID(136)"]
-    node169 [label="ID(137)"]
-    node169 -> node170 [dir=both];
-    node169 -> node171 [dir=both];
-    node170 [label="ID(138)"]
-    node171 [label="ID(139)"]
-    node172 [label="ID(140)"]
-    node173 [label="ID(141)"]
-    node173 -> node174 [dir=both];
-    node173 -> node175 [dir=both];
-    node174 [label="ID(142)"]
-    node175 [label="ID(143)"]
-    node176 [label="ID(144)"]
-    node177 [label="ID(145)"]
-    node178 [label="ID(146)"]
-}
-digraph interference_graph {
-    node0 [label="R0"]
-    node0 -> node67 [dir=both];
-    node0 -> node76 [dir=both];
-    node0 -> node32 [dir=both];
-    node0 -> node79 [dir=both];
-    node0 -> node81 [dir=both];
-    node0 -> node33 [dir=both];
-    node0 -> node35 [dir=both];
-    node0 -> node36 [dir=both];
-    node0 -> node92 [dir=both];
-    node0 -> node42 [dir=both];
-    node0 -> node97 [dir=both];
-    node0 -> node99 [dir=both];
-    node0 -> node134 [dir=both];
-    node0 -> node56 [dir=both];
-    node0 -> node140 [dir=both];
-    node0 -> node141 [dir=both];
-    node0 -> node148 [dir=both];
-    node0 -> node61 [dir=both];
-    node0 -> node153 [dir=both];
-    node0 -> node64 [dir=both];
-    node0 -> node159 [dir=both];
-    node0 -> node160 [dir=both];
-    node0 -> node72 [dir=both];
-    node0 -> node177 [dir=both];
-    node0 -> node178 [dir=both];
-    node29 [label="R29"]
-    node29 -> node29 [dir=both];
-    node32 [label="PC"]
-    node32 -> node79 [dir=both];
-    node32 -> node92 [dir=both];
-    node32 -> node93 [dir=both];
-    node32 -> node101 [dir=both];
-    node33 [label="ID(1)"]
-    node33 -> node106 [dir=both];
-    node33 -> node123 [dir=both];
-    node34 [label="ID(2)"]
-    node34 -> node83 [dir=both];
-    node34 -> node102 [dir=both];
-    node34 -> node107 [dir=both];
-    node34 -> node114 [dir=both];
-    node34 -> node115 [dir=both];
-    node34 -> node118 [dir=both];
-    node34 -> node119 [dir=both];
-    node34 -> node122 [dir=both];
-    node34 -> node130 [dir=both];
-    node34 -> node131 [dir=both];
-    node35 [label="ID(3)"]
-    node35 -> node84 [dir=both];
-    node35 -> node135 [dir=both];
-    node35 -> node136 [dir=both];
-    node35 -> node144 [dir=both];
-    node36 [label="ID(4)"]
-    node36 -> node88 [dir=both];
-    node36 -> node148 [dir=both];
-    node36 -> node149 [dir=both];
-    node36 -> node155 [dir=both];
-    node37 [label="ID(5)"]
-    node37 -> node74 [dir=both];
-    node37 -> node167 [dir=both];
-    node38 [label="ID(6)"]
-    node38 -> node77 [dir=both];
-    node39 [label="ID(7)"]
-    node39 -> node78 [dir=both];
-    node39 -> node163 [dir=both];
-    node39 -> node168 [dir=both];
-    node39 -> node169 [dir=both];
-    node39 -> node172 [dir=both];
-    node39 -> node173 [dir=both];
-    node41 [label="ID(9)"]
-    node41 -> node93 [dir=both];
-    node41 -> node95 [dir=both];
-    node42 [label="ID(10)"]
-    node42 -> node94 [dir=both];
-    node43 [label="ID(11)"]
-    node43 -> node97 [dir=both];
-    node43 -> node98 [dir=both];
-    node44 [label="ID(12)"]
-    node44 -> node98 [dir=both];
-    node44 -> node100 [dir=both];
-    node45 [label="ID(13)"]
-    node45 -> node102 [dir=both];
-    node45 -> node105 [dir=both];
-    node46 [label="ID(14)"]
-    node46 -> node107 [dir=both];
-    node46 -> node109 [dir=both];
-    node47 [label="ID(15)"]
-    node47 -> node108 [dir=both];
-    node47 -> node112 [dir=both];
-    node48 [label="ID(16)"]
-    node48 -> node114 [dir=both];
-    node48 -> node116 [dir=both];
-    node49 [label="ID(17)"]
-    node49 -> node118 [dir=both];
-    node49 -> node120 [dir=both];
-    node50 [label="ID(18)"]
-    node50 -> node123 [dir=both];
-    node50 -> node128 [dir=both];
-    node51 [label="ID(19)"]
-    node51 -> node122 [dir=both];
-    node51 -> node126 [dir=both];
-    node52 [label="ID(20)"]
-    node52 -> node130 [dir=both];
-    node52 -> node132 [dir=both];
-    node53 [label="ID(21)"]
-    node53 -> node84 [dir=both];
-    node53 -> node86 [dir=both];
-    node54 [label="ID(22)"]
-    node54 -> node144 [dir=both];
-    node54 -> node146 [dir=both];
-    node55 [label="ID(23)"]
-    node55 -> node136 [dir=both];
-    node55 -> node138 [dir=both];
-    node56 [label="ID(24)"]
-    node56 -> node137 [dir=both];
-    node57 [label="ID(25)"]
-    node57 -> node140 [dir=both];
-    node57 -> node143 [dir=both];
-    node58 [label="ID(26)"]
-    node58 -> node135 [dir=both];
-    node58 -> node142 [dir=both];
-    node59 [label="ID(27)"]
-    node59 -> node88 [dir=both];
-    node59 -> node90 [dir=both];
-    node60 [label="ID(28)"]
-    node60 -> node149 [dir=both];
-    node60 -> node151 [dir=both];
-    node61 [label="ID(29)"]
-    node61 -> node150 [dir=both];
-    node62 [label="ID(30)"]
-    node62 -> node153 [dir=both];
-    node62 -> node154 [dir=both];
-    node63 [label="ID(31)"]
-    node63 -> node155 [dir=both];
-    node63 -> node157 [dir=both];
-    node64 [label="ID(32)"]
-    node64 -> node156 [dir=both];
-    node65 [label="ID(33)"]
-    node65 -> node159 [dir=both];
-    node65 -> node162 [dir=both];
-    node66 [label="ID(34)"]
-    node66 -> node154 [dir=both];
-    node66 -> node161 [dir=both];
-    node67 [label="ID(35)"]
-    node67 -> node75 [dir=both];
-    node68 [label="ID(36)"]
-    node68 -> node76 [dir=both];
-    node68 -> node77 [dir=both];
-    node69 [label="ID(37)"]
-    node69 -> node163 [dir=both];
-    node69 -> node166 [dir=both];
-    node70 [label="ID(38)"]
-    node70 -> node168 [dir=both];
-    node70 -> node170 [dir=both];
-    node71 [label="ID(39)"]
-    node71 -> node172 [dir=both];
-    node71 -> node174 [dir=both];
-    node72 [label="ID(40)"]
-    node72 -> node176 [dir=both];
-    node73 [label="ID(41)"]
-    node73 -> node177 [dir=both];
-    node74 [label="ID(42)"]
-    node75 [label="ID(43)"]
-    node76 [label="ID(44)"]
-    node77 [label="ID(45)"]
-    node78 [label="ID(46)"]
-    node79 [label="ID(47)"]
-    node81 [label="ID(49)"]
-    node81 -> node82 [dir=both];
-    node82 [label="ID(50)"]
-    node83 [label="ID(51)"]
-    node84 [label="ID(52)"]
-    node86 [label="ID(54)"]
-    node86 -> node87 [dir=both];
-    node87 [label="ID(55)"]
-    node88 [label="ID(56)"]
-    node90 [label="ID(58)"]
-    node90 -> node91 [dir=both];
-    node91 [label="ID(59)"]
-    node92 [label="ID(60)"]
-    node93 [label="ID(61)"]
-    node94 [label="ID(62)"]
-    node94 -> node95 [dir=both];
-    node94 -> node96 [dir=both];
-    node95 [label="ID(63)"]
-    node96 [label="ID(64)"]
-    node97 [label="ID(65)"]
-    node98 [label="ID(66)"]
-    node99 [label="ID(67)"]
-    node99 -> node100 [dir=both];
-    node99 -> node101 [dir=both];
-    node100 [label="ID(68)"]
-    node101 [label="ID(69)"]
-    node102 [label="ID(70)"]
-    node103 [label="ID(71)"]
-    node103 -> node104 [dir=both];
-    node104 [label="ID(72)"]
-    node105 [label="ID(73)"]
-    node105 -> node106 [dir=both];
-    node106 [label="ID(74)"]
-    node107 [label="ID(75)"]
-    node108 [label="ID(76)"]
-    node108 -> node109 [dir=both];
-    node108 -> node110 [dir=both];
-    node109 [label="ID(77)"]
-    node110 [label="ID(78)"]
-    node112 [label="ID(80)"]
-    node112 -> node113 [dir=both];
-    node113 [label="ID(81)"]
-    node114 [label="ID(82)"]
-    node115 [label="ID(83)"]
-    node115 -> node116 [dir=both];
-    node115 -> node117 [dir=both];
-    node116 [label="ID(84)"]
-    node117 [label="ID(85)"]
-    node118 [label="ID(86)"]
-    node119 [label="ID(87)"]
-    node119 -> node120 [dir=both];
-    node119 -> node121 [dir=both];
-    node120 [label="ID(88)"]
-    node121 [label="ID(89)"]
-    node122 [label="ID(90)"]
-    node123 [label="ID(91)"]
-    node124 [label="ID(92)"]
-    node124 -> node125 [dir=both];
-    node125 [label="ID(93)"]
-    node126 [label="ID(94)"]
-    node126 -> node127 [dir=both];
-    node127 [label="ID(95)"]
-    node127 -> node128 [dir=both];
-    node127 -> node129 [dir=both];
-    node128 [label="ID(96)"]
-    node129 [label="ID(97)"]
-    node130 [label="ID(98)"]
-    node131 [label="ID(99)"]
-    node131 -> node132 [dir=both];
-    node131 -> node133 [dir=both];
-    node132 [label="ID(100)"]
-    node133 [label="ID(101)"]
-    node134 [label="ID(102)"]
-    node135 [label="ID(103)"]
-    node136 [label="ID(104)"]
-    node137 [label="ID(105)"]
-    node137 -> node138 [dir=both];
-    node137 -> node139 [dir=both];
-    node138 [label="ID(106)"]
-    node139 [label="ID(107)"]
-    node140 [label="ID(108)"]
-    node141 [label="ID(109)"]
-    node141 -> node142 [dir=both];
-    node141 -> node143 [dir=both];
-    node142 [label="ID(110)"]
-    node143 [label="ID(111)"]
-    node144 [label="ID(112)"]
-    node146 [label="ID(114)"]
-    node146 -> node147 [dir=both];
-    node147 [label="ID(115)"]
-    node148 [label="ID(116)"]
-    node149 [label="ID(117)"]
-    node150 [label="ID(118)"]
-    node150 -> node151 [dir=both];
-    node150 -> node152 [dir=both];
-    node151 [label="ID(119)"]
-    node152 [label="ID(120)"]
-    node153 [label="ID(121)"]
-    node154 [label="ID(122)"]
-    node155 [label="ID(123)"]
-    node156 [label="ID(124)"]
-    node156 -> node157 [dir=both];
-    node156 -> node158 [dir=both];
-    node157 [label="ID(125)"]
-    node158 [label="ID(126)"]
-    node159 [label="ID(127)"]
-    node160 [label="ID(128)"]
-    node160 -> node161 [dir=both];
-    node160 -> node162 [dir=both];
-    node161 [label="ID(129)"]
-    node162 [label="ID(130)"]
-    node163 [label="ID(131)"]
-    node164 [label="ID(132)"]
-    node164 -> node165 [dir=both];
-    node165 [label="ID(133)"]
-    node166 [label="ID(134)"]
-    node166 -> node167 [dir=both];
-    node167 [label="ID(135)"]
-    node168 [label="ID(136)"]
-    node169 [label="ID(137)"]
-    node169 -> node170 [dir=both];
-    node169 -> node171 [dir=both];
-    node170 [label="ID(138)"]
-    node171 [label="ID(139)"]
-    node172 [label="ID(140)"]
-    node173 [label="ID(141)"]
-    node173 -> node174 [dir=both];
-    node173 -> node175 [dir=both];
-    node174 [label="ID(142)"]
-    node175 [label="ID(143)"]
-    node176 [label="ID(144)"]
-    node177 [label="ID(145)"]
-    node178 [label="ID(146)"]
-}
-
-
-
-
-
-
-FILE: tests/data/input5.c
-digraph interference_graph {
-    node0 [label="R0"]
-    node0 -> node42 [dir=both];
-    node0 -> node44 [dir=both];
-    node0 -> node49 [dir=both];
-    node29 [label="R29"]
-    node29 -> node29 [dir=both];
-    node29 -> node40 [dir=both];
-    node29 -> node41 [dir=both];
-    node29 -> node45 [dir=both];
-    node32 [label="PC"]
-    node32 -> node38 [dir=both];
-    node33 [label="ID(1)"]
-    node33 -> node39 [dir=both];
-    node34 [label="ID(2)"]
-    node34 -> node40 [dir=both];
-    node34 -> node41 [dir=both];
-    node34 -> node43 [dir=both];
-    node35 [label="ID(3)"]
-    node35 -> node45 [dir=both];
-    node35 -> node47 [dir=both];
-    node37 [label="ID(5)"]
-    node37 -> node46 [dir=both];
-    node37 -> node48 [dir=both];
-    node38 [label="ID(6)"]
-    node39 [label="ID(7)"]
-    node40 [label="ID(8)"]
-    node41 [label="ID(9)"]
-    node42 [label="ID(10)"]
-    node42 -> node43 [dir=both];
-    node43 [label="ID(11)"]
-    node44 [label="ID(12)"]
-    node45 [label="ID(13)"]
-    node46 [label="ID(14)"]
-    node46 -> node47 [dir=both];
-    node47 [label="ID(15)"]
-    node48 [label="ID(16)"]
-    node49 [label="ID(17)"]
-}
-digraph interference_graph {
-    node0 [label="R0"]
-    node0 -> node42 [dir=both];
-    node0 -> node44 [dir=both];
-    node0 -> node49 [dir=both];
-    node29 [label="R29"]
-    node29 -> node29 [dir=both];
-    node29 -> node40 [dir=both];
-    node29 -> node41 [dir=both];
-    node29 -> node45 [dir=both];
-    node32 [label="PC"]
-    node32 -> node38 [dir=both];
-    node33 [label="ID(1)"]
-    node33 -> node39 [dir=both];
-    node34 [label="ID(2)"]
-    node34 -> node40 [dir=both];
-    node34 -> node41 [dir=both];
-    node34 -> node43 [dir=both];
-    node35 [label="ID(3)"]
-    node35 -> node45 [dir=both];
-    node35 -> node47 [dir=both];
-    node37 [label="ID(5)"]
-    node37 -> node46 [dir=both];
-    node37 -> node48 [dir=both];
-    node38 [label="ID(6)"]
-    node39 [label="ID(7)"]
-    node40 [label="ID(8)"]
-    node41 [label="ID(9)"]
-    node42 [label="ID(10)"]
-    node42 -> node43 [dir=both];
-    node43 [label="ID(11)"]
-    node44 [label="ID(12)"]
-    node45 [label="ID(13)"]
-    node46 [label="ID(14)"]
-    node46 -> node47 [dir=both];
-    node47 [label="ID(15)"]
-    node48 [label="ID(16)"]
-    node49 [label="ID(17)"]
-}
-
-
-
-
-
-
-
-
-successes:
+failures:
     visualize
 
-test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.07s
-
-
-running 0 tests
-
-successes:
-
-successes:
-
-test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
 

@@ -5,6 +5,7 @@ impl Printer {
     pub fn print(instructions: &[AA]) {
         for ins in instructions {
             match ins {
+                AA::BB(_) => (),
                 AA::Label(_) => println!("\n{}", ins),
                 AA::Mov2(d, s) if d == s => (),
                 _ => println!("{}", ins)
@@ -12,30 +13,11 @@ impl Printer {
         }
     }
 
-    pub fn print_live(instructions: &[AA], live: &[Vec<Reg>]) {
-        for (ins_idx, ins) in instructions.iter().enumerate() {
-            let mut ind = 0;
-            let mut rlists: Vec<String> = Vec::new();
-            while ind < live[ins_idx].len() {
-                let mut s = String::new();
-                while ind < live[ins_idx].len() {
-                    let add = format!(
-                        "{:<10}",
-                        format!("{}", live[ins_idx][ind])
-                    );
-                    if s.len() + add.len() > 40 { break }
-                    s += &add;
-                    ind += 1;
-                }
-                rlists.push(s);
-                ind += 1;
-            }
-            if matches!(ins, AA::Label(_)) { println!() }
-            print!("{:<40}", format!("{}", ins));
-            if rlists.len() == 0 { println!() }
-            for (j, s) in rlists.iter().enumerate() {
-                if j == 0 { println!(" | {}", s); } 
-                else { println!("{:<40} * {}", "", s); }
+    pub fn print_raw(instructions: &[AA]) {
+        for ins in instructions {
+            match ins {
+                AA::Label(_) => println!("\n{}", ins),
+                _ => println!("{}", ins)
             }
         }
     }

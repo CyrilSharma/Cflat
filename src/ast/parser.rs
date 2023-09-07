@@ -1,5 +1,5 @@
 // auto-generated: "lalrpop 0.20.0"
-// sha3: c64e566c15c398a01559e35f52a1379321ef70020b6a259783c5f829dd55f44c
+// sha3: 8e22bef8c081fa4eba311fd23deae1f4d4f4ca5e440aab2551f5ac69d8c750c1
 use std::str::FromStr;
 use super::ast::*;
 #[allow(unused_extern_crates)]
@@ -38,10 +38,10 @@ mod __parse__module {
         Variant10(core::option::Option<Box<Expr>>),
         Variant11(Vec<Expr>),
         Variant12(core::option::Option<Vec<Expr>>),
-        Variant13(f32),
+        Variant13(f64),
         Variant14(Box<FunctionDeclaration>),
         Variant15(String),
-        Variant16(i32),
+        Variant16(i64),
         Variant17(u32),
         Variant18(core::option::Option<u32>),
         Variant19(Vec<Statement>),
@@ -2364,7 +2364,7 @@ mod __parse__module {
       'input,
     >(
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>
-    ) -> (usize, f32, usize)
+    ) -> (usize, f64, usize)
      {
         match __symbols.pop() {
             Some((__l, __Symbol::Variant13(__v), __r)) => (__l, __v, __r),
@@ -2375,7 +2375,7 @@ mod __parse__module {
       'input,
     >(
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>
-    ) -> (usize, i32, usize)
+    ) -> (usize, i64, usize)
      {
         match __symbols.pop() {
             Some((__l, __Symbol::Variant16(__v), __r)) => (__l, __v, __r),
@@ -5015,7 +5015,7 @@ fn __action39<
     'input,
 >(
     input: &'input str,
-    (_, __0, _): (usize, i32, usize),
+    (_, __0, _): (usize, i64, usize),
 ) -> Box<Expr>
 {
     Box::new(Expr::Integer(__0))
@@ -5027,7 +5027,7 @@ fn __action40<
     'input,
 >(
     input: &'input str,
-    (_, __0, _): (usize, f32, usize),
+    (_, __0, _): (usize, f64, usize),
 ) -> Box<Expr>
 {
     Box::new(Expr::Float(__0))
@@ -5539,9 +5539,9 @@ fn __action72<
 >(
     input: &'input str,
     (_, __0, _): (usize, &'input str, usize),
-) -> i32
+) -> i64
 {
-    i32::from_str(__0).unwrap()
+    i64::from_str(__0).unwrap()
 }
 
 #[allow(unused_variables)]
@@ -5551,9 +5551,9 @@ fn __action73<
 >(
     input: &'input str,
     (_, __0, _): (usize, &'input str, usize),
-) -> f32
+) -> f64
 {
-    f32::from_str(__0).unwrap()
+    f64::from_str(__0).unwrap()
 }
 
 #[allow(unused_variables)]

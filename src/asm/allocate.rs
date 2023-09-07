@@ -100,16 +100,12 @@ pub fn coalesce_graph(
 
 fn color_graph(alist: AdjList) -> Vec<usize> {
     // If no coloring was found, recolor.
-    let (mut legal, mut colors, mut stk) = (
-        Vec::new(), Vec::new(), Vec::new()
-    );
+    let (mut degrees, mut stk);
     loop {
-        let mut degrees = vec![0; alist.len()];
-        let mut nodes   = Vec::new();
-        legal   = vec![[true; GPRS]; degrees.len()];
-        colors  = vec![None; degrees.len()];
+        let mut nodes = Vec::new();
+        degrees = vec![0; alist.len()];
         stk     = Vec::new();
-        for i in 0..alist.len() {
+        for i in GPRS..alist.len() {
             nodes.push(Node {
                 deg: alist[i].len() as u32,
                 pos: i as u32
@@ -124,28 +120,30 @@ fn color_graph(alist: AdjList) -> Vec<usize> {
                 // We don't update the adjlist
                 // Hence, we need this check.
                 if degrees[*nbr] == 0 { continue }
-                // Node is precolored, so act on it.
-                if pos < GPRS as u32 {
-                    legal[*nbr][pos as usize] = false
-                }
                 degrees[*nbr] -= 1;
                 nodes.push(Node {
                     deg: degrees[*nbr],
                     pos: *nbr as u32
                 });
             }
-            if pos < GPRS as u32 {
-                // Don't push as we've already colored it.
-                colors[pos as usize] = Some(pos as usize);
-                continue;
-            }
             stk.push(pos);
         }
+        // TODO: Something is wrong with this condition.
         if stk.len() != alist.len() {
             // Spill Logic.
-            todo!();
+            // todo!();
         }
         break;
+    }
+
+    let mut legal  = vec![[true; GPRS]; degrees.len()];
+    let mut colors = vec![None; degrees.len()];
+    // Pre-Color Nodes.
+    for i in 0..GPRS {
+        colors[i as usize] = Some(i);
+        for nbr in &alist[i as usize] {
+            legal[*nbr][i] = false;
+        }
     }
 
     // Determine the Colors...
@@ -202,14 +200,16 @@ pub fn build_graph(
             // The count is important here, if the count is non-zero, that means
             // That a duplicate of this register has been inserted (prbly bc coalescing)
             // And hence, the register is still live because the duplicate is in use.
-            for (reg, dead) in uses.iter().zip(defdead.iter()) {
+            for (reg, dead) in uses.iter().zip(usedead.iter()) {
+                // println!("use: reg - {}, dead - {}", reg, dead);
                 if !*dead { continue }
                 match conflicts.get(&reg.index()).unwrap() {
                     1  => conflicts.remove(&reg.index()),
                     i  => conflicts.insert(reg.index(), *i - 1)
                 };
             }
-            for (reg, dead) in defs.iter().zip(usedead.iter()) {
+            for (reg, dead) in defs.iter().zip(defdead.iter()) {
+                // println!("def: reg - {}, dead - {}", reg, dead);
                 // Add edges between everything which conflicts with this definition.
                 for (key, _) in &conflicts {
                     amat[reg.index()].insert(*key); 

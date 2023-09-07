@@ -75,11 +75,11 @@ impl Translator {
     }
     fn function(&mut self, f: u32, v: &Vec<u32>) -> Vec<AA> {
         // Set up frame.
+        use asm::Const as C;
         let mut asm = vec![
             AA::Label(f),
-            // THIS IS WRONG (change usize -> isize )
-            AA::STR1(Reg::R(29), Reg::SP, /* - */16),
-            AA::Sub1(Reg::SP, Reg::SP, /* - */16)
+            AA::STR1(Reg::R(29), Reg::SP, C::Int(-16)),
+            AA::Sub1(Reg::SP, Reg::SP, C::Int(-16))
         ];
         for (i, t) in v.iter().enumerate() {
             if i >= 8 { panic!("Unimplemented!") }
@@ -166,7 +166,12 @@ impl Translator {
         return ans;
     }
     fn _const(&mut self, p: &ir::Primitive) -> Info {
-        let c = p.bits();
+        use ir::Primitive as P;
+        use asm::Const as C;
+        let c = match p {
+            P::Int(i)   => C::Int(*i as i64),
+            P::Float(f) => C::Float(*f as f64),
+        };
         let res = self.create_temp();
         let mut ans = Info::new(res);
         let asm = vec![AA::Mov1(Reg::ID(res), c)];
@@ -214,11 +219,16 @@ impl Translator {
             ans.update(asm.len() as u32, asm);
         });
         case!({ // MOV TEMP <== ~CONST
+            use ir::Primitive as P;
+            use asm::Const as C;
             if op != Operator::Not { break };
             let Const(p) = e else { break };
             let asm = vec![AA::Mvn1(
                 Reg::ID(res),
-                p.bits()
+                match p {
+                    P::Int(i)   => C::Int(*i as i64),
+                    P::Float(f) => C::Float(*f as f64),
+                }
             )];
             ans.update(asm.len() as u32, asm);
         });
@@ -387,13 +397,14 @@ impl Translator {
     }
     fn address(&mut self, e: &Expr) -> Info {
         use Expr::*;
+        use asm::Const as C;
         let res = self.create_temp();
         let mut ans = Info::new(res);
         match e {
             Temp(i) => {
                 let asm = vec![AA::LDR1(
                     asm::Reg::ID(res), Reg::R(29),
-                    self.frames[*i as usize]
+                    C::Int(self.frames[*i as usize] as i64)
                 )];
                 ans.update(asm.len() as u32, asm);
             }

@@ -37,17 +37,8 @@ impl Statement {
 
 #[derive(Debug, Clone)]
 pub enum Primitive {
-    Int(i32),
-    Float(f32)
-}
-impl Primitive {
-    pub fn bits(&self) -> usize {
-        use Primitive::*;
-        return unsafe { match self {
-            Int(i)   => *i as usize,
-            Float(f) => mem::transmute::<f32, u32>(*f) as usize,
-        }}
-    }
+    Int(i64),
+    Float(f64)
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]

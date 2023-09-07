@@ -1,10 +1,10 @@
 // See https://www.cs.cornell.edu/courses/cs4120/2023sp/notes/#iterative
-use super::cfg::CFG;
+use super::cfg::{CFG, Node};
 use super::asm::{AA, Reg};
 use std::collections::{VecDeque, HashSet};
 pub struct Liveness;
 impl Liveness {
-    pub fn compute(cfg: &CFG) -> Vec<(AA, Vec<bool>, Vec<bool>)> {
+    pub fn compute(mut cfg: CFG) -> Vec<(AA, Vec<bool>, Vec<bool>)> {
         let mut pred = vec![Vec::new();     cfg.nodes.len()];
         // It may not be necessary to decouple the two.
         let mut lin  = vec![Vec::new();     cfg.nodes.len()];
@@ -47,21 +47,28 @@ impl Liveness {
         }
 
         let mut res = Vec::new();
-        for i in 0..cfg.nodes.len() {
-            let node = &cfg.nodes[i];
-            let idx = node.idx;
-
+        // We need to iterate over asm in order.
+        let mut nodes: Vec<Node> = vec![
+            Node { idx: usize::MAX, t: None, f: None};
+            cfg.nodes.len()
+        ];
+        for node in &cfg.nodes {
+            nodes[node.idx] = node.clone();
+        }
+        for (idx, node) in nodes.into_iter().enumerate() {
+            assert!(node.idx == idx);
             use AA::*;
             // Insert Basic Block Pseudo-Ops
-            let bb = match (i == 0, &cfg.asm[idx - 1], &cfg.asm[idx]) {
-                (true,  _,  _)           => true,
-                (false, B(_) | BL(_), _) => true,
-                (false, _, Label(_))     => true,
-                _                        => false
+            let bb = if idx == 0 { true } else {
+                match (&cfg.asm[idx - 1], &cfg.asm[idx]) {
+                    (B(_) | BL(_), _) => true,
+                    (_, Label(_))     => true,
+                    _                 => false
+                }
             };
             if bb {
                 res.push((
-                    BB(std::mem::take(&mut lin[idx])),
+                    BB(lin[idx].clone()),
                     vec![false; lin[idx].len()],
                     vec![]
                 ));
@@ -81,7 +88,7 @@ impl Liveness {
                 }
             }
             let mut usedead = vec![true; uses.len()];
-            for (i, reg) in defs.iter().enumerate() {
+            for (i, reg) in uses.iter().enumerate() {
                 if let Some(t) = node.t {
                     let tidx = cfg.nodes[t].idx;
                     usedead[i] &= !lin[tidx].contains(&reg);

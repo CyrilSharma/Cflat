@@ -77,8 +77,8 @@ pub enum Expr {
     Access(AccessExpr),
     Unary(UnaryExpr),
     Binary(BinaryExpr),
-    Integer(i32),
-    Float(f32),
+    Integer(i64),
+    Float(f64),
     Ident(Identifier),
 }
 impl Expr {
@@ -198,14 +198,6 @@ impl Kind {
         Self {
             indir: 0,
             prim: Float,
-        }
-    }
-    pub fn size(&self) -> u8 {
-        if self.indir != 0 { return 8 }
-        match self.prim {
-            Void => unreachable!(),
-            Int   => 4,
-            Float => 4
         }
     }
 }

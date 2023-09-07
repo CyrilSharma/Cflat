@@ -251,10 +251,10 @@ impl<'l> Translator<'l> {
             Unary(u) => self.unary(&u),
             Binary(b) => self.binary(&b),
             Integer(i) => Box::new(ir::Expr::Const(
-                ir::Primitive::Int(*i)
+                ir::Primitive::Int(*i as i64)
             )),
             Float(f) => Box::new(ir::Expr::Const(
-                ir::Primitive::Float(*f)
+                ir::Primitive::Float(*f as f64)
             )),
             Ident(i) => Box::new(ir::Expr::Temp(i.id)),
         }
@@ -274,7 +274,7 @@ impl<'l> Translator<'l> {
             let mul = ir::Expr::BinOp(
                 Box::new(ir::Expr::Const(
                     ir::Primitive::Int(
-                        8 * prod as i32
+                        8 * prod as i64
                     )
                 )),
                 Operator::Mul,

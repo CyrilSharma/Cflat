@@ -34,9 +34,11 @@ struct PrintConfig {
     asm1:    bool,
     asm1cfg: bool,
     live:    bool,
-    asm2:    bool,
     inter:   bool,
-    coal:    bool
+    coalasm: bool,
+    coalint: bool,
+    coalcfg: bool,
+    asm2:    bool
 }
 
 #[test]
@@ -55,12 +57,14 @@ fn visualize() {
         asm1:    false,
         asm1cfg: false,
         live:    false,
-        asm2:    false,
-        inter:   true,
-        coal:    true
+        inter:   false,
+        coalasm: false,
+        coalint: false,
+        coalcfg: true,
+        asm2:    true,
     };
     while Path::new(&format!("{dir}/input{i}.c")).exists() {
-        //if i != 5 { i += 1; continue }
+        if i != 0 { i += 1; continue }
         let filepath = &format!("{dir}/input{i}.c");
         let input = fs::read_to_string(filepath).expect("File not found!");
         println!("{}", &format!("FILE: {filepath}"));
@@ -111,27 +115,47 @@ fn visualize() {
         let cfg = AsmCfg::build(&mut r, &asm);
         if p.asm1cfg { AsmCfgPrinter::print(&cfg); }
 
-        let liveness = AsmLiveness::compute(&cfg);
-
-        /* if p.live { AsmPrinter::print_live(&liveness); }
+        if p.live {
+            let cfg = AsmCfg::build(&mut r, &asm);
+            let liveness = AsmLiveness::compute(cfg);
+            let mut asm = Vec::new();
+            for (a, _, _) in liveness { asm.push(a); }
+            AsmPrinter::print_raw(&asm);
+        }
 
         if p.inter {
+            let cfg = AsmCfg::build(&mut r, &asm);
+            let liveness = AsmLiveness::compute(cfg);
             let (_, alist) = AsmAllocate::build_graph(
-                r.nids, defs.clone(), live.clone()
+                r.nids, &liveness
             );
             PrintInterference(alist);
-        } */
+        }
 
-        /* if p.coal {
+        if p.coalcfg || p.coalasm || p.coalint {
+            let cfg = AsmCfg::build(&mut r, &asm);
+            let mut liveness = AsmLiveness::compute(cfg);
             let (mut amat, mut alist) = AsmAllocate::build_graph(
-                r.nids, defs.clone(), live.clone()
+                r.nids, &liveness
             );
             AsmAllocate::coalesce_graph(
-                asm.clone(), &mut alist, &mut amat
+                &mut liveness, &mut alist, &mut amat
             );
-            PrintInterference(alist);
-        } */
+            let mut asm = Vec::new();
+            for (a, _, _) in liveness { asm.push(a); }
+            let cfg = AsmCfg::build(&mut r, &asm);
+            if p.coalint {
+                PrintInterference(alist);
+            }
+            if p.coalasm {
+                AsmPrinter::print_raw(&asm);
+            }
+            if p.coalcfg {
+                AsmCfgPrinter::print(&cfg);
+            }
+        }
         
+        let liveness = AsmLiveness::compute(cfg);
         let asm = AsmAllocate::allocate(&mut r, liveness);
         if p.asm2 { AsmPrinter::print(&asm); }
 

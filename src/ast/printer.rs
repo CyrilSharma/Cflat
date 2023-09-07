@@ -143,10 +143,10 @@ impl Printer {
         self.add_edge(idx, self.count);
         self.expr(&b.right);
     }
-    fn integer(&mut self, i: i32) {
+    fn integer(&mut self, i: i64) {
         self.add_label(&format!("Integer: {}", i));
     }
-    fn float(&mut self, f: f32) {
+    fn float(&mut self, f: f64) {
         self.add_label(&format!("Float: {}", f));
     }
     fn identifier(&mut self, i: &Identifier) {

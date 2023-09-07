@@ -3,7 +3,6 @@ use std::fmt::Display;
 use std::cmp::Ordering;
 
 pub type Label = u32;
-pub type Const = usize;
 pub const GPRS: usize = 32;
 // Presume everything costs the same.
 
@@ -123,7 +122,13 @@ impl Display for AA {
             STR1(d, l, r)      => format!("str {}, [{}, #{}]", d, l, r),
             STR2(d, s)         => format!("str {}, [{}]", d, s),
             Ret                => format!("ret"),
-            BB(v)              => format!("Basic Block"),
+            BB(v)              => {
+                let res = v.iter()
+                    .map(|x| format!("{}", x))
+                    .collect::<Vec<_>>()
+                    .join(", ");
+                format!("Basic Block {}", res)
+            }
         };
         write!(f, "{res}")
     }
@@ -204,6 +209,22 @@ impl Display for CC {
             LT => write!(f, "LT"),
             GT => write!(f, "GT"),
             LE => write!(f, "LE"),
+        }
+    }
+}
+
+#[derive(Copy, Clone)]
+pub enum Const {
+    Int(i64),
+    Float(f64)
+}
+
+impl Display for Const {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        use Const as C;
+        match self {
+            C::Int(v)   => write!(f, "{}", v),
+            C::Float(v) => write!(f, "{}", v),
         }
     }
 }
