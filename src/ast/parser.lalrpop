@@ -162,8 +162,28 @@ statement: Box<Statement> = {
 	expression_statement,
 	selection_statement,
 	iteration_statement,
-	jump_statement
+	jump_statement,
+    asm_statement
 };
+
+asm_statement: Box<Statement> = {
+    "asm!" "{" <s: string_list> "}" => {
+        Box::new(Statement::Asm(
+            AsmStatement { asm: s }
+        ))
+    }
+};
+string_list: Vec<String> = {
+    string => vec![<>],
+    <mut v: string_list> <s: string> => {
+        v.push(s);
+        v
+    }
+}
+string: String = {
+    // r"//[^\n\r]*[\n\r]*"
+    <s:r#""[a-z ]*""#> => String::from(s)
+}
 
 compound_statement: Box<Statement> = {
 	"{" <s: statement_list?> "}" => {
@@ -317,6 +337,7 @@ Tier<Op, NextTier>: Box<Expr> = {
 };
 
 match {
+    r#""[a-zA-Z0-9-# ]*""#,
     r"\s*" => { }, // The default whitespace skipping is disabled if an `ignore pattern` is specified
     r"//[^\n\r]*[\n\r]*" => { }, // Skip `// comments`
     r"/\*[^*]*\*+(?:[^/*][^*]*\*+)*/" => { },  // Skip `/* comments */`

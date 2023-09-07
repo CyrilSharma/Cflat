@@ -26,8 +26,12 @@ impl Printer {
             Statement::For(f) => self.for_statement(f),
             Statement::While(w) => self.while_statement(w),
             Statement::Compound(c) => self.compound_statement(c),
-            Statement::Jump(j) => self.jump_statement(j)
+            Statement::Jump(j) => self.jump_statement(j),
+            Statement::Asm(a)  => self.asm_statement(a)
         }
+    }
+    fn asm_statement(&mut self, _a: &AsmStatement) {
+        self.add_label(&format!("Asm"));
     }
     fn declare_statement(&mut self, d: &DeclareStatement) {
         let idx = self.count;

@@ -49,7 +49,8 @@ impl<'l> Translator<'l> {
             For      (ref f) => Some(self.for_statement(f)),
             While    (ref w) => Some(self.while_statement(w)),
             Compound (ref c) => Some(self.compound_statement(c)),
-            Jump     (ref j) => Some(self.jump_statement(j))
+            Jump     (ref j) => Some(self.jump_statement(j)),
+            Asm      (ref a) => todo!() // TEMPORARILY
         }
     }
     fn declare_statement(&mut self, d: &ast::DeclareStatement) -> Option<Box<ir::Statement>> {

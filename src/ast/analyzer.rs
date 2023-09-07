@@ -55,6 +55,7 @@ impl<'l> Analyzer<'l> {
             While       (ref mut w) => self.while_statement(w),
             Compound    (ref mut c) => self.compound_statement(c),
             Jump        (ref mut j) => self.jump_statement(j),
+            Asm         (_)         => ()
         }
     }
     fn declare_statement(&mut self, d: &mut DeclareStatement) {

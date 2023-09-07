@@ -31,6 +31,11 @@ pub enum Statement {
     While(WhileStatement),
     Compound(CompoundStatement),
     Jump(JumpStatement),
+    Asm(AsmStatement)
+}
+
+pub struct AsmStatement {
+    pub asm: Vec<String>
 }
 
 pub struct DeclareStatement {
