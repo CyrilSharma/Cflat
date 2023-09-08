@@ -27,7 +27,8 @@ pub enum Statement {
     CJump(Box<Expr>, Label, Label),
     Label(Label),
     Function(Label, Vec<ID>),
-    Return(Option<Box<Expr>>)
+    Return(Option<Box<Expr>>),
+    Asm(String)
 }
 impl Statement {
     pub fn addr(&self) -> usize {

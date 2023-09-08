@@ -64,7 +64,7 @@ impl<'l> Framer<'l> {
                     self.frame_temp(*i as usize)
                 }
             },
-            Jump(_) | Label(_) => (),
+            Jump(_) | Label(_) | Asm(_) => (),
             Seq(_) => unreachable!()
         }
     }
@@ -129,7 +129,8 @@ impl<'l> Address<'l> {
                 self.address_expr(e);
             },
             CJump(e, _, _) => self.address_expr(e),
-            Jump(_) | Label(_) | Function(_, _) => (),
+            Jump(_) | Label(_) |
+                Function(_, _) | Asm(_) => (),
             Seq(_) => unreachable!()
         }
     }

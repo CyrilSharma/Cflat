@@ -1,4 +1,4 @@
-use crate::ast::ast::{self, FunctionDeclaration};
+use crate::ast::ast::{self, FunctionDeclaration, AsmStatement};
 use super::ir::{self, Operator};
 use crate::registry::Registry;
 
@@ -50,8 +50,15 @@ impl<'l> Translator<'l> {
             While    (ref w) => Some(self.while_statement(w)),
             Compound (ref c) => Some(self.compound_statement(c)),
             Jump     (ref j) => Some(self.jump_statement(j)),
-            Asm      (ref a) => todo!() // TEMPORARILY
+            Asm      (ref a) => Some(self.asm_statement(a)) // TEMPORARILY
         }
+    }
+    fn asm_statement(&mut self, a: &AsmStatement) -> Box<ir::Statement> {
+        let mut statements = Vec::new();
+        for line in a.asm.clone() {
+            statements.push(Box::new(ir::Statement::Asm(line)));
+        }
+        return Box::new(ir::Statement::Seq(statements));
     }
     fn declare_statement(&mut self, d: &ast::DeclareStatement) -> Option<Box<ir::Statement>> {
         match &d.val {

@@ -41,7 +41,7 @@ pub enum AA {
     STR2(Reg, Reg),
     Ret,
 
-    BB(Vec<Reg>)               // Pseudo-OP
+    BB(Vec<Reg>),              // Pseudo-OP
 }
 impl AA {
     #[allow(unused_variables)]
@@ -49,39 +49,39 @@ impl AA {
         use AA::*;
         use Reg::*;
         return match self.clone() {
-            Label(l)           => (vec![],   vec![]),
-            Mov1(d, s)         => (vec![d],  vec![]),
-            Mov2(d, s)         => (vec![d],  vec![s]),
-            Add1(d, l, r)      => (vec![d],  vec![l]),
-            Add2(d, l, r)      => (vec![d],  vec![l, r]),
-            Sub1(d, l, r)      => (vec![d],  vec![l]),
-            Sub2(d, l, r)      => (vec![d],  vec![l, r]),
-            Neg1(d, s)         => (vec![d],  vec![]),
-            Neg2(d, s)         => (vec![d],  vec![s]),
-            SMAddL(d, l, m, r) => (vec![d],  vec![l, m, r]),
-            SMNegL(d, l, r)    => (vec![d],  vec![l, r]),
-            SMSubL(d, l, m, r) => (vec![d],  vec![l, r]),
-            SMulL(d, l, r)     => (vec![d],  vec![l, r]),
-            SDiv(d, l, r)      => (vec![d],  vec![l, r]),
-            And1(d, l, r)      => (vec![d],  vec![l]),
-            And2(d, l, r)      => (vec![d],  vec![l, r]),
-            Or1(d, l, r)       => (vec![d],  vec![l]),
-            Or2(d, l, r)       => (vec![d],  vec![l, r]),
-            Mvn1(d, s)         => (vec![d],  vec![]),
-            Mvn2(d, s)         => (vec![d],  vec![s]),
-            B(l)               => (vec![],   vec![]),
-            BL(l)              => (vec![],   vec![]),
-            CBZ(l)             => (vec![],   vec![]),
-            CBNZ(l)            => (vec![],   vec![]),
-            CMP1(d, s)         => (vec![d],  vec![]),
-            CMP2(d, s)         => (vec![d],  vec![s]),
-            CSET(d, s)         => (vec![d],  vec![]),
-            LDR1(d, l, r)      => (vec![d],  vec![l]),
-            LDR2(d, s)         => (vec![d],  vec![s]),
-            STR1(d, l, r)      => (vec![d],  vec![l]),
-            STR2(d, s)         => (vec![d],  vec![s]),
-            Ret                => (vec![SP], vec![R(29)]),
-            BB(v)              => (v.clone(),vec![])
+            Label(l)           => (vec![],    vec![]),
+            Mov1(d, s)         => (vec![d],   vec![]),
+            Mov2(d, s)         => (vec![d],   vec![s]),
+            Add1(d, l, r)      => (vec![d],   vec![l]),
+            Add2(d, l, r)      => (vec![d],   vec![l, r]),
+            Sub1(d, l, r)      => (vec![d],   vec![l]),
+            Sub2(d, l, r)      => (vec![d],   vec![l, r]),
+            Neg1(d, s)         => (vec![d],   vec![]),
+            Neg2(d, s)         => (vec![d],   vec![s]),
+            SMAddL(d, l, m, r) => (vec![d],   vec![l, m, r]),
+            SMNegL(d, l, r)    => (vec![d],   vec![l, r]),
+            SMSubL(d, l, m, r) => (vec![d],   vec![l, r]),
+            SMulL(d, l, r)     => (vec![d],   vec![l, r]),
+            SDiv(d, l, r)      => (vec![d],   vec![l, r]),
+            And1(d, l, r)      => (vec![d],   vec![l]),
+            And2(d, l, r)      => (vec![d],   vec![l, r]),
+            Or1(d, l, r)       => (vec![d],   vec![l]),
+            Or2(d, l, r)       => (vec![d],   vec![l, r]),
+            Mvn1(d, s)         => (vec![d],   vec![]),
+            Mvn2(d, s)         => (vec![d],   vec![s]),
+            B(l)               => (vec![],    vec![]),
+            BL(l)              => (vec![],    vec![]),
+            CBZ(l)             => (vec![],    vec![]),
+            CBNZ(l)            => (vec![],    vec![]),
+            CMP1(d, s)         => (vec![d],   vec![]),
+            CMP2(d, s)         => (vec![d],   vec![s]),
+            CSET(d, s)         => (vec![d],   vec![]),
+            LDR1(d, l, r)      => (vec![d],   vec![l]),
+            LDR2(d, s)         => (vec![d],   vec![s]),
+            STR1(d, l, r)      => (vec![d],   vec![l]),
+            STR2(d, s)         => (vec![d],   vec![s]),
+            Ret                => (vec![SP],  vec![R(29)]),
+            BB(v)              => (v.clone(), vec![])
         };
     }
 }

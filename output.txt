@@ -384,9 +384,13 @@ ret
 l0: 
 str R29, [R29, #-16]
 sub R29, R29, #-16
-mov R0, #5
+mov R3, #5
+mov R0, R3
 mov R2, #3
-mov R1, R2
+mov R3, R0
+mov R0, R2
+mov R1, R0
+mov R0, R3
 bl l1
 mov R0, #2.5
 mov R1, #1.3

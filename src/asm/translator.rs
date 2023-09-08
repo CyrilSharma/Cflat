@@ -70,6 +70,7 @@ impl Translator {
             Function(f, v) => self.function(*f, v),
             Jump(j)        => vec![AA::B(*j)],
             Label(l)       => vec![AA::Label(*l)],
+            Asm(s)         => todo!(),
             _ => unreachable!()
         }
     }

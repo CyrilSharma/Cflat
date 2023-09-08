@@ -21,7 +21,8 @@ impl Printer {
             Label(l) => format!("l{}: ", l),
             Function(f, _) => format!("f{}: ", f),
             Return(r) => self._return(r),
-            Seq(s) => self.seq(s)
+            Seq(s) => self.seq(s),
+            Asm(s) => format!("asm: {}", s)
         };
     }
     fn seq(&mut self, stmts: &[Box<Statement>]) -> String {
