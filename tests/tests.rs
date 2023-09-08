@@ -18,6 +18,7 @@ use ir::reducer::Reducer        as IrReducer;
 use ir::cfgbuilder::build       as IrCfgBuild;
 use ir::cfgexporter::export     as IrCfgExport;
 use ir::cfgprinter::Printer     as IrCfgPrinter;
+use ir::reorder::reorder        as IrCfgReorder;
 
 use std::fs;
 use std::path::Path;
@@ -104,7 +105,7 @@ fn visualize() {
             println!("");
         }
 
-        let order: Vec<usize> = (0..cfg.nodes.len()).collect();
+        let order = IrCfgReorder(&cfg);
         let fir = IrCfgExport(cfg, order);
         if p.ir3 { IrPrinter::new().print(&fir); }
 

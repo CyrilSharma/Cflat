@@ -6,4 +6,5 @@ pub mod cfgprinter;
 pub mod ir;
 pub mod printer;
 pub mod reducer;
+pub mod reorder;
 pub mod translator;

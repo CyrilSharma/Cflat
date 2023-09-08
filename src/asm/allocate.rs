@@ -307,8 +307,9 @@ fn rewrite(
             LDR2(d, s)         => LDR2(c(d), c(s)),
             STR1(d, l, r)      => STR1(c(d), c(l), r),
             STR2(d, s)         => STR2(c(d), c(s)),
+            BB(v)              => BB(v.iter().map(|r| c(*r)).collect()),
+            SVC(c)             => SVC(c),
             Ret                => Ret,
-            BB(v)              => BB(v.iter().map(|r| c(*r)).collect())
         };
     }
 }

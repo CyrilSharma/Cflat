@@ -3,6 +3,7 @@ pub struct Printer;
 impl Printer {
     // Removes no-ops.
     pub fn print(instructions: &[AA]) {
+        println!(".global __start");
         for ins in instructions {
             match ins {
                 AA::BB(_) => (),
@@ -15,9 +16,10 @@ impl Printer {
     }
 
     pub fn print_raw(instructions: &[AA]) {
+        println!(".global __start");
         for ins in instructions {
             match ins {
-                AA::BB(b) => println!("{}", ins),
+                AA::BB(_) => println!("\n{}", ins),
                 AA::Label(_) => println!("{}", ins),
                 _ => println!("{}", ins)
             }

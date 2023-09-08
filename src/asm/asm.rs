@@ -39,6 +39,7 @@ pub enum AA {
     LDR2(Reg, Reg),
     STR1(Reg, Reg, Const),
     STR2(Reg, Reg),
+    SVC(Const),
     Ret,
 
     BB(Vec<Reg>),              // Pseudo-OP
@@ -80,8 +81,9 @@ impl AA {
             LDR2(d, s)         => (vec![d],   vec![s]),
             STR1(d, l, r)      => (vec![d],   vec![l]),
             STR2(d, s)         => (vec![d],   vec![s]),
+            BB(v)              => (v.clone(), vec![]),
+            SVC(_)             => (vec![],    vec![]),
             Ret                => (vec![SP],  vec![R(29)]),
-            BB(v)              => (v.clone(), vec![])
         };
     }
 }
@@ -90,7 +92,8 @@ impl Display for AA {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         use AA::*;
         let res = match self {
-            Label(l)           => format!("l{}: ", l),
+            Label(l) if *l != 0 => format!("l{}: ", l),
+            Label(l)           => format!("__start: "),
             Mov1(d, s)         => format!("mov {}, #{}", d, s),
             Mov2(d, s)         => format!("mov {}, {}", d, s),
             Add1(d, l, r)      => format!("add {}, {}, #{}", d, l, r),
@@ -122,6 +125,7 @@ impl Display for AA {
             STR1(d, l, r)      => format!("str {}, [{}, #{}]", d, l, r),
             STR2(d, s)         => format!("str {}, [{}]", d, s),
             Ret                => format!("ret"),
+            SVC(c)             => format!("svc #{}", c),
             BB(v)              => {
                 let res = v.iter()
                     .map(|x| format!("{}", x))

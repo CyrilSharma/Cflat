@@ -204,6 +204,7 @@ pub fn parse(asm: String) -> Result<AA, ParseError> {
         "ldr"  if access(2).is_err() => A::LDR2(reg(0)?, reg(1)?),
         "str"  if access(2).is_ok()  => A::STR1(reg(0)?, reg(1)?, con(2)?),
         "str"  if access(2).is_err() => A::STR2(reg(0)?, reg(1)?),
+        "svc"  => A::SVC(con(0)?),
         "ret"  => A::Ret,
         _ => return Err(P::InvalidOp(asm))
     });

@@ -1,6 +1,6 @@
 use std::collections::BTreeMap;
 use crate::ir::ir::{self, Statement, Expr, Operator};
-use super::asm::{self, AA, Reg, CC};
+use super::asm::{self, AA, Reg, CC, Const};
 use crate::registry::Registry;
 
 type ID = u32;
@@ -33,7 +33,8 @@ pub struct Translator {
     opt:    BTreeMap<usize, Info>,
     frames: Vec<usize>,
     count:  usize,
-    retid:  u32
+    retid:  u32,
+    main:   bool
 }
 
 impl Translator {
@@ -42,7 +43,8 @@ impl Translator {
             opt:    BTreeMap::new(),
             frames: flist,
             count:  reg.nids as usize,
-            retid:  reg.ret
+            retid:  reg.ret,
+            main:   false
         }
     }
     pub fn translate(r: &mut Registry, flist: Vec<usize>, 
@@ -51,7 +53,8 @@ impl Translator {
             opt:    BTreeMap::new(),
             frames: flist,
             count:  r.nids as usize,
-            retid:  r.ret
+            retid:  r.ret,
+            main:   false
         };
         let mut res = Vec::<AA>::new();
         for s in stmts {
@@ -77,11 +80,12 @@ impl Translator {
     fn function(&mut self, f: u32, v: &Vec<u32>) -> Vec<AA> {
         // Set up frame.
         use asm::Const as C;
-        let mut asm = vec![
-            AA::Label(f),
-            AA::STR1(Reg::R(29), Reg::SP, C::Int(-16)),
-            AA::Sub1(Reg::SP, Reg::SP, C::Int(-16))
-        ];
+        self.main = f == 0;
+        let mut asm = vec![AA::Label(f)];
+        if !self.main {
+            asm.push(AA::STR1(Reg::R(29), Reg::SP, C::Int(-16)));
+            asm.push(AA::Sub1(Reg::SP, Reg::SP, C::Int(-16)));
+        }
         for (i, t) in v.iter().enumerate() {
             if i >= 8 { panic!("Unimplemented!") }
             asm.push(AA::Mov2(
@@ -94,10 +98,16 @@ impl Translator {
     fn _return(&mut self, r: &Option<Box<Expr>>) -> Vec<AA> {
         match r { 
             None => return vec![AA::Ret],
-            Some(e) => {
+            Some(e) if !self.main => {
                 let Info { mut asm, temp, .. } = self.expression(e);
                 asm.push(AA::Mov2(Reg::R(0), Reg::ID(temp)));
                 asm.push(AA::Ret);
+                return asm;
+            },
+            Some(e) => {
+                let Info { mut asm, temp, .. } = self.expression(e);
+                asm.push(AA::Mov2(Reg::R(0), Reg::ID(temp)));
+                asm.push(AA::SVC(Const::Int(0)));
                 return asm;
             }
         }
