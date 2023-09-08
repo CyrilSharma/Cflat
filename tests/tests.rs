@@ -64,15 +64,20 @@ fn visualize() {
         asm2:    true,
     };
     while Path::new(&format!("{dir}/input{i}.c")).exists() {
-        if i != 0 { i += 1; continue }
+        // if i != 0 { i += 1; continue }
         let filepath = &format!("{dir}/input{i}.c");
         let input = fs::read_to_string(filepath).expect("File not found!");
         println!("{}", &format!("FILE: {filepath}"));
         let mut r = Registry::new();
 
-        let mut ast = ast::parser::moduleParser::new()
-            .parse(&input)
-            .expect("Parse Error!");
+        let res = ast::parser::moduleParser::new().parse(&input);
+        let mut ast = match res {
+            Ok(a) => a,
+            Err(e) => {
+                println!("{}", e);
+                return;
+            }
+        };
         if p.ast1 { ast::printer::Printer::new().print(&ast); }
 
         AstAnalyzer::new(&mut r).analyze(&mut ast);

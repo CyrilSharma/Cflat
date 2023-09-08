@@ -251,6 +251,16 @@ pub fn build_graph(
             }
         }
     }
+    use Reg as R;
+    // Prevent overwriting SP, RZR, PC
+    for illegal in vec![R::SP, R::RZR, R::PC] {
+        for reg in 0..alist.len() {
+            amat[illegal.index()].insert(reg); 
+            amat[reg].insert(illegal.index());
+            alist[illegal.index()].push(reg);
+            alist[reg].push(illegal.index());
+        }
+    }
     return (amat, alist)
 }
 

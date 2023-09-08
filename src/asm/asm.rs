@@ -3,7 +3,7 @@ use std::fmt::Display;
 use std::cmp::Ordering;
 
 pub type Label = u32;
-pub const GPRS: usize = 32;
+pub const GPRS: usize = 33;
 // Presume everything costs the same.
 
 #[derive(Clone)]

@@ -1,10 +1,15 @@
 // Sources:
 // https://www.lysator.liu.se/c/ANSI-C-grammar-y.html
 // https://github.com/ranveeraggarwal/simple-c-like-compiler/blob/master/parser/grammar
+use lalrpop_util::ParseError;
 use std::str::FromStr;
 use super::ast::*;
 use crate::asm;
 grammar;
+
+extern {
+    type Error = asm::parser::ParseError;
+}
 
 //--------MODULE------------
 pub module: Module = {
@@ -176,14 +181,18 @@ asm_statement: Box<Statement> = {
 };
 asm_list: Vec<asm::asm::AA> = {
     asm_line => vec![<>],
-    <mut v: asm_list> <a: asm_line> => {
+    <mut v: asm_list> "," <a: asm_line> => {
         v.push(a);
         v
     }
-}
+};
 asm_line: asm::asm::AA = {
-    <s:r#""[a-z ]*""#> => asm::parser::parse(s.to_string()).unwrap()
-}
+    <s:r#""[a-zA-Z0-9\-,# ]*""#> =>? 
+        asm::parser::parse(s[1..(s.len()-1)].to_string())
+        .map_err(|e| ParseError::User {
+            error: e
+        })
+};
 
 compound_statement: Box<Statement> = {
 	"{" <s: statement_list?> "}" => {
@@ -337,7 +346,6 @@ Tier<Op, NextTier>: Box<Expr> = {
 };
 
 match {
-    r#""[a-zA-Z0-9-# ]*""#,
     r"\s*" => { }, // The default whitespace skipping is disabled if an `ignore pattern` is specified
     r"//[^\n\r]*[\n\r]*" => { }, // Skip `// comments`
     r"/\*[^*]*\*+(?:[^/*][^*]*\*+)*/" => { },  // Skip `/* comments */`

@@ -15,39 +15,39 @@ impl fmt::Display for ParseError {
         use ParseError as P;
         match &self {
             P::Quote(i, s) => {
-                write!(f, "Missing closing quote.")?;
-                write!(f, "{}", s)?;
-                write!(f, "{}^", "-".repeat(*i as usize))?;
+                writeln!(f, "Missing closing quote.")?;
+                writeln!(f, "{}", s)?;
+                writeln!(f, "{}^", "-".repeat(*i as usize))?;
             },
             P::Register(i, s)    => {
-                write!(f, "Invalid Register Used.")?;
-                write!(f, "{}", s)?;
-                write!(f, "{}^", "-".repeat(*i as usize))?;
+                writeln!(f, "Invalid Register Used.")?;
+                writeln!(f, "{}", s)?;
+                writeln!(f, "{}^", "-".repeat(*i as usize))?;
             },
             P::Delimiter(i, s)   => {
-                write!(f, "Missing comma / other delimiter used.")?;
-                write!(f, "{}", s)?;
-                write!(f, "{}^", "-".repeat(*i as usize))?;
+                writeln!(f, "Missing comma / other delimiter used.")?;
+                writeln!(f, "{}", s)?;
+                writeln!(f, "{}^", "-".repeat(*i as usize))?;
             },
             P::InvalidChar(i, s) => {
-                write!(f, "Invalid char encountered in asm")?;
-                write!(f, "{}", s)?;
-                write!(f, "{}^", "-".repeat(*i as usize))?;
+                writeln!(f, "Invalid char encountered in asm")?;
+                writeln!(f, "{}", s)?;
+                writeln!(f, "{}^", "-".repeat(*i as usize))?;
             }
             P::MissingOp(s) => {
-                write!(f, "Asm is missing op code!")?;
-                write!(f, "{}", s)?;
-                write!(f, "^")?;
+                writeln!(f, "Asm is missing op code!")?;
+                writeln!(f, "{}", s)?;
+                writeln!(f, "^")?;
             },
             P::MissingArgs(s) => {
-                write!(f, "Asm is missing arguments!")?;
-                write!(f, "{}", s)?;
-                write!(f, "{}^", "-".repeat(s.len()))?;
+                writeln!(f, "Asm is missing arguments!")?;
+                writeln!(f, "{}", s)?;
+                writeln!(f, "{}^", "-".repeat(s.len()))?;
             },
             P::InvalidOp(s) => {
-                write!(f, "Asm does not use a supported op! Note that Control Flow and Labels are not currently supported.")?;
-                write!(f, "{}", s)?;
-                write!(f, "^")?;
+                writeln!(f, "Asm does not use a supported op! Note that Control Flow and Labels are not currently supported.")?;
+                writeln!(f, "{}", s)?;
+                writeln!(f, "^")?;
             }
         }
         Ok(())
@@ -82,10 +82,10 @@ pub fn parse(asm: String) -> Result<AA, ParseError> {
                         state = S::Quoted;
                         quoteidx = i;
                     },
-                    ' '  => (),
-                    ','  => {
+                    ' ' | ','  => {
+                        if token.len() == 0 { continue }
                         tokens.push(token);
-                        tokenidxs.push(i);
+                        tokenidxs.push(i - 1);
                         token = String::new();
                     },
                     _ => return Err(P::InvalidChar(
@@ -105,9 +105,9 @@ pub fn parse(asm: String) -> Result<AA, ParseError> {
                     _    => token.push(c)
                 }
             },
-
         }
     }
+    tokens.push(token);
     match state {
         S::Unquoted => (),
         S::Quoted => return Err(P::Quote(
@@ -129,7 +129,7 @@ pub fn parse(asm: String) -> Result<AA, ParseError> {
 
     let reg = |idx| {
         use Reg as R;
-        let token = access(idx)?;
+        let token = access(idx + 1)?;
         match token.as_ref() {
             "SP"  => return Ok(R::SP),
             "RZR" => return Ok(R::RZR),
@@ -144,10 +144,6 @@ pub fn parse(asm: String) -> Result<AA, ParseError> {
             )),
         }
         match token[1..].parse::<u8>() {
-            Err(_) => Err(P::Register(
-                tokenidxs[idx] as u32,
-                asm.clone()
-            )),
             Ok(i) if i < GPRS as u8 => Ok(R::R(i)),
             _ => Err(P::Register(
                 tokenidxs[idx] as u32,
@@ -158,7 +154,7 @@ pub fn parse(asm: String) -> Result<AA, ParseError> {
 
     let con = |idx| {
         use Const as C;
-        let token = access(idx)?;
+        let token = access(idx + 1)?;
         match token.chars().nth(0) {
             Some(c) if c == '#' => (),
             _ => return Err(P::Register(
