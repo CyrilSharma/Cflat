@@ -1,4 +1,5 @@
 use std::fmt;
+use crate::asm::asm;
 use Primitive::*;
 
 //--------Modules------------
@@ -35,7 +36,7 @@ pub enum Statement {
 }
 
 pub struct AsmStatement {
-    pub asm: Vec<String>
+    pub asm: Vec<asm::AA>
 }
 
 pub struct DeclareStatement {

@@ -64,7 +64,7 @@ enum State {
     Unquoted
 }
 // Parses a single line.
-pub fn parse(mut asm: String) -> Result<AA, ParseError> {
+pub fn parse(asm: String) -> Result<AA, ParseError> {
     use State as S;
     use ParseError as P;
     let mut state = S::Unquoted;

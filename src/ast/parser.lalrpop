@@ -3,6 +3,7 @@
 // https://github.com/ranveeraggarwal/simple-c-like-compiler/blob/master/parser/grammar
 use std::str::FromStr;
 use super::ast::*;
+use crate::asm;
 grammar;
 
 //--------MODULE------------
@@ -167,22 +168,21 @@ statement: Box<Statement> = {
 };
 
 asm_statement: Box<Statement> = {
-    "asm!" "{" <s: string_list> "}" => {
+    "asm!" "{" <asm: asm_list> "}" => {
         Box::new(Statement::Asm(
-            AsmStatement { asm: s }
+            AsmStatement { asm }
         ))
     }
 };
-string_list: Vec<String> = {
-    string => vec![<>],
-    <mut v: string_list> <s: string> => {
-        v.push(s);
+asm_list: Vec<asm::asm::AA> = {
+    asm_line => vec![<>],
+    <mut v: asm_list> <a: asm_line> => {
+        v.push(a);
         v
     }
 }
-string: String = {
-    // r"//[^\n\r]*[\n\r]*"
-    <s:r#""[a-z ]*""#> => String::from(s)
+asm_line: asm::asm::AA = {
+    <s:r#""[a-z ]*""#> => asm::parser::parse(s.to_string()).unwrap()
 }
 
 compound_statement: Box<Statement> = {

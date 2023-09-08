@@ -1,4 +1,5 @@
 use std::mem;
+use crate::asm::asm;
 pub type ID = u32;
 pub type Label = u32;
 #[derive(Clone)]
@@ -28,7 +29,7 @@ pub enum Statement {
     Label(Label),
     Function(Label, Vec<ID>),
     Return(Option<Box<Expr>>),
-    Asm(String)
+    Asm(asm::AA)
 }
 impl Statement {
     pub fn addr(&self) -> usize {
