@@ -24,366 +24,9 @@ successes:
 
 ---- visualize stdout ----
 FILE: tests/data/input0.c
-
 l0: 
-str R29, [SP, #-16]
-sub SP, SP, #-16
-mov ID(39), #5
-mov ID(16), ID(39)
-mov ID(40), #3
-mov ID(17), ID(40)
-mov ID(41), ID(16)
-mov ID(30), ID(41)
-mov ID(42), ID(17)
-mov ID(31), ID(42)
-mov R0, ID(30)
-mov R1, ID(31)
-bl l1
-mov ID(43), R0
-mov ID(32), ID(43)
-mov ID(44), ID(32)
-mov ID(18), ID(44)
-mov ID(45), #2.5
-mov ID(19), ID(45)
-mov ID(46), #1.3
-mov ID(20), ID(46)
-mov ID(47), ID(19)
-mov ID(33), ID(47)
-mov ID(48), ID(20)
-mov ID(34), ID(48)
-mov R0, ID(33)
-mov R1, ID(34)
-bl l7
-mov ID(49), R0
-mov ID(35), ID(49)
-mov ID(50), ID(35)
-mov ID(21), ID(50)
-mov ID(51), #0
-mov ID(16), ID(51)
-b l9
-
-l1: 
-str R29, [SP, #-16]
-sub SP, SP, #-16
-mov ID(0), R0
-mov ID(1), R1
-mov ID(52), ID(0)
-mov R0, ID(52)
-mov ID(54), R0
-mov ID(55), ID(1)
-add ID(53), ID(54), ID(55)
-mov R0, ID(53)
-ret
-
-l2: 
-str R29, [SP, #-16]
-sub SP, SP, #-16
-mov ID(2), R0
-mov ID(3), R1
-mov ID(56), ID(2)
-mov ID(23), ID(56)
-mov ID(58), ID(23)
-mov ID(59), ID(3)
-sub ID(57), ID(58), ID(59)
-mov R0, ID(57)
-ret
-
-l3: 
-str R29, [SP, #-16]
-sub SP, SP, #-16
-mov ID(4), R0
-mov ID(5), R1
-mov ID(60), ID(4)
-mov ID(24), ID(60)
-mov ID(62), ID(24)
-mov ID(63), ID(5)
-smull ID(61), ID(62), ID(63)
-mov R0, ID(61)
-ret
-
-l4: 
-str R29, [SP, #-16]
-sub SP, SP, #-16
-mov ID(6), R0
-mov ID(7), R1
-mov ID(64), ID(6)
-mov ID(25), ID(64)
-mov ID(66), ID(25)
-mov ID(67), ID(7)
-sdiv ID(65), ID(66), ID(67)
-mov R0, ID(65)
-ret
-
-l5: 
-str R29, [SP, #-16]
-sub SP, SP, #-16
-mov ID(8), R0
-mov ID(9), R1
-mov ID(68), ID(8)
-mov ID(26), ID(68)
-mov ID(70), ID(26)
-mov ID(71), ID(9)
-add ID(69), ID(70), ID(71)
-mov R0, ID(69)
-ret
-
-l6: 
-str R29, [SP, #-16]
-sub SP, SP, #-16
-mov ID(10), R0
-mov ID(11), R1
-mov ID(72), ID(10)
-mov ID(27), ID(72)
-mov ID(74), ID(27)
-mov ID(75), ID(11)
-sub ID(73), ID(74), ID(75)
-mov R0, ID(73)
-ret
-
-l7: 
-str R29, [SP, #-16]
-sub SP, SP, #-16
-mov ID(12), R0
-mov ID(13), R1
-mov ID(76), ID(12)
-mov ID(28), ID(76)
-mov ID(78), ID(28)
-mov ID(79), ID(13)
-smull ID(77), ID(78), ID(79)
-mov R0, ID(77)
-ret
-
-l8: 
-str R29, [SP, #-16]
-sub SP, SP, #-16
-mov ID(14), R0
-mov ID(15), R1
-mov ID(80), ID(14)
-mov ID(29), ID(80)
-mov ID(82), ID(29)
-mov ID(83), ID(15)
-sdiv ID(81), ID(82), ID(83)
-mov R0, ID(81)
-ret
-
-l9: 
-mov ID(84), ID(16)
-mov ID(36), ID(84)
-mov ID(87), ID(36)
-mov ID(88), #5
-cmp ID(87), ID(88)
-cset ID(86), LT
-mvn ID(85), ID(86)
-cbnz l11
-
-l10: 
-mov ID(89), ID(17)
-mov ID(37), ID(89)
-mov ID(91), ID(37)
-mov ID(92), #1
-add ID(90), ID(91), ID(92)
-mov ID(17), ID(90)
-mov ID(93), ID(16)
-mov ID(38), ID(93)
-mov ID(95), ID(38)
-mov ID(96), #1
-add ID(94), ID(95), ID(96)
-mov ID(16), ID(94)
-b l9
-
-l11: 
-mov ID(97), #0
-mov R0, ID(97)
-ret
-Basic Block SP
-
-l0: 
-str R29, [SP, #-16]
-sub SP, SP, #-16
-mov ID(16), #5
-mov R0, ID(16)
-mov ID(17), #3
-mov ID(17), ID(17)
-mov ID(16), R0
-mov ID(16), ID(16)
-mov ID(31), ID(17)
-mov R1, ID(31)
-mov R0, ID(16)
-mov R1, R1
-bl l1
-Basic Block R0, SP, ID(17), R29
-mov R0, R0
-mov R0, R0
-mov R0, R0
-mov R0, R0
-mov ID(19), #2.5
-mov R0, ID(19)
-mov ID(20), #1.3
-mov R1, ID(20)
-mov ID(19), R0
-mov ID(19), ID(19)
-mov ID(20), R1
-mov ID(20), ID(20)
-mov R0, ID(19)
-mov R1, ID(20)
-bl l7
-Basic Block R0, ID(17), R29
-mov R0, R0
-mov R0, R0
-mov R0, R0
-mov R0, R0
-mov R0, #0
-mov R0, R0
-b l9
-Basic Block SP, R0, R1
-
-l1: 
-str R29, [SP, #-16]
-sub SP, SP, #-16
-mov R0, R0
-mov R1, R1
-mov R0, R0
-mov R0, R0
-mov R0, R0
-mov R1, R1
-add R0, R0, R1
-mov R0, R0
-ret
-Basic Block SP, R0, R1
-
-l2: 
-str R29, [SP, #-16]
-sub SP, SP, #-16
-mov R0, R0
-mov R1, R1
-mov R0, R0
-mov R0, R0
-mov R0, R0
-mov R1, R1
-sub R0, R0, R1
-mov R0, R0
-ret
-Basic Block SP, R0, R1
-
-l3: 
-str R29, [SP, #-16]
-sub SP, SP, #-16
-mov R0, R0
-mov R1, R1
-mov R0, R0
-mov R0, R0
-mov R0, R0
-mov R1, R1
-smull R0, R0, R1
-mov R0, R0
-ret
-Basic Block SP, R0, R1
-
-l4: 
-str R29, [SP, #-16]
-sub SP, SP, #-16
-mov R0, R0
-mov R1, R1
-mov R0, R0
-mov R0, R0
-mov R0, R0
-mov R1, R1
-sdiv R0, R0, R1
-mov R0, R0
-ret
-Basic Block SP, R0, R1
-
-l5: 
-str R29, [SP, #-16]
-sub SP, SP, #-16
-mov R0, R0
-mov R1, R1
-mov R0, R0
-mov R0, R0
-mov R0, R0
-mov R1, R1
-add R0, R0, R1
-mov R0, R0
-ret
-Basic Block SP, R0, R1
-
-l6: 
-str R29, [SP, #-16]
-sub SP, SP, #-16
-mov R0, R0
-mov R1, R1
-mov R0, R0
-mov R0, R0
-mov R0, R0
-mov R1, R1
-sub R0, R0, R1
-mov R0, R0
-ret
-Basic Block SP, R0, R1
-
-l7: 
-str R29, [SP, #-16]
-sub SP, SP, #-16
-mov R0, R0
-mov R1, R1
-mov R0, R0
-mov R0, R0
-mov R0, R0
-mov R1, R1
-smull R0, R0, R1
-mov R0, R0
-ret
-Basic Block SP, R0, R1
-
-l8: 
-str R29, [SP, #-16]
-sub SP, SP, #-16
-mov R0, R0
-mov R1, R1
-mov R0, R0
-mov R0, R0
-mov R0, R0
-mov R1, R1
-sdiv R0, R0, R1
-mov R0, R0
-ret
-Basic Block R0, ID(17), R29
-
-l9: 
-mov ID(36), R0
-mov ID(36), ID(36)
-mov ID(36), ID(36)
-mov ID(88), #5
-cmp ID(36), ID(88)
-cset ID(86), LT
-mvn ID(85), ID(86)
-cbnz l11
-Basic Block ID(17), R0
-
-l10: 
-mov ID(17), ID(17)
-mov ID(17), ID(17)
-mov ID(17), ID(17)
-mov ID(92), #1
-add ID(17), ID(17), ID(92)
-mov ID(17), ID(17)
-mov R0, R0
-mov R0, R0
-mov R0, R0
-mov ID(96), #1
-add R0, R0, ID(96)
-mov R0, R0
-b l9
-Basic Block R29
-
-l11: 
-mov R0, #0
-mov R0, R0
-ret
-
-l0: 
-str R29, [R29, #-16]
-sub R29, R29, #-16
+str R29, [R30, #-16]
+sub R30, R30, #-16
 mov R3, #5
 mov R0, R3
 mov R2, #3
@@ -397,55 +40,46 @@ mov R1, #1.3
 bl l7
 mov R0, #0
 b l9
-
 l1: 
-str R29, [R29, #-16]
-sub R29, R29, #-16
+str R29, [R30, #-16]
+sub R30, R30, #-16
 add R0, R0, R1
 ret
-
 l2: 
-str R29, [R29, #-16]
-sub R29, R29, #-16
+str R29, [R30, #-16]
+sub R30, R30, #-16
 sub R0, R0, R1
 ret
-
 l3: 
-str R29, [R29, #-16]
-sub R29, R29, #-16
+str R29, [R30, #-16]
+sub R30, R30, #-16
 smull R0, R0, R1
 ret
-
 l4: 
-str R29, [R29, #-16]
-sub R29, R29, #-16
+str R29, [R30, #-16]
+sub R30, R30, #-16
 sdiv R0, R0, R1
 ret
-
 l5: 
-str R29, [R29, #-16]
-sub R29, R29, #-16
+str R29, [R30, #-16]
+sub R30, R30, #-16
 add R0, R0, R1
 ret
-
 l6: 
-str R29, [R29, #-16]
-sub R29, R29, #-16
+str R29, [R30, #-16]
+sub R30, R30, #-16
 sub R0, R0, R1
 ret
-
 l7: 
-str R29, [R29, #-16]
-sub R29, R29, #-16
+str R29, [R30, #-16]
+sub R30, R30, #-16
 smull R0, R0, R1
 ret
-
 l8: 
-str R29, [R29, #-16]
-sub R29, R29, #-16
+str R29, [R30, #-16]
+sub R30, R30, #-16
 sdiv R0, R0, R1
 ret
-
 l9: 
 mov R1, R0
 mov R1, #5
@@ -453,14 +87,12 @@ cmp R1, R1
 cset R1, LT
 mvn R1, R1
 cbnz l11
-
 l10: 
 mov R1, #1
 add R2, R2, R1
 mov R1, #1
 add R0, R0, R1
 b l9
-
 l11: 
 mov R0, #0
 ret
@@ -472,10 +104,336 @@ ret
 
 
 
+
+
+FILE: tests/data/input1.c
+l0: 
+str R29, [R30, #-16]
+sub R30, R30, #-16
+mov R0, #10
+ldr R0, [R29, #0]
+mov R1, #20
+bl l1
+mov R0, #0
+ret
+l1: 
+str R29, [R30, #-16]
+sub R30, R30, #-16
+ldr R0, [R0]
+mov R0, R1
+ret
+
+
+
+
+
+
+
+
+
+
+FILE: tests/data/input2.c
+l0: 
+str R29, [R30, #-16]
+sub R30, R30, #-16
+mov R1, #5
+ldr R0, [R29, #0]
+bl l1
+mov R0, #2
+add R1, R1, R0
+mov R2, R1
+mov R0, R2
+add R2, R0, R2
+sub R1, R1, R2
+mov R0, #0
+ret
+l1: 
+str R29, [R30, #-16]
+sub R30, R30, #-16
+mov R1, R0
+mov R0, R1
+ldr R0, [R0]
+mov R0, R1
+ldr R0, [R0]
+mov R2, #1
+add R0, R0, R2
+mov R0, R1
+ldr R0, [R0]
+mov R0, R1
+ldr R0, [R0]
+mov R2, #2
+smull R0, R0, R2
+mov R0, R1
+ldr R0, [R0]
+ldr R0, [R1]
+mov R1, #3
+sub R0, R0, R1
+ret
+
+
+
+
+
+
+
+
+
+
+FILE: tests/data/input3.c
+l0: 
+str R29, [R30, #-16]
+sub R30, R30, #-16
+mov R0, #5
+mov R1, #3
+bl l1
+mov R3, #2.5
+mov R0, R3
+mov R2, #0
+mov R3, R0
+mov R0, R2
+mov R1, R0
+mov R0, R3
+bl l2
+mov R0, #0
+cmp R0, R0
+cset R0, GE
+cbnz l5
+b l6
+l1: 
+str R29, [R30, #-16]
+sub R30, R30, #-16
+add R0, R0, R1
+ret
+l2: 
+str R29, [R30, #-16]
+sub R30, R30, #-16
+mov R2, R1
+mov R2, #0
+cmp R2, R2
+cset R2, EQ
+mvn R2, R2
+cbnz l4
+l3: 
+mov R0, #-1
+ret
+l4: 
+sdiv R0, R0, R1
+ret
+l5: 
+mov R0, #2
+add R2, R2, R0
+l6: 
+mov R0, #0
+ret
+
+
+
+
+
+
+
+
+
+
+FILE: tests/data/input4.c
+l0: 
+str R29, [R30, #-16]
+sub R30, R30, #-16
+mov R2, #5
+mov R0, #1.8
+bl l1
+mov R1, #0
+b l19
+l1: 
+str R29, [R30, #-16]
+sub R30, R30, #-16
+mov R1, R0
+mov R0, R1
+mov R0, #0
+cmp R0, R0
+cset R0, LE
+cbnz l5
+b l6
+l2: 
+str R29, [R30, #-16]
+sub R30, R30, #-16
+mov R2, #1
+b l7
+l3: 
+str R29, [R30, #-16]
+sub R30, R30, #-16
+mov R1, R0
+mov R1, #0
+cmp R1, R1
+cset R1, EQ
+cbnz l14
+b l16
+l4: 
+str R29, [R30, #-16]
+sub R30, R30, #-16
+mov R2, R0
+mov R0, R2
+mov R0, #1
+cmp R0, R0
+cset R0, LE
+cbnz l17
+b l18
+l5: 
+mov R0, R1
+ret
+l6: 
+mov R0, R1
+mov R2, #1
+sub R0, R0, R2
+bl l1
+add R0, R0, R1
+ret
+l7: 
+mov R1, R2
+mov R1, R0
+cmp R1, R1
+cset R1, LE
+mvn R1, R1
+cbnz l9
+l8: 
+mov R1, R2
+mov R3, #2
+sdiv R1, R1, R3
+mov R1, #0
+cmp R1, R1
+cset R1, EQ
+cbnz l10
+b l11
+l9: 
+ret
+l10: 
+mov R0, #1
+add R2, R2, R0
+l11: 
+mov R1, #2
+sub R2, R2, R1
+mov R1, R2
+mov R1, #2
+sdiv R0, R0, R1
+cmp R1, R0
+cset R0, EQ
+mvn R0, R0
+cbnz l13
+l12: 
+b l8
+l13: 
+mov R0, #1
+add R2, R2, R0
+b l7
+l14: 
+mov R0, #1
+ret
+l15: 
+mov R1, R0
+mov R2, #1
+sub R0, R0, R2
+bl l3
+smull R0, R1, R0
+ret
+l16: 
+mov R1, R0
+mov R1, #1
+cmp R1, R1
+cset R1, EQ
+cbnz l14
+b l15
+l17: 
+mov R0, R2
+ret
+l18: 
+mov R0, R2
+mov R1, #1
+sub R0, R0, R1
+bl l4
+mov R1, R0
+mov R0, #2
+sub R0, R2, R0
+bl l4
+add R0, R1, R0
+ret
+l19: 
+mov R0, R1
+cmp R0, R2
+cset R0, LT
+mvn R0, R0
+cbnz l21
+l20: 
+mov R0, #2
+sub R1, R1, R0
+mov R0, #1
+add R1, R1, R0
+b l19
+l21: 
+mov R0, #9
+bl l2
+mov R0, #0
+ret
+
+
+
+
+
+
+
+
+
+
+FILE: tests/data/input5.c
+l0: 
+str R29, [R30, #-16]
+sub R30, R30, #-16
+mov R0, #0
+mov R0, #3
+ldr R0, [R29, #0]
+ldr R0, [R29, #4]
+ldr R0, [R0]
+mov R0, #0
+ldr R0, [R29, #0]
+ldr R0, [R0]
+mov R0, #3
+mov R0, #0
+ret
+
+
+
+
+
+
+
+
+
+
+FILE: tests/data/input6.c
+l0: 
+str R29, [R30, #-16]
+sub R30, R30, #-16
+mov R1, #5
+mov R1, R0
+mov R0, R1
+mov R1, R0
+mov R0, #0
+ret
+
+
+
+
+
+
+
+
+
+
+
+
 successes:
     visualize
 
-test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.10s
 
 
 running 0 tests

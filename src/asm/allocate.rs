@@ -54,7 +54,7 @@ pub fn allocate(
     coalesce_graph(&mut live, &mut alist, &mut amat);
     let colors = color_graph(alist);
     rewrite(&mut live, |r: Reg| {
-        return Reg::R(colors[r.index()] as u8);
+        return Reg::from(colors[r.index()] as u32);
     });
     return live.into_iter().map(|x| x.0).collect();
 }
@@ -127,6 +127,7 @@ fn color_graph(alist: AdjList) -> Vec<usize> {
     let (mut degrees, mut stk);
     loop {
         let mut nodes = Vec::new();
+        let mut stacked = vec![false; alist.len()];
         degrees = vec![0; alist.len()];
         stk     = Vec::new();
         for i in GPRS..alist.len() {
@@ -136,13 +137,16 @@ fn color_graph(alist: AdjList) -> Vec<usize> {
             });
             degrees[i] = alist[i].len() as u32;
         }
+
         while let Some(Node { deg, pos }) = nodes.pop() {
+            if stacked[pos as usize] { continue }
             // We've updated it multiple times, and this is an old version.
             if degrees[pos as usize] < deg { continue }
             if deg >= GPRS as u32 { continue }
             for nbr in &alist[pos as usize] {
                 // We don't update the adjlist
                 // Hence, we need this check.
+                if stacked[*nbr] { continue }
                 if degrees[*nbr] == 0 { continue }
                 degrees[*nbr] -= 1;
                 nodes.push(Node {
@@ -151,11 +155,10 @@ fn color_graph(alist: AdjList) -> Vec<usize> {
                 });
             }
             stk.push(pos);
+            stacked[pos as usize] = true;
         }
-        // TODO: Something is wrong with this condition.
-        if stk.len() != alist.len() {
+        if stk.len() != (alist.len() - GPRS) {
             // Spill Logic.
-            // todo!();
         }
         break;
     }
@@ -236,6 +239,7 @@ pub fn build_graph(
                 // println!("def: reg - {}, dead - {}", reg, dead);
                 // Add edges between everything which conflicts with this definition.
                 for (key, _) in &conflicts {
+                    if amat[reg.index()].contains(key) { continue }
                     amat[reg.index()].insert(*key); 
                     amat[*key].insert(reg.index());
                     alist[reg.index()].push(*key);
@@ -254,7 +258,8 @@ pub fn build_graph(
     use Reg as R;
     // Prevent overwriting SP, RZR, PC
     for illegal in vec![R::SP, R::RZR, R::PC] {
-        for reg in 0..alist.len() {
+        for reg in GPRS..alist.len() {
+            if amat[illegal.index()].contains(&reg) { continue }
             amat[illegal.index()].insert(reg); 
             amat[reg].insert(illegal.index());
             alist[illegal.index()].push(reg);

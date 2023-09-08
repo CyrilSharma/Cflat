@@ -46,6 +46,7 @@ impl Printer {
             Label(l) => format!("l{}: ", l),
             Function(f, _) => format!("f{}: ", f),
             Return(r) => self._return(r),
+            Asm(a) => format!("{}", a),
             _ => unreachable!()
         };
     }

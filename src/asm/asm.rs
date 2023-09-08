@@ -157,14 +157,13 @@ impl Reg {
         }
     }
     pub fn from(idx: u32) -> Self {
-        use Reg::*;
-        match idx {
-            0..=29 => R(idx as u8),
-            30     => SP,
-            31     => RZR,
-            32     => PC,
-            _      => ID(idx - GPRS as u32)
-        }
+        use Reg as R;
+        let idx = idx as usize;
+        if idx <= GPRS - 4 { R::R(idx as u8) }
+        else if idx == GPRS - 3 { R::SP }
+        else if idx == GPRS - 2 { R::RZR }
+        else if idx == GPRS - 1 { R::PC }
+        else { R::ID((idx - GPRS) as u32) }
     }
 }
 impl Ord for Reg {
