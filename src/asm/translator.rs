@@ -71,7 +71,7 @@ impl Translator {
             CJump(c, t, _) => self.cjump(c, *t),
             Return(r)      => self._return(r),
             Function(f, v) => self.function(*f, v),
-            Jump(j)        => vec![AA::B(*j)],
+            Jump(j)        => vec![AA::B1(*j)],
             Label(l)       => vec![AA::Label(*l)],
             Asm(a)         => vec![a.clone()],
             _ => unreachable!()
@@ -106,8 +106,9 @@ impl Translator {
             },
             Some(e) => {
                 let Info { mut asm, temp, .. } = self.expression(e);
-                asm.push(AA::Mov2(Reg::R(16), Reg::ID(temp)));
-                asm.push(AA::SVC(Const::Int(0)));
+                asm.push(AA::Mov2(Reg::R(0), Reg::ID(temp)));
+                asm.push(AA::Mov1(Reg::R(16), Const::Int(1)));
+                asm.push(AA::SVC(Const::Int(128)));
                 return asm;
             }
         }
@@ -153,8 +154,8 @@ impl Translator {
         }
     }
     fn cjump(&mut self, j: &Expr, t: ir::Label) -> Vec<AA> {
-        let Info { mut asm, .. } = self.expression(j);
-        asm.push(AA::CBNZ(t));
+        let Info { mut asm, temp, .. } = self.expression(j);
+        asm.push(AA::CBZ(Reg::ID(temp), t));
         return asm;
     }
     fn expression(&mut self, e: &Expr) -> Info {
@@ -270,13 +271,13 @@ impl Translator {
             asm.extend(r2asm);
             if op == Operator::Add {
                 asm.push(AA::SMAddL(
-                    Reg::ID(res),     Reg::ID(ltmp),
-                    Reg::ID(l2tmp), Reg::ID(r2tmp)
+                    Reg::ID(res),   Reg::ID(l2tmp),
+                    Reg::ID(r2tmp), Reg::ID(ltmp)
                 ));
             } else {
                 asm.push(AA::SMSubL(
-                    Reg::ID(res),     Reg::ID(ltmp),
-                    Reg::ID(l2tmp), Reg::ID(r2tmp)
+                    Reg::ID(res),   Reg::ID(l2tmp),
+                    Reg::ID(r2tmp), Reg::ID(ltmp)
                 ));
             }
             ans.update(asm.len() as ID, asm);
@@ -385,11 +386,15 @@ impl Translator {
                             Reg::ID(ltmp),
                             Reg::ID(rtmp),
                         ),
-                        AA::SMSubL(
+                        AA::SMulL(
+                            Reg::ID(res),
+                            Reg::ID(t1),
+                            Reg::ID(rtmp)
+                        ),
+                        AA::Sub2(
                             Reg::ID(res),
                             Reg::ID(ltmp),
-                            Reg::ID(t1),
-                            Reg::ID(rtmp),
+                            Reg::ID(res)
                         )
                     ]
                 },

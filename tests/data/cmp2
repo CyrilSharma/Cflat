@@ -1,0 +1,12 @@
+l1: 
+str X29, [SP, #-16]
+sub SP, SP, #-16
+mov X2, X0
+mov X0, X2
+
+
+mov X0, #0
+cmp X0, X0
+cset X0, EQ
+cbz X0, l3
+// 6->X2, 26->X0, 20->X0 

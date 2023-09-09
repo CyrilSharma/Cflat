@@ -77,7 +77,8 @@ pub fn parse(asm: String) -> Result<AA, ParseError> {
             S::Unquoted => {
                 match c {
                     'a'..='z' | 'A'..='Z' |
-                    '0'..='9' | '#' => token.push(c),
+                    '0'..='9' | '#' | '-' => token.push(c),
+                    '[' | ']' => (), // I don't feel like tracking if they're open or not.
                     '\"' => {
                         state = S::Quoted;
                         quoteidx = i;
@@ -130,6 +131,7 @@ pub fn parse(asm: String) -> Result<AA, ParseError> {
     let reg = |idx| {
         use Reg as R;
         let token = access(idx + 1)?;
+        println!("Token: {}", token);
         match token.as_ref() {
             "SP"  => return Ok(R::SP),
             "RZR" => return Ok(R::RZR),
@@ -205,8 +207,8 @@ pub fn parse(asm: String) -> Result<AA, ParseError> {
         "cmp"  if reg(1).is_ok() => A::CMP2(reg(0)?, reg(1)?),
         "ldr"  if access(2).is_ok()  => A::LDR1(reg(0)?, reg(1)?, con(2)?),
         "ldr"  if access(2).is_err() => A::LDR2(reg(0)?, reg(1)?),
-        "str"  if access(2).is_ok()  => A::STR1(reg(0)?, reg(1)?, con(2)?),
-        "str"  if access(2).is_err() => A::STR2(reg(0)?, reg(1)?),
+        "str"  if con(2).is_ok()  => A::STR1(reg(0)?, reg(1)?, con(2)?),
+        "str"  if con(2).is_err() => A::STR2(reg(0)?, reg(1)?),
         "svc"  => A::SVC(con(0)?),
         "ret"  => A::Ret,
         _ => return Err(P::InvalidOp(asm))

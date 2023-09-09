@@ -12,9 +12,11 @@ void print_number(int x) {
 
 void print_digit(int digit) {
   asm! {
-    "add R1, R0, #41",
+    "add R3, R0, #48",
     "mov R0, #1",
-    "mov R1, R0",
+    "mov R1, SP",
+    "sub SP, SP, #-4",
+    "str R3, [R1]",
     "mov R2, #1",
     "mov R16, #4",
     "svc #0x80"

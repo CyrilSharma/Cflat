@@ -1,0 +1,11 @@
+l1: 
+str X29, [SP, #-16]
+sub SP, SP, #-16
+mov ID(26), X0
+mov ID(6), ID(26)
+mov ID(6), ID(6)
+mov ID(6), ID(6)
+mov ID(20), #0
+cmp ID(6), ID(20)
+cset ID(18), EQ
+cbz ID(18), l3

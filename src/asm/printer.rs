@@ -4,6 +4,7 @@ impl Printer {
     // Removes no-ops.
     pub fn print(instructions: &[AA]) {
         println!(".global __start");
+        println!(".align 4");
         for ins in instructions {
             match ins {
                 AA::BB(_) => (),
@@ -17,6 +18,7 @@ impl Printer {
 
     pub fn print_raw(instructions: &[AA]) {
         println!(".global __start");
+        println!(".align 4");
         for ins in instructions {
             match ins {
                 AA::BB(_) => println!("\n{}", ins),

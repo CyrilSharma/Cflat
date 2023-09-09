@@ -32,16 +32,16 @@ impl<'l> CFG<'l> {
                 cur = nodes.len() - 1;
             }
             match *stmt {
-                B(b)             => nodes[cur].t = Some(b as usize),
-                BL(b)            => nodes[cur].t = Some(b as usize),
-                CBZ(b) | CBNZ(b) => nodes[cur].t = Some(b as usize),
+                B1(b) | B2(_, b)       => nodes[cur].t = Some(b as usize),
+                BL(b)                  => nodes[cur].t = Some(b as usize),
+                CBZ(_, b) | CBNZ(_, b) => nodes[cur].t = Some(b as usize),
                 Label(b) => {
                     cur = b as usize;
                     nodes[cur].idx = idx - 1;
                 },
                 _ => ()
             }
-            if matches!(stmt, B(_) | Ret) { continue }
+            if matches!(stmt, B1(_) | B2(_, _) | Ret) { continue }
             let Some(pk) = iter.peek() else { continue };
             if let Label(l) = *pk { 
                 nodes[cur].f = Some(*l as usize);

@@ -6,6 +6,7 @@ pub struct Reducer<'l> {
 impl<'l> Reducer<'l> {
     pub fn new(registry: &'l mut Registry) -> Self {
         registry.ret = registry.nids;
+        registry.nids += 1;
         Self { reg: registry }
     }
     pub fn reduce(&mut self, stmts: Vec<Box<Statement>>)

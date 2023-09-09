@@ -61,7 +61,7 @@ impl Liveness {
             // Insert Basic Block Pseudo-Ops
             let bb = if idx == 0 { true } else {
                 match (&cfg.asm[idx - 1], &cfg.asm[idx]) {
-                    (B(_) | BL(_), _) => true,
+                    (B1(_) | B2(_, _) | BL(_), _) => true,
                     (_, Label(_))     => true,
                     _                 => false
                 }

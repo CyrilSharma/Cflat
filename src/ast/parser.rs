@@ -1,5 +1,5 @@
 // auto-generated: "lalrpop 0.20.0"
-// sha3: 1e9517b7bf1e9b0dccbdd07f6339271117a6da7d77f6e070ab9669418595f0f5
+// sha3: 76d247fea685af81a03edb5142966dd3c2867fb5173f07c2e37139231c605c14
 use lalrpop_util::ParseError;
 use std::str::FromStr;
 use super::ast::*;
@@ -899,7 +899,7 @@ mod __parse__module {
         r###""{""###,
         r###""||""###,
         r###""}""###,
-        r###"r#"\"[a-zA-Z0-9\\-,# ]*\""#"###,
+        r###"r#"\"[a-zA-Z0-9\\-,#\\[\\] ]*\""#"###,
         r###"r#"[a-zA-Z][a-zA-Z0-9_]*"#"###,
         r###"r#"\\-?[0-9]*"#"###,
         r###"r#"\\-?[0-9]+\\.[0-9]*"#"###,
@@ -2035,7 +2035,7 @@ mod __parse__module {
                 __reduce45(input, __lookahead_start, __symbols, core::marker::PhantomData::<(&())>)
             }
             46 => {
-                // asm_line = r#"\"[a-zA-Z0-9\\-,# ]*\""# => ActionFn(57);
+                // asm_line = r#"\"[a-zA-Z0-9\\-,#\\[\\] ]*\""# => ActionFn(57);
                 let __sym0 = __pop_Variant0(__symbols);
                 let __start = __sym0.0;
                 let __end = __sym0.2;
@@ -4676,7 +4676,7 @@ mod __intern_token {
     extern crate alloc;
     pub fn new_builder() -> __lalrpop_util::lexer::MatcherBuilder {
         let __strs: &[(&str, bool)] = &[
-            ("^((?:\"[ \\#,\\-0-9A-Za-z]*\"))", false),
+            ("^((?:\"[ \\#,\\-0-9A-\\[\\]a-z]*\"))", false),
             ("^((?:[A-Za-z][0-9A-Z_a-z]*))", false),
             ("^((?:\\-?[0-9]*))", false),
             ("^((?:\\-?[0-9]+\\.[0-9]*))", false),

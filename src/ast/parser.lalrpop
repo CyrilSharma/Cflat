@@ -188,7 +188,7 @@ asm_list: Vec<asm::asm::AA> = {
     }
 };
 asm_line: asm::asm::AA = {
-    <s:r#""[a-zA-Z0-9\-,# ]*""#> =>? 
+    <s:r#""[a-zA-Z0-9\-,#\[\] ]*""#> =>? 
         asm::parser::parse(s[1..(s.len()-1)].to_string())
         .map_err(|e| ParseError::User {
             error: e
