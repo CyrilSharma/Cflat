@@ -236,7 +236,8 @@ impl<'l> Analyzer<'l> {
             },
             BinaryOp::Eq | BinaryOp::Geq |
             BinaryOp::Gt | BinaryOp::Leq |
-            BinaryOp::Neq | BinaryOp::Lt => {
+            BinaryOp::Neq | BinaryOp::Lt |
+            BinaryOp::Mod => {
                 if lkind.indir == 0 &&
                     rkind.indir == 0 {
                     b.kind = Some(Kind::int());

@@ -149,6 +149,7 @@ pub struct Identifier {
 pub enum BinaryOp {
     Mul,
     Div,
+    Mod,
     Add,
     Sub,
     Leq,

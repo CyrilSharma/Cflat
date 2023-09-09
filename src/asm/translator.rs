@@ -377,6 +377,22 @@ impl Translator {
                         CC::GT
                     )
                 ],
+                Operator::Mod => {
+                    let t1 = self.create_temp();
+                    vec![
+                        AA::SDiv(
+                            Reg::ID(t1),
+                            Reg::ID(ltmp),
+                            Reg::ID(rtmp),
+                        ),
+                        AA::SMSubL(
+                            Reg::ID(res),
+                            Reg::ID(ltmp),
+                            Reg::ID(t1),
+                            Reg::ID(rtmp),
+                        )
+                    ]
+                },
                 _ => unreachable!()
             });
             ans.update(asm.len() as ID, asm);

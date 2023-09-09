@@ -1,7 +1,13 @@
 int main() {
-  int x = 5;
-  print_digit(x);
+  int x = 1000;
+  print_number(x);
   return 0;
+}
+
+void print_number(int x) {
+  if (x == 0) return;
+  print_number(x / 10);
+  print_digit(x % 10);
 }
 
 void print_digit(int digit) {

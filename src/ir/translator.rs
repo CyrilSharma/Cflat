@@ -326,6 +326,7 @@ impl<'l> Translator<'l> {
         let op = match b.binary_op {
             Mul    => ir::Operator::Mul,
             Div    => ir::Operator::Div,
+            Mod    => ir::Operator::Mod,
             Add    => ir::Operator::Add,
             Sub    => ir::Operator::Sub,
             Leq    => ir::Operator::Leq,

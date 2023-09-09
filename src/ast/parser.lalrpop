@@ -103,7 +103,8 @@ AddOp: BinaryOp = {
 mul_expression = Tier<MulOp, unary_expression>;
 MulOp: BinaryOp = {
     "*" => BinaryOp::Mul,
-    "/" => BinaryOp::Div
+    "/" => BinaryOp::Div,
+    "%" => BinaryOp::Mod,
 };
 
 unary_expression: Box<Expr> = {

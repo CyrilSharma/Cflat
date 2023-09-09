@@ -50,6 +50,7 @@ pub enum Operator {
     Sub,
     Mul,
     Div,
+    Mod,
     And,
     Or,
     Xor,
