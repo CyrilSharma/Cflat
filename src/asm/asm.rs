@@ -184,9 +184,9 @@ impl Display for Reg {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         use Reg::*;
         match self {
-            R(i)  => write!(f, "R{}", i),
+            R(i)  => write!(f, "X{}", i),
             SP    => write!(f, "SP"),
-            RZR   => write!(f, "RZR"),
+            RZR   => write!(f, "XZR"),
             PC    => write!(f, "PC"),
             ID(i) => write!(f, "ID({})", i),
         }

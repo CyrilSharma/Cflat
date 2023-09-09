@@ -1,18 +1,44 @@
-.global _start			// Provide program starting address to linker
-.align 2			// Make sure everything is aligned properly
+.global __start
+.align 4
 
-// Setup the parameters to print hello world
-// and then call the Kernel to do it.
-_start: mov	X0, #1		// 1 = StdOut
-	adr	X1, helloworld 	// string to print
-	mov	X2, #13	    	// length of our string
-	mov	X16, #4		// Unix write system call
-	svc	#0x80		// Call kernel to output the string
+__start: 
+mov X0, #1000
+mov X0, X1
+bl l1
+mov X16, #0
+svc #0
 
-// Setup the parameters to exit the program
-// and then call the kernel to do it.
-	mov     X0, #0		// Use 0 return code
-	mov     X16, #1		// System call number 1 terminates this program
-	svc     #0x80		// Call kernel to terminate the program
+l1: 
+str X29, [SP, #-16]
+sub SP, SP, #-16
+mov X2, X0
+mov X0, X2
+mov X0, #0
+cmp X0, X0
+cset X0, EQ
+cbnz X0, l3
 
-helloworld:      .ascii  "Hello World!\n"
+l4: 
+mov X0, X2
+mov X1, #10
+sdiv X0, X0, X1
+bl l1
+mov X0, #10
+sdiv X1, X2, X0
+smsubl X0, W2, W1, X0
+bl l2
+
+l2: 
+str X29, [SP, #-16]
+sub SP, SP, #-16
+mov X1, X0
+add X1, X0, #41
+mov X0, #1
+mov X1, X0
+mov X2, #1
+mov X16, #4
+svc #128
+ret
+
+l3: 
+ret

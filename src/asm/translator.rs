@@ -106,7 +106,7 @@ impl Translator {
             },
             Some(e) => {
                 let Info { mut asm, temp, .. } = self.expression(e);
-                asm.push(AA::Mov2(Reg::R(0), Reg::ID(temp)));
+                asm.push(AA::Mov2(Reg::R(16), Reg::ID(temp)));
                 asm.push(AA::SVC(Const::Int(0)));
                 return asm;
             }
