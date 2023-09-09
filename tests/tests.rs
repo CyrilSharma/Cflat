@@ -54,7 +54,7 @@ fn visualize() {
         ir2:     false,
         ir2cfg:  false,
         ir3:     false,
-        ir3cfg:  true,
+        ir3cfg:  false,
         frames:  false,
         asm1:    false,
         asm1cfg: false,
@@ -63,7 +63,7 @@ fn visualize() {
         coalasm: false,
         coalint: false,
         coalcfg: false,
-        asm2:    false,
+        asm2:    true,
     };
     while Path::new(&format!("{dir}/input{i}.c")).exists() {
         if i != 6 { i += 1; continue }
