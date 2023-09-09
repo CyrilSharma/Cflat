@@ -87,6 +87,7 @@ impl<'l> Translator<'l> {
             )))
         }
     }
+    // TODO: and result of conditional with 1 so we can use not like normal.
     fn if_statement(&mut self, i: &ast::IfStatement) -> Box<ir::Statement> {
         let lt = self.create_label();
         let lf = self.create_label();
