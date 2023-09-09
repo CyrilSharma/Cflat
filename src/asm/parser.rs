@@ -77,7 +77,7 @@ pub fn parse(asm: String) -> Result<AA, ParseError> {
             S::Unquoted => {
                 match c {
                     'a'..='z' | 'A'..='Z' |
-                    '0'..='9' => token.push(c),
+                    '0'..='9' | '#' => token.push(c),
                     '\"' => {
                         state = S::Quoted;
                         quoteidx = i;
@@ -162,8 +162,11 @@ pub fn parse(asm: String) -> Result<AA, ParseError> {
                 asm.clone()
             )),
         }
+        let no_prefix = token.trim_start_matches("#0x");
         if let Ok(i) = token[1..].parse::<i64>() {
             Ok(C::Int(i))
+        } else if let Ok(h) = i64::from_str_radix(&no_prefix, 16) {
+            Ok(C::Int(h))
         } else if let Ok(f) = token[1..].parse::<f64>() {
             Ok(C::Float(f))
         } else {

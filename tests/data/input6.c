@@ -13,4 +13,5 @@ void print_digit(int digit) {
     "mov R16, #4",
     "svc #0x80"
   };
+  return;
 }

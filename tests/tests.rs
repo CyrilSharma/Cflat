@@ -19,6 +19,7 @@ use ir::cfgbuilder::build       as IrCfgBuild;
 use ir::cfgexporter::export     as IrCfgExport;
 use ir::cfgprinter::Printer     as IrCfgPrinter;
 use ir::reorder::reorder        as IrCfgReorder;
+use lalrpop_util::ParseError;
 
 use std::fs;
 use std::path::Path;
@@ -65,15 +66,32 @@ fn visualize() {
         asm2:    true,
     };
     while Path::new(&format!("{dir}/input{i}.c")).exists() {
-        // if i != 0 { i += 1; continue }
+        if i != 6 { i += 1; continue }
         let filepath = &format!("{dir}/input{i}.c");
         let input = fs::read_to_string(filepath).expect("File not found!");
         println!("{}", &format!("FILE: {filepath}"));
         let mut r = Registry::new();
 
+        // Some exceptionally basic error handling.
         let res = ast::parser::moduleParser::new().parse(&input);
         let mut ast = match res {
             Ok(a) => a,
+            Err(ParseError::InvalidToken { location }) => {
+                println!("Invalid Token");
+                let mut counter = 0;
+                let mut lineidx = 0;
+                let lines: Vec<String> = input.lines()
+                    .map(|x| x.to_string()).collect();
+                while counter <= location &&
+                    lineidx < lines.len() {
+                    counter += lines[lineidx].len();
+                    lineidx += 1;
+                }
+                println!("{}: {}", lineidx, lines[lineidx - 1]);
+                let linepos = location - (counter - lines[lineidx - 1].len()) + 3;
+                println!("{}^", "-".repeat(linepos));
+                return;
+            },
             Err(e) => {
                 println!("{}", e);
                 return;

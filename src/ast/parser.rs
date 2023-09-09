@@ -1,5 +1,5 @@
 // auto-generated: "lalrpop 0.20.0"
-// sha3: b4030a6074887ccb081f710edd016a84b511bc7008e708c4869a9cfa76ea1632
+// sha3: 7aa4994325816f3a226f69e4c85c475a0ca0f6de1c3b28c9765e30ab373fca5c
 use lalrpop_util::ParseError;
 use std::str::FromStr;
 use super::ast::*;
@@ -895,7 +895,7 @@ mod __parse__module {
         r###""||""###,
         r###""}""###,
         r###"r#"\"[a-zA-Z0-9\\-,# ]*\""#"###,
-        r###"r#"[a-zA-Z][a-zA-Z0-9]*"#"###,
+        r###"r#"[a-zA-Z][a-zA-Z0-9_]*"#"###,
         r###"r#"\\-?[0-9]*"#"###,
         r###"r#"\\-?[0-9]+\\.[0-9]*"#"###,
     ];
@@ -3708,7 +3708,7 @@ mod __parse__module {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // identifier = r#"[a-zA-Z][a-zA-Z0-9]*"# => ActionFn(76);
+        // identifier = r#"[a-zA-Z][a-zA-Z0-9_]*"# => ActionFn(76);
         let __sym0 = __pop_Variant0(__symbols);
         let __start = __sym0.0;
         let __end = __sym0.2;
@@ -4645,7 +4645,7 @@ mod __intern_token {
     pub fn new_builder() -> __lalrpop_util::lexer::MatcherBuilder {
         let __strs: &[(&str, bool)] = &[
             ("^((?:\"[ \\#,\\-0-9A-Za-z]*\"))", false),
-            ("^((?:[A-Za-z][0-9A-Za-z]*))", false),
+            ("^((?:[A-Za-z][0-9A-Z_a-z]*))", false),
             ("^((?:\\-?[0-9]*))", false),
             ("^((?:\\-?[0-9]+\\.[0-9]*))", false),
             ("^(!)", false),
