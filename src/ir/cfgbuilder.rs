@@ -44,9 +44,14 @@ pub fn build(r: &Registry, stmts: Vec<Box<Statement>>) -> CFG {
             Label(l) | Function(l, _) => {
                 cur = l as usize;
                 nodes[cur].stmts.push(stmt);
+                let Some(pk) = iter.peek() else { continue };
+                if let Label(l) = **pk { 
+                    nodes[cur].f = Some(l as usize);
+                    cur = l as usize;
+                }
             },
             Return(_) => nodes[cur].stmts.push(stmt),
-            _                    =>	{
+            _  => {
                 nodes[cur].stmts.push(stmt);
                 let Some(pk) = iter.peek() else { continue };
                 if let Label(l) = **pk { 

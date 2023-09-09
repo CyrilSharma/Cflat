@@ -8,6 +8,7 @@ pub fn export(mut cfg: CFG, order: Vec<usize>) -> Vec<Box<Statement>> {
         let n = &mut cfg.nodes[idx];
         let mut cur = std::mem::take(&mut n.stmts);
         let last = cur.pop().unwrap();
+        println!("last is label: {}", matches!(*last, Label(5)));
         let peek = || { 
             match ind + 1 == order.len() {
                 false => Some(order[ind+1]),
@@ -52,7 +53,6 @@ pub fn export(mut cfg: CFG, order: Vec<usize>) -> Vec<Box<Statement>> {
                 }
             }
         });
-        if cur.len() == 1 { continue; }
         res.extend(cur);
     }
     return res;

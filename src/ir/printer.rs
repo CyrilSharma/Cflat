@@ -5,7 +5,7 @@ impl Printer {
     pub fn new() -> Self { Self{tabs: 0} }
     pub fn print(&mut self, stmts: &[Box<Statement>]) {
         for s in stmts {
-            println!("{}\n",
+            println!("{}",
                 self.statement(s)
             );
         }
@@ -18,8 +18,8 @@ impl Printer {
             Move(d, s) => self._move(d, s),
             Jump(j) => format!("Jump {:?}", j),
             CJump(c, t, f) => self.cjump(c, *t, *f),
-            Label(l) => format!("l{}: ", l),
-            Function(f, _) => format!("f{}: ", f),
+            Label(l) => format!("\nl{}: ", l),
+            Function(f, _) => format!("\nf{}: ", f),
             Return(r) => self._return(r),
             Seq(s) => self.seq(s),
             Asm(s) => format!("asm: {}", s)

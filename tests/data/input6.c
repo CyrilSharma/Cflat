@@ -5,9 +5,17 @@ int main() {
 }
 
 void print_number(int x) {
-  if (x == 0) return;
-  print_number(x / 10);
-  print_digit(x % 10);
+  int mx = 1;
+  int tmp = x;
+  while (tmp > 0) {
+    tmp /= 10;
+    mx *= 10;
+  }
+  while (mx > 0) {
+    print_digit(x / mx);
+    mx /= 10;
+  }
+  return;
 }
 
 void print_digit(int digit) {
