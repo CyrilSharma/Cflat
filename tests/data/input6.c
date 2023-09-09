@@ -15,7 +15,7 @@ void print_digit(int digit) {
     "add R3, R0, #48",
     "mov R0, #1",
     "mov R1, SP",
-    "sub SP, SP, #-4",
+    "sub SP, SP, #-16",
     "str R3, [R1]",
     "mov R2, #1",
     "mov R16, #4",

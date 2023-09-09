@@ -90,8 +90,10 @@ impl<'l> Framer<'l> {
         if self.frames[i as usize] != usize::MAX { return };
         if !self.addressed[i as usize] { return }
         self.frames[i as usize] = self.inc;
-        // All types are four bytes.
-        self.inc += 4;
+        // All types are 8 bytes...
+        // But accesses have to be 16 byte aligned
+        // And I am lazy.
+        self.inc += 16;
     }
 }
 

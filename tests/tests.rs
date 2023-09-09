@@ -53,7 +53,7 @@ fn visualize() {
         ir1:     false,
         ir2:     false,
         ir2cfg:  false,
-        ir3:     false,
+        ir3:     true,
         ir3cfg:  false,
         frames:  false,
         asm1:    false,

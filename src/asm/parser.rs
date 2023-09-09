@@ -131,7 +131,6 @@ pub fn parse(asm: String) -> Result<AA, ParseError> {
     let reg = |idx| {
         use Reg as R;
         let token = access(idx + 1)?;
-        println!("Token: {}", token);
         match token.as_ref() {
             "SP"  => return Ok(R::SP),
             "RZR" => return Ok(R::RZR),

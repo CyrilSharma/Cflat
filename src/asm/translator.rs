@@ -155,7 +155,8 @@ impl Translator {
     }
     fn cjump(&mut self, j: &Expr, t: ir::Label) -> Vec<AA> {
         let Info { mut asm, temp, .. } = self.expression(j);
-        asm.push(AA::CBZ(Reg::ID(temp), t));
+        // Condition evalutes to 1 if true, and 0 otherwise.
+        asm.push(AA::CBNZ(Reg::ID(temp), t));
         return asm;
     }
     fn expression(&mut self, e: &Expr) -> Info {

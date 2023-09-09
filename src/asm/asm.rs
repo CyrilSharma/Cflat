@@ -93,6 +93,23 @@ impl Display for AA {
     #[allow(unused_variables)]
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         use AA::*;
+        use Reg as R;
+        // To be clear, this is the wrong way to do this.
+        // I should instead store the register type in the Registers.
+        let w = |r: &Reg| { match r {
+            R::R(i)  => format!("W{}", i),
+            R::SP    => format!("SP"),
+            R::RZR   => format!("WZR"),
+            R::PC    => format!("PC"),
+            R::ID(i) => format!("ID({})", i),
+        }};
+        let x = |r: &Reg| { match r {
+            R::R(i)  => format!("X{}", i),
+            R::SP    => format!("SP"),
+            R::RZR   => format!("XZR"),
+            R::PC    => format!("PC"),
+            R::ID(i) => format!("ID({})", i),
+        }};
         let res = match self {
             Label(l) if *l != 0 => format!("l{}: ", l),
             Label(l)           => format!("__start: "),
@@ -104,10 +121,10 @@ impl Display for AA {
             Sub2(d, l, r)      => format!("sub {}, {}, {}", d, l, r),
             Neg1(d, s)         => format!("neg {}, #{}", d, s),
             Neg2(d, s)         => format!("neg {}, {}", d, s),
-            SMAddL(d, l, m, r) => format!("smaddl {}, {}, {}, {}", d, l, m, r),
-            SMNegL(d, l, r)    => format!("smnegl {}, {}, {}", d, l, r),
-            SMSubL(d, l, m, r) => format!("smsubl {}, {}, {}, {}", d, l, m, r),
-            SMulL(d, l, r)     => format!("smull {}, {}, {}", d, l, r),
+            SMAddL(d, l, m, r) => format!("smaddl {}, {}, {}, {}", d, w(l), w(m), r),
+            SMNegL(d, l, r)    => format!("smnegl {}, {}, {}", d, w(l), w(r)),
+            SMSubL(d, l, m, r) => format!("smsubl {}, {}, {}, {}", d, w(l), w(m), r),
+            SMulL(d, l, r)     => format!("smull {}, {}, {}", d, w(l), w(r)),
             SDiv(d, l, r)      => format!("sdiv {}, {}, {}", d, l, r),
             And1(d, l, r)      => format!("and {}, {}, #{}", d, l, r),
             And2(d, l, r)      => format!("and {}, {}, {}", d, l, r),
