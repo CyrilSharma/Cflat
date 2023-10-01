@@ -18,8 +18,8 @@ impl Printer {
             Move(d, s) => self._move(d, s),
             Jump(j) => format!("Jump {:?}", j),
             CJump(c, t, f) => self.cjump(c, *t, *f),
-            Label(l) => format!("\nl{}: ", l),
-            Function(f, _) => format!("\nf{}: ", f),
+            Label(l) => format!("l{}: ", l),
+            Function(f, _) => format!("f{}: ", f),
             Return(r) => self._return(r),
             Seq(s) => self.seq(s),
             Asm(s) => format!("asm: {}", s)

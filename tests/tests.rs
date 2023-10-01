@@ -66,7 +66,7 @@ fn visualize() {
         asm2:    true,
     };
     while Path::new(&format!("{dir}/input{i}.c")).exists() {
-        if i != 6 { i += 1; continue }
+        //if i != 4 { i += 1; continue }
         let filepath = &format!("{dir}/input{i}.c");
         let input = fs::read_to_string(filepath).expect("File not found!");
         println!("{}", &format!("FILE: {filepath}"));
